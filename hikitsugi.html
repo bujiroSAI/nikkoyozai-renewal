@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>引き継ぎ・公開方針｜株式会社日光溶材</title>
+<meta name="description" content="株式会社日光溶材様 Webサイトリニューアルの打ち合わせ用基礎資料。現状サマリー、現行インフラ構成、メールを止めない公開方針、確認事項、公開までの流れ、用語解説をまとめています。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="doc.css">
+</head>
+<body>
+<nav class="docnav"><div class="nv">
+  <span class="bm">
+    <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="nv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10a86f"/><stop offset="1" stop-color="#1f93cf"/></linearGradient></defs><circle cx="22" cy="22" r="21" fill="#0c2d22"/><circle cx="22" cy="22" r="12" fill="url(#nv)"/><path d="M22 13.5c4.6 2 5.6 7.6 0 16-5.6-8.4-4.6-14 0-16z" fill="#fff" opacity=".92"/></svg>
+    日光溶材<small>リニューアル資料</small>
+  </span>
+  <a class="lk" href="index.html">サイトの方針</a>
+  <a class="lk" href="hikitsugi.html" aria-current="page">引き継ぎ・公開</a>
+  <a class="lk ext" href="proto/" target="_blank" rel="noopener">プロトタイプ</a>
+</div></nav>
+
+<article class="sheet">
+
+  <!-- 文書ヘッダー -->
+  <header class="dochead">
+    <div class="docmeta-top">
+      <svg class="mk" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10a86f"/><stop offset="1" stop-color="#0a93ab"/></linearGradient></defs>
+        <circle cx="22" cy="22" r="21" fill="#eafaf3"/><circle cx="22" cy="22" r="12" fill="url(#lg)"/>
+        <path d="M22 13.5c4.6 2 5.6 7.6 0 16-5.6-8.4-4.6-14 0-16z" fill="#fff" opacity=".92"/>
+      </svg>
+      <span class="nm">株式会社 日光溶材</span>
+    </div>
+    <p class="doc-to">株式会社 日光溶材 御中</p>
+    <h1 class="doc-title">引き継ぎ・公開方針</h1>
+    <p class="doc-sub">現状・インフラ・公開の段取り・撤退判断・クロージング</p>
+    <div class="doc-info">
+      <span><b>発行日</b>　<span class="en">2026.06.24</span></span>
+      <span><b>版</b>　<span class="en">v1.0</span></span>
+      <span><b>区分</b>　社内回覧可</span>
+      <span><b>目的</b>　引き継ぎ可否の確認と公開の進め方の共有</span>
+    </div>
+  </header>
+
+  <div class="pad body">
+
+    <!-- 目次 -->
+    <nav class="toc">
+      <h2>目次 / Contents</h2>
+      <ol>
+        <li><a href="#s1">この資料について</a></li>
+        <li><a href="#s2">現状サマリー（今のサイト）</a></li>
+        <li><a href="#s3">現行インフラ構成</a></li>
+        <li><a href="#s4">公開の鉄則：メールを止めない</a></li>
+        <li><a href="#s5">確認・ご用意いただくこと</a></li>
+        <li><a href="#s6">揃わない場合の判断と旧サイトの閉じ方</a></li>
+        <li><a href="#s7">公開までの流れ</a></li>
+        <li><a href="#s8">用語ミニ辞典</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section class="sec" id="s1">
+      <h2>この資料について</h2>
+      <p>本資料は、貴社Webサイトのリニューアルにあたり、<strong>(1) 今のサイトの状態</strong>、<strong>(2) 引き継ぎの可否</strong>、<strong>(3) 会社のメールを止めずに新サイトを公開する進め方</strong>を、専門用語をかみ砕いて整理したものです。打ち合わせの共有資料として、そのまま社内回覧いただけます。</p>
+      <p class="muted">※ 契約番号・ID・口座・パスワード等の機密情報は本資料には記載していません（別途・非公開でお取り扱いします）。</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="sec" id="s2">
+      <h2>現状サマリー（今のサイト）</h2>
+      <p>現サイト <code>www.nikko-a.co.jp</code> を調査した結果は次のとおりです。</p>
+      <table class="doc">
+        <tbody>
+          <tr><th scope="row">制作・最終更新</th><td>ホームページ・ビルダー製の静的サイト。最終更新は2014年で、約12年ほぼ未更新。</td></tr>
+          <tr><th scope="row">更新の仕組み</th><td>管理画面（CMS）なし。中身を把握する人がいない状態の主因。</td></tr>
+          <tr><th scope="row">セキュリティ</th><td>常時SSL（https）が未対応。「保護されていない通信」の警告が出る。</td></tr>
+          <tr><th scope="row">生きている資産</th><td>会社概要・許認可・各種ガスの仕様/SDS（PDF）は有効。新サイトへ継承可能。</td></tr>
+          <tr><th scope="row">引き継ぎの難易度</th><td>静的サイトのため<strong>むしろ容易</strong>。鍵はログイン情報の入手（後述）。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 3 -->
+    <section class="sec" id="s3">
+      <h2>現行インフラ構成</h2>
+      <p>お預かりした契約書類から、現在の構成は次のとおりと分かりました。</p>
+      <table class="doc">
+        <thead><tr><th>区分</th><th>役割</th><th>現状（契約先）</th></tr></thead>
+        <tbody>
+          <tr><td>回線（プロバイダ）</td><td>インターネット接続</td><td><strong>NTTぷらら</strong>。あわせて「独自ドメイン登録」「プチウェブ（簡易ホームページ）」を契約。</td></tr>
+          <tr><td>会社メール</td><td><code>○○@nikko-a.co.jp</code></td><td><strong>大塚商会 アルファメール</strong>（外部のメール専用サービス）で稼働中。</td></tr>
+          <tr><td>ドメイン</td><td>住所 <code>nikko-a.co.jp</code></td><td>上記いずれかで管理（取得経路の都合で要確認）。</td></tr>
+          <tr><td>現ホームページ</td><td>サイトの置き場所</td><td>旧来の簡易ホスティング（ぷらら プチウェブ等）にあると推定。</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="ct">◆ ここが重要</div>
+        <p>ドメインとメールが同じ <code>nikko-a.co.jp</code> です。そのため、新サイト公開時に<strong>「メールを止めない段取り」</strong>が必須になります（次章）。</p>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="sec" id="s4">
+      <h2>公開の鉄則：メールを止めない</h2>
+      <p>ドメインの設定（DNS）を<strong>「メール向け」と「Web向け」に分けて</strong>扱えば、メールを止めずに安全に公開できます。</p>
+      <div class="lanes">
+        <div class="lane k"><span class="tag">KEEP</span><h4>メール向け（MX）</h4><p>大塚商会アルファメールを指したまま、<strong>据え置き・変更しない</strong>。会社メールは止まりません。</p></div>
+        <div class="lane s"><span class="tag">SWITCH</span><h4>Web向け（A / CNAME）</h4><p>ホームページの「向き先」だけを、新しい置き場所へ切り替えます。</p></div>
+      </div>
+      <div class="callout">
+        <div class="ct">◆ 最短・最安全ルート</div>
+        <p>新サイトを<strong>今と同じ置き場所に上書き公開</strong>できれば、DNS変更すら不要＝メールに一切影響しません。まず現ホスティングのログイン所在を特定します。</p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="sec" id="s5">
+      <h2>確認・ご用意いただくこと</h2>
+      <p>引き継ぎ・公開をスムーズに進めるため、次の<strong>3つのログイン</strong>のご確認をお願いします。お手元の書類または社内ご担当者にご確認ください。</p>
+      <table class="doc">
+        <thead><tr><th>No.</th><th>確認いただくもの</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>回線（ぷらら）会員のログイン</td><td>回線・ドメイン・現ホームページの所在を確認</td></tr>
+          <tr><td>2</td><td>メール（大塚商会アルファメール）の管理画面ログイン</td><td>現在のメール設定（MX）を控え、公開時に止めない</td></tr>
+          <tr><td>3</td><td>ドメイン管理のログイン</td><td>Webの向き先を新サイトへ変更</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <div class="ct">⚠ あわせてご確認</div>
+        <p>契約名義の代表者名が、書類（旧）と現在で相違している可能性があります（世代交代等）。現在の契約名義もあわせてご確認ください。</p>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="sec" id="s6">
+      <h2>揃わない場合の判断と旧サイトの閉じ方</h2>
+      <p>第5章の3アカウントが押さえられるかが、「<strong>引き継ぐ／完全に作り直す</strong>」の分かれ目です。揃わない場合の進め方を整理します。</p>
+
+      <h3>判断ライン（3段階）</h3>
+      <table class="doc">
+        <thead><tr><th>段階</th><th>状況</th><th>判断</th></tr></thead>
+        <tbody>
+          <tr><td><strong>A</strong></td><td>3アカウントが揃う</td><td><strong>引き継ぎ移行</strong>。最も安く・早く、今のURL・検索評価・メールを維持。理想形。</td></tr>
+          <tr><td><strong>B</strong></td><td>ログインが手元にない（ただし契約者本人）</td><td><strong>まず回復を試みる</strong>。<code>co.jp</code> ドメインや大手の契約は、各社サポートで本人確認のうえ再発行・再設定できることが多い。回復できればAに戻れる。</td></tr>
+          <tr><td><strong>C</strong></td><td>どうしても不可（名義不明／業者廃業／本人確認不可）</td><td><strong>完全新規で作り直し</strong>（下記メリデメで判断）。</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="ct">◆ ポイント</div>
+        <p>「ログインが見当たらない」＝即「引き継ぎ不能」ではありません。<strong>まずBの回復</strong>を試すのが定石。Cは“本当に誰も契約をたどれない”稀なケースです。なお本件は十数ページの静的サイトのため、<strong>最悪Cでも内容は復元可能</strong>（プロトタイプは作成済み）です。</p>
+      </div>
+
+      <h3>完全新規（Cルート）のメリット・デメリット</h3>
+      <table class="doc">
+        <tbody>
+          <tr><th scope="row">メリット</th><td>12年分の負債（壊れたSSL・ソフト依存・不明構成）を完全リセット／内容は復元済みで調査の手間が不要／新ドメイン・新サーバーを<strong>自社で一から管理</strong>でき今後の引き継ぎが明快。</td></tr>
+          <tr><th scope="row">デメリット</th><td><strong>URLが変わる</strong>（ドメインを確保できない場合）と検索評価・被リンクが一度リセット／旧に触れないとリダイレクトも張れない／<strong>メールにも波及</strong>しうる（メール契約も不明な最悪時）。※メール契約は別管理で生きていることが多く、ここまで至るのは稀。</td></tr>
+        </tbody>
+      </table>
+
+      <h3>現状サイトのクロージング方法（旧サイトの閉じ方）</h3>
+      <table class="doc">
+        <thead><tr><th>旧環境へのアクセス</th><th>閉じ方</th></tr></thead>
+        <tbody>
+          <tr><td>ホスティングに入れる（Aルート）</td><td>①推奨：同じ場所に<strong>新サイトを上書き</strong>（URL維持・SSL化・メール無影響）／②旧トップに新サイト案内＋<strong>301リダイレクト</strong>後に削除。</td></tr>
+          <tr><td>ドメイン(DNS)は触れるがホスティング不可</td><td>DNSの<strong>Web向けを新サイトへ向け替え</strong>→旧ファイルは残るが誰も到達せず<strong>実質クローズ</strong>。旧URLは新サイトに着地。</td></tr>
+          <tr><td>どちらも触れない（Cルート）</td><td>旧ファイルは消せないため、<strong>該当する公開契約（プチウェブ／ホスティング）を解約して公開停止</strong>＝クロージング。契約満了の自然失効でも停止。</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <div class="ct">⚠ 解約でクロージングする際の最重要注意</div>
+        <p><code>@nikko-a.co.jp</code> のメールが生きている場合、<strong>Webを止めるための解約がメールやドメインまで巻き込むと、会社メールが止まります。</strong>解約は「Webを担う契約」と「メール・ドメインの契約」を<strong>切り分けられることを確認してから</strong>実行します。</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="sec" id="s7">
+      <h2>公開までの流れ</h2>
+      <ol class="num">
+        <li><strong>現状の確認</strong>：上記3アカウントと契約状況を整理。</li>
+        <li><strong>新サイト準備</strong>：内容・写真を確定（プロトタイプは作成済み）。</li>
+        <li><strong>テスト公開</strong>：仮の場所で表示を最終確認。</li>
+        <li><strong>本番公開</strong>：Web向けの向き先だけを切り替え（または現ホスティングへ上書き）。</li>
+        <li><strong>メール確認</strong>：送受信に問題がないことを確認して完了。</li>
+      </ol>
+    </section>
+
+    <!-- 8 -->
+    <section class="sec" id="s8">
+      <h2>用語ミニ辞典</h2>
+      <dl class="terms">
+        <div><dt>ドメイン</dt><dd>サイトの「住所」。<code>nikko-a.co.jp</code> の部分。土地の住所にあたる。</dd></div>
+        <div><dt>DNS</dt><dd>住所宛のアクセスを「ホームページ用」「メール用」のどちらへ渡すか決める案内板。</dd></div>
+        <div><dt>ホスティング</dt><dd>ホームページのデータを置く貸しスペース。建物（店舗）にあたる。</dd></div>
+        <div><dt>MX</dt><dd>DNSの中の「メールの宛先」設定。ここを据え置けばメールは止まらない。</dd></div>
+        <div><dt>常時SSL</dt><dd>通信を暗号化し安全を示す仕組み。<code>https://</code> と鍵マークが付く。</dd></div>
+        <div><dt>CMS</dt><dd>管理画面から更新できる仕組み（WordPress等）。今回は採用せず静的サイトで構築。</dd></div>
+      </dl>
+    </section>
+
+  </div>
+
+  <footer class="docfoot">
+    <span class="conf">取扱注意</span><br>
+    本資料は打ち合わせ用の基礎説明です。具体的な契約先のアカウント・パスワード・契約番号・口座等の機密情報は本資料に記載せず、別途・非公開で取り扱います。<br>
+    © 株式会社日光溶材／Webサイトリニューアル 基礎資料 v1.0（2026-06-24）
+  </footer>
+
+</article>
+
+</body>
+</html>

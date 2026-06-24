@@ -1,0 +1,311 @@
+/* =========================================================
+   株式会社日光溶材 公式サイト  共通スタイル  v2（全面刷新）
+   コンセプト：草木を育む緑 × 日光の爽やかな光（緑×青）
+   方針：リッチで余白の効いたWeb／強い見出しメリハリ／
+        ビジュアル主導／装飾（グラデ・波・フロー・FAQ・出現アニメ）
+   ========================================================= */
+
+:root{
+  /* ブランドカラー：爽やかな緑〜青 */
+  --brand:#0fa372;        /* 主色：フレッシュグリーン */
+  --brand-deep:#08855b;
+  --brand-ink:#0a4d3a;    /* 文字用の深緑 */
+  --teal:#0aa0b8;         /* 副：ティール（青緑） */
+  --sky:#2fb1e3;          /* 差し色：スカイブルー */
+  --grad:linear-gradient(120deg,#13b481 0%,#0a9fa6 52%,#1f93cf 100%);
+  --grad-soft:linear-gradient(120deg,#eafaf2 0%,#e7f7f6 55%,#e9f4fc 100%);
+
+  --ink:#15271f;          /* 本文（深い緑みの黒） */
+  --ink-soft:#56685f;     /* 補助 */
+  --bg:#ffffff;
+  --mint:#f0faf4;         /* 薄緑セクション背景 */
+  --mint-2:#e4f5ec;
+  --sky-tint:#eaf6fc;
+  --line:#e3ede8;
+  --card-sh:0 2px 4px rgba(13,60,45,.04), 0 22px 48px rgba(13,60,45,.08);
+  --card-sh-hv:0 6px 12px rgba(13,60,45,.07), 0 34px 70px rgba(13,60,45,.14);
+
+  --maxw:1140px;
+  --r:18px;       /* 角丸 */
+  --r-lg:28px;
+  --ff-jp:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  --ff-en:"Outfit",var(--ff-jp);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--ff-jp);color:var(--ink);background:var(--bg);
+  line-height:1.85;font-size:16px;-webkit-font-smoothing:antialiased;letter-spacing:.01em;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,p,ul,figure,dl{margin:0}
+ul{padding:0;list-style:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.en{font-family:var(--ff-en);font-weight:700;letter-spacing:.02em}
+.hl{color:var(--brand)}
+.nowrap{white-space:nowrap}
+
+/* ---------- 出現アニメ ---------- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* ---------- ヘッダー ---------- */
+.site-header{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.82);backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex;align-items:center;height:78px;gap:20px}
+.brand{display:flex;align-items:center;gap:13px}
+.brand .mark{width:40px;height:40px;flex:none}
+.brand .name{font-weight:900;letter-spacing:.06em;font-size:1.25rem;color:var(--brand-ink);line-height:1.1}
+.brand .name small{display:block;font-family:var(--ff-en);font-weight:600;font-size:.58rem;letter-spacing:.24em;color:var(--teal);margin-top:3px}
+.nav{margin-left:auto;display:flex;align-items:center;gap:4px}
+.navlink{position:relative;padding:10px 15px;border-radius:10px;font-size:.96rem;font-weight:500;color:var(--ink);transition:.15s}
+.navlink:hover{color:var(--brand-deep)}
+.navlink[aria-current="page"]{color:var(--brand-deep);font-weight:700}
+.navlink[aria-current="page"]::after{content:"";position:absolute;left:15px;right:15px;bottom:2px;height:2px;border-radius:2px;background:var(--grad)}
+.nav .tel{display:inline-flex;flex-direction:column;align-items:flex-end;font-family:var(--ff-en);font-weight:700;color:var(--brand-ink);padding:2px 12px;line-height:1.05;font-size:1.02rem}
+.nav .tel small{font-family:var(--ff-jp);font-weight:500;font-size:.6rem;letter-spacing:.08em;color:var(--ink-soft)}
+.nav-toggle{display:none;margin-left:auto;width:48px;height:48px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:1.3rem;color:var(--brand-deep);cursor:pointer;align-items:center;justify-content:center}
+
+/* ---------- ボタン ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;padding:15px 26px;border-radius:999px;font-weight:700;font-size:.98rem;line-height:1.2;border:1.8px solid transparent;cursor:pointer;transition:.18s ease}
+.btn .arw{transition:.2s}
+.btn:hover .arw{transform:translateX(3px)}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 24px rgba(13,150,120,.30)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(13,150,120,.38)}
+.btn-tel{background:#fff;color:var(--brand-deep);border-color:var(--brand)}
+.btn-tel:hover{background:var(--mint)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand-deep)}
+.btn-white{background:#fff;color:var(--brand-deep)}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.16)}
+.btn-lg{padding:17px 32px;font-size:1.04rem}
+
+/* ---------- セクション共通 ---------- */
+.section{padding:96px 0}
+.section.tight{padding:72px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--ff-en);font-size:.8rem;font-weight:700;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-bottom:18px}
+.eyebrow::before{content:"";width:26px;height:2px;border-radius:2px;background:var(--grad)}
+.shead{max-width:760px;margin:0 0 48px}
+.shead.center{margin-left:auto;margin-right:auto;text-align:center}
+.shead.center .eyebrow{justify-content:center}
+h2.title{font-size:clamp(1.7rem,3.6vw,2.55rem);line-height:1.34;color:var(--ink);font-weight:900;letter-spacing:.01em}
+.lead{color:var(--ink-soft);margin-top:18px;font-size:1.06rem;line-height:1.9}
+.bg-mint{background:var(--mint)}
+.bg-tint{background:var(--grad-soft)}
+
+/* 波の区切り */
+.wave{display:block;width:100%;height:60px;line-height:0}
+.wave svg{display:block;width:100%;height:100%}
+
+/* ---------- 水色（写真）プレースホルダー ---------- */
+.ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,#e7f6fb 0%,#e9f8f1 100%);
+  border:1.6px dashed #9fd6dc;color:#2c8597;border-radius:var(--r);
+  font-size:.92rem;font-weight:700;padding:22px;gap:6px;overflow:hidden}
+.ph::after{content:"PHOTO";position:absolute;top:10px;right:12px;font-family:var(--ff-en);font-size:.6rem;font-weight:700;letter-spacing:.18em;color:#7cc0cc}
+.ph .ico{font-size:1.7rem;opacity:.6}
+.ph small{display:block;font-weight:500;font-size:.74rem;color:#5fa9b6;letter-spacing:.02em;line-height:1.55}
+.r-3x4{aspect-ratio:3/4}.r-4x3{aspect-ratio:4/3}.r-16x9{aspect-ratio:16/9}.r-1x1{aspect-ratio:1/1}.r-5x4{aspect-ratio:5/4}
+
+/* ---------- ヒーロー ---------- */
+.hero{position:relative;overflow:hidden;background:var(--grad-soft);padding:70px 0 40px}
+.hero::before{content:"";position:absolute;top:-160px;right:-140px;width:480px;height:480px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,rgba(31,147,207,.22),rgba(19,180,129,.05) 70%);filter:blur(8px)}
+.hero::after{content:"";position:absolute;bottom:-120px;left:-100px;width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,rgba(19,180,129,.16),transparent 70%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:center}
+.hero .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:.82rem;font-weight:700;color:var(--brand-ink);box-shadow:var(--card-sh)}
+.hero .badge b{font-family:var(--ff-en);color:var(--brand)}
+.hero h1{font-size:clamp(2.2rem,5.6vw,3.5rem);font-weight:900;line-height:1.28;letter-spacing:.01em;color:var(--ink);margin:22px 0 0}
+.hero h1 .hl{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{margin-top:22px;font-size:1.12rem;font-weight:500;color:var(--ink);line-height:1.85}
+.hero .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.hero-note{margin-top:14px;font-size:.84rem;color:var(--ink-soft)}
+.hero-media{position:relative}
+.hero-media .ph{box-shadow:var(--card-sh);border-style:solid;border-color:#cfeaf0}
+.hero-chip{position:absolute;left:-22px;bottom:26px;background:#fff;border-radius:16px;padding:16px 20px;box-shadow:var(--card-sh);display:flex;align-items:center;gap:13px}
+.hero-chip .n{font-family:var(--ff-en);font-weight:800;font-size:1.9rem;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-chip .t{font-size:.78rem;color:var(--ink-soft);font-weight:600;line-height:1.4}
+
+/* ---------- 数字バンド（stats） ---------- */
+.stats{background:var(--grad);color:#fff}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:54px;padding-bottom:54px}
+.stat{text-align:center;position:relative}
+.stat+.stat::before{content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);height:54px;width:1px;background:rgba(255,255,255,.25)}
+.stat .n{font-family:var(--ff-en);font-weight:800;font-size:clamp(2rem,5vw,2.9rem);line-height:1}
+.stat .n small{font-size:.5em;font-weight:700;margin-left:3px}
+.stat .t{margin-top:8px;font-size:.86rem;font-weight:600;color:rgba(255,255,255,.92)}
+
+/* ---------- お困りごと（3カード） ---------- */
+.trouble{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px 26px;box-shadow:var(--card-sh);transition:.2s}
+.tcard:hover{transform:translateY(-4px);box-shadow:var(--card-sh-hv)}
+.tcard .ic{width:54px;height:54px;border-radius:14px;background:var(--grad-soft);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px}
+.tcard h3{font-size:1.08rem;font-weight:700;color:var(--brand-ink);line-height:1.5;margin-bottom:8px}
+.tcard p{font-size:.92rem;color:var(--ink-soft)}
+.trouble-foot{margin-top:36px;text-align:center;font-size:1.2rem;font-weight:700;color:var(--ink)}
+.trouble-foot .hl{font-weight:900}
+
+/* ---------- サービスカード ---------- */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+.card{position:relative;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:#fff;box-shadow:var(--card-sh);transition:.22s ease}
+.card:hover{transform:translateY(-5px);box-shadow:var(--card-sh-hv)}
+.card .ph{border-radius:0;border-left:none;border-right:none;border-top:none}
+.card-body{padding:26px 28px 30px}
+.card-body .num{font-family:var(--ff-en);font-weight:800;font-size:.86rem;color:var(--teal);letter-spacing:.06em}
+.card-body h3{font-size:1.28rem;font-weight:900;color:var(--ink);margin:6px 0 10px}
+.card-body p{font-size:.94rem;color:var(--ink-soft)}
+.card-body .more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-weight:700;font-size:.9rem;color:var(--brand-deep)}
+
+/* ---------- 選ばれる理由 ---------- */
+.reasons{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.reason{background:#fff;border-radius:var(--r-lg);padding:34px 30px;border:1px solid var(--line);box-shadow:var(--card-sh);position:relative;overflow:hidden}
+.reason::before{content:"";position:absolute;left:0;top:0;width:100%;height:5px;background:var(--grad)}
+.reason .ic{width:60px;height:60px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;margin-bottom:18px;box-shadow:0 8px 18px rgba(13,150,120,.28)}
+.reason .rn{font-family:var(--ff-en);font-weight:800;font-size:.82rem;color:var(--teal);letter-spacing:.08em}
+.reason h3{font-size:1.18rem;font-weight:900;color:var(--ink);line-height:1.5;margin:4px 0 10px}
+.reason p{font-size:.93rem;color:var(--ink-soft)}
+
+/* ---------- お取引の流れ ---------- */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:step}
+.step{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:30px 22px 26px;box-shadow:var(--card-sh)}
+.step .sn{font-family:var(--ff-en);font-weight:800;font-size:2.4rem;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.step h3{font-size:1.05rem;font-weight:700;color:var(--brand-ink);margin:10px 0 6px}
+.step p{font-size:.86rem;color:var(--ink-soft)}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--brand);font-weight:700;font-size:1.3rem;z-index:2}
+
+/* ---------- 理念バンド ---------- */
+.creed{position:relative;overflow:hidden;background:var(--grad);color:#fff;text-align:center;padding:88px 0}
+.creed::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.18),transparent 45%),radial-gradient(circle at 85% 80%,rgba(255,255,255,.12),transparent 40%)}
+.creed .wrap{position:relative}
+.creed .leaf{font-size:2rem;opacity:.9}
+.creed-main{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:900;letter-spacing:.05em;line-height:1.6;margin-top:8px}
+.creed-sub{margin-top:16px;font-size:1.06rem;font-weight:500;color:rgba(255,255,255,.95)}
+.creed-body{max-width:640px;margin:22px auto 0;color:rgba(255,255,255,.85);font-size:.96rem}
+
+/* ---------- FAQ ---------- */
+.faq{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--card-sh);overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;padding:22px 56px 22px 24px;font-weight:700;color:var(--ink);position:relative;display:flex;gap:12px;align-items:flex-start}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .q{font-family:var(--ff-en);font-weight:800;color:var(--brand);flex:none}
+.faq summary::after{content:"+";position:absolute;right:22px;top:50%;transform:translateY(-50%);font-size:1.5rem;font-weight:400;color:var(--brand);transition:.2s}
+.faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
+.faq .a{padding:0 24px 24px 24px;color:var(--ink-soft);font-size:.94rem}
+
+/* ---------- CTAバンド ---------- */
+.cta-band{position:relative;overflow:hidden;background:var(--mint);text-align:center}
+.cta-band h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:900;color:var(--ink)}
+.cta-band p{color:var(--ink-soft);margin-top:14px}
+.cta-band .cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:32px}
+
+/* ---------- 取扱製品ページ ---------- */
+.prodrow{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;padding:54px 0;border-bottom:1px solid var(--line)}
+.prodrow:last-of-type{border-bottom:none}
+.prodrow .ph{box-shadow:var(--card-sh);border-style:solid;border-color:#cfeaf0}
+.prodrow.rev .pr-media{order:2}
+.pr-tag{font-family:var(--ff-en);font-size:.78rem;font-weight:700;letter-spacing:.12em;color:var(--teal);text-transform:uppercase}
+.prodrow h3{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:900;color:var(--ink);margin:8px 0 12px}
+.prodrow .note{color:var(--ink-soft);margin-bottom:18px}
+.itemlist{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
+.itemlist li{background:var(--mint);border:1px solid var(--mint-2);border-radius:9px;padding:7px 14px;font-size:.86rem;font-weight:500;color:var(--brand-ink)}
+.pdfs{display:flex;flex-wrap:wrap;gap:10px}
+.pdf{display:inline-flex;align-items:center;gap:8px;border:1.4px solid var(--line);border-radius:10px;padding:9px 15px;font-size:.86rem;font-weight:700;color:var(--brand-ink);background:#fff;transition:.16s}
+.pdf:hover{border-color:var(--brand);background:var(--mint);transform:translateY(-1px)}
+.pdf .tag{font-family:var(--ff-en);font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--grad);border-radius:5px;padding:2px 7px}
+
+/* ---------- 会社案内 ---------- */
+.spec{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--card-sh)}
+.spec th,.spec td{padding:18px 22px;text-align:left;vertical-align:top;font-size:.96rem;border-bottom:1px solid var(--line)}
+.spec tr:last-child th,.spec tr:last-child td{border-bottom:none}
+.spec th{width:170px;color:var(--brand-ink);font-weight:700;white-space:nowrap;background:var(--mint)}
+.permits{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+.permits li{border:1px solid var(--mint-2);background:var(--mint);border-radius:8px;padding:7px 13px;font-size:.84rem;color:var(--brand-ink);font-weight:500}
+.quals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px}
+.quals li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 16px;background:#fff;border:1px solid var(--line);border-radius:11px;font-size:.92rem;box-shadow:var(--card-sh)}
+.quals li b{font-family:var(--ff-en);color:var(--brand-deep);font-weight:800;font-size:1.05rem;white-space:nowrap}
+
+/* アクセス */
+.access{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+.office{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:#fff;box-shadow:var(--card-sh)}
+.office .ph{border-radius:0;border-left:none;border-right:none;border-top:none}
+.office-body{padding:28px}
+.office-body h3{font-size:1.2rem;font-weight:900;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.office-body h3 .dot{width:10px;height:10px;border-radius:50%;background:var(--grad)}
+.office-body dl{display:grid;grid-template-columns:84px 1fr;gap:10px 14px;font-size:.94rem;margin:0}
+.office-body dt{color:var(--ink-soft);font-weight:700}
+.office-body a{color:var(--brand-deep);font-weight:700}
+
+/* お問い合わせ */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start}
+.contact-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:34px;box-shadow:var(--card-sh)}
+.contact-card h3{font-size:1.15rem;font-weight:900;color:var(--ink);margin-bottom:20px}
+.crow{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.crow:last-child{border-bottom:none}
+.crow .lab{font-size:.74rem;color:var(--ink-soft);width:84px;flex:none;font-weight:700}
+.crow .big{font-family:var(--ff-en);font-size:1.4rem;font-weight:800;color:var(--brand-ink);letter-spacing:.01em}
+.crow .mail{font-weight:700;color:var(--brand-deep);word-break:break-all}
+form .field{margin-bottom:18px}
+form label{display:block;font-size:.86rem;font-weight:700;margin-bottom:7px;color:var(--ink)}
+form label .req{color:#fff;background:var(--brand);font-size:.66rem;border-radius:5px;padding:2px 7px;margin-left:8px;font-weight:700}
+form input,form textarea{width:100%;border:1.4px solid var(--line);border-radius:12px;padding:13px 15px;font-size:.95rem;font-family:inherit;background:var(--mint);color:var(--ink)}
+form input:focus,form textarea:focus{outline:none;border-color:var(--brand);background:#fff;box-shadow:0 0 0 4px rgba(15,163,114,.12)}
+.form-note{font-size:.8rem;color:var(--ink-soft);margin-top:8px}
+
+/* ---------- フッター ---------- */
+.site-footer{background:#0c2d22;color:#bcd4c9;padding:72px 0 28px;font-size:.92rem}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1.1fr;gap:38px}
+.foot-brand .name{color:#fff;font-weight:900;font-size:1.2rem;letter-spacing:.05em}
+.foot-creed{color:#dbeee5;margin-top:16px;font-weight:700;font-size:1.02rem}
+.foot-creed small{display:block;color:#7fa896;font-weight:500;font-size:.84rem;margin-top:6px}
+.site-footer h4{color:#fff;font-size:.92rem;margin-bottom:15px;letter-spacing:.04em}
+.foot-list li{padding:6px 0}
+.site-footer a:hover{color:#7ee0b4}
+.foot-office{color:#8fb3a4;line-height:1.85}
+.foot-office strong{color:#dbeee5;font-weight:700}
+.copy{border-top:1px solid rgba(255,255,255,.12);margin-top:48px;padding-top:22px;color:#6f9486;font-size:.78rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* ---------- モバイル固定バー ---------- */
+.mobilebar{display:none}
+
+/* =========================================================
+   レスポンシブ
+   ========================================================= */
+@media(max-width:920px){
+  .nav{position:absolute;top:78px;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;gap:0;padding:10px 18px 18px;box-shadow:var(--card-sh-hv);display:none}
+  .site-header.open .nav{display:flex}
+  .navlink{padding:15px 8px;border-bottom:1px solid var(--line)}
+  .navlink[aria-current="page"]::after{display:none}
+  .nav .tel{flex-direction:row;align-items:center;justify-content:space-between;padding:15px 8px;border-bottom:1px solid var(--line)}
+  .nav .btn-primary{margin-top:14px}
+  .nav-toggle{display:inline-flex}
+
+  .hero-grid{grid-template-columns:1fr;gap:36px}
+  .hero-chip{left:auto;right:18px}
+  .stats .wrap{grid-template-columns:repeat(2,1fr);gap:30px 16px}
+  .stat:nth-child(3)::before,.stat:nth-child(2)::before{display:none}
+  .trouble,.cards,.reasons,.flow,.access,.contact-grid,.quals{grid-template-columns:1fr}
+  .step:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-16px;transform:translateX(50%)}
+  .prodrow{grid-template-columns:1fr;gap:24px}
+  .prodrow.rev .pr-media{order:0}
+  .section{padding:64px 0}
+
+  .mobilebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-top:1px solid var(--line);padding:10px;gap:10px;box-shadow:0 -8px 24px rgba(13,60,45,.12)}
+  .mobilebar a{flex:1;display:flex;align-items:center;justify-content:center;gap:.4em;padding:14px;border-radius:999px;font-weight:700;font-size:.96rem}
+  .mb-tel{background:#fff;color:var(--brand-deep);border:1.8px solid var(--brand)}
+  .mb-primary{background:var(--grad);color:#fff}
+  body{padding-bottom:74px}
+}
+@media(max-width:560px){
+  .cards,.trouble{gap:18px}
+  .hero .cta-row .btn,.cta-band .cta-row .btn{flex:1 1 100%}
+}
+@media(max-width:420px){
+  .wrap{padding:0 18px}
+  .brand .name{font-size:1.1rem}
+  .stats .wrap{grid-template-columns:1fr;gap:22px}
+  .stat::before{display:none!important}
+}
