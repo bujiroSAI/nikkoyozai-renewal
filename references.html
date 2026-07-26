@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>リファレンスサイト集（デザインの参考）｜株式会社日光溶材 Webリニューアル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="doc.css">
+<style>
+/* このページ専用: リファレンスサイトのカード */
+.refsite{border:1px solid var(--line);border-radius:8px;padding:20px 24px;margin:0 0 14px}
+.refsite h3{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin:0 0 10px;font-size:1.05rem}
+.refsite h3 a{color:var(--brand-deep);text-decoration:none}
+.refsite h3 a:hover{text-decoration:underline}
+.refsite .url{font-family:var(--ff-en);font-size:.8rem;color:var(--ink-soft);font-weight:500}
+.refsite .tag{font-size:.74rem;font-weight:700;color:var(--teal);border:1px solid currentColor;border-radius:999px;padding:1px 10px;white-space:nowrap}
+.refsite ul.dot{margin-bottom:8px}
+.refsite ul.dot li{margin-bottom:4px;font-size:.94rem}
+.refsite .meta{font-size:.84rem;color:var(--ink-soft);margin:0}
+.groupnote{font-size:.92rem;color:var(--ink-soft);margin:0 0 16px}
+</style>
+</head>
+<body>
+
+<nav class="docnav"><div class="nv">
+  <span class="bm">
+    <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="nv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10a86f"/><stop offset="1" stop-color="#1f93cf"/></linearGradient></defs><circle cx="22" cy="22" r="21" fill="#0c2d22"/><circle cx="22" cy="22" r="12" fill="url(#nv)"/><path d="M22 13.5c4.6 2 5.6 7.6 0 16-5.6-8.4-4.6-14 0-16z" fill="#fff" opacity=".92"/></svg>
+    日光溶材<small>リニューアル資料</small>
+  </span>
+  <a class="lk" href="index.html">サイトの方針</a>
+  <a class="lk" href="references.html" aria-current="page">リファレンス集</a>
+  <a class="lk" href="hikitsugi.html">引き継ぎ・公開</a>
+  <a class="lk ext" href="http://localhost:8766/" target="_blank" rel="noopener">プロトタイプ</a>
+</div></nav>
+
+<article class="sheet">
+
+  <!-- 文書ヘッダー -->
+  <header class="dochead">
+    <div class="docmeta-top">
+      <svg class="mk" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="mk2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10a86f"/><stop offset="1" stop-color="#1f93cf"/></linearGradient></defs><circle cx="22" cy="22" r="21" fill="#0c2d22"/><circle cx="22" cy="22" r="12" fill="url(#mk2)"/><path d="M22 13.5c4.6 2 5.6 7.6 0 16-5.6-8.4-4.6-14 0-16z" fill="#fff" opacity=".92"/></svg>
+      <span class="nm">株式会社日光溶材 Webサイトリニューアル</span>
+    </div>
+    <p class="doc-to">株式会社日光溶材 御中</p>
+    <h1 class="doc-title">リファレンスサイト集</h1>
+    <p class="doc-sub">次のデザイン改訂の参考にするサイトと、「どこを見るか」</p>
+    <div class="doc-info">
+      <span>版: <b>v1.0</b></span>
+      <span>作成日: <b class="en">2026-07-16</b></span>
+      <span>掲載サイト: <b>13件</b>（全件・当日時点の表示確認済み）</span>
+    </div>
+  </header>
+
+  <div class="pad body">
+
+    <!-- 目次 -->
+    <nav class="toc">
+      <h2>目次 / Contents</h2>
+      <ol>
+        <li><a href="#s1">この資料の目的 — 「リズム」を入れる</a></li>
+        <li><a href="#s2">選び方のルール（リサーチ方針）</a></li>
+        <li><a href="#s3">A. レイアウトのリズムの手本（5件）</a></li>
+        <li><a href="#s4">B. 同業（ガス・溶材・商社）の手本（5件）</a></li>
+        <li><a href="#s5">C. 色の実例 — 明るいオレンジの検討用（3件）</a></li>
+        <li><a href="#s6">次の一手 — プロトタイプへの当てはめ（たたき台）</a></li>
+        <li><a href="#s7">参照から外したもの・要確認</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section class="sec" id="s1">
+      <h2>この資料の目的 — 「リズム」を入れる</h2>
+      <p>現在のプロトタイプは、どのセクションも<strong>「中央に見出し → 横並びのカード」という同じ組み方</strong>で作られており、変化は背景色（白／薄緑）の切り替えだけです。清潔ではあるものの、スクロールしても景色が変わらないため、単調に見えます。ご要望の判断軸のうち<strong>「飽きがこない」</strong>に対する、いちばんの改善余地です。</p>
+      <h3>「リズムのあるサイト」とは</h3>
+      <ul class="dot">
+        <li><strong>組み方が変わる</strong> — セクションごとにレイアウトの型が切り替わる（全幅の一文／大きな数字／写真と文章の左右交互／一覧グリッド など）。文字の詰まった場面と余白の多い場面が交互に来る。</li>
+        <li><strong>作法は揃っている</strong> — 型は変わっても、色・文字・余白の使い方は全ページ共通。どこを切り取っても同じ会社のサイトに見える。</li>
+      </ul>
+      <p>この2つが両立して初めて「リズム」になります。<strong>組み方の変化だけならバラバラ、作法の統一だけなら単調</strong>——本資料のサイトは、その両立の実例として選んでいます。</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="sec" id="s2">
+      <h2>選び方のルール（リサーチ方針）</h2>
+      <p class="muted">当方のデザイン基盤（design_lab）の作法に沿って選定・記録しています。</p>
+      <ul class="dot">
+        <li><strong>判断軸</strong>: ご指定の5語——清潔感・品性・シンプル・安っぽくない・飽きがこない。白基調で、落ち着いたトーンの帯域から選ぶ。</li>
+        <li><strong>除外</strong>: 動画やアニメーションの多いサイト、アート寄り・実験的なサイトは参照外（控えめなフェード程度までは許容）。掲載13件は全件、機械検査で「背景動画なし・過剰な演出なし」を確認済み。</li>
+        <li><strong>等身大</strong>: 巨大企業のブランドサイトではなく、中小〜中堅企業の「この規模でここまでやれる」実例を優先。</li>
+        <li><strong>見方</strong>: 各サイトを「まね」するのではなく、<strong>① どこを見るか（事実）→ ② なぜ効いているか（理屈)→ ③ 日光溶材ならどう使うか（翻訳）</strong>の3段で記録。形をコピーせず、効いている性質だけを持ち帰ります。</li>
+      </ul>
+    </section>
+
+    <!-- 3 -->
+    <section class="sec" id="s3">
+      <h2>A. レイアウトのリズムの手本（5件）</h2>
+      <p class="groupnote">業種は違っても「組み方の変化 × 作法の統一」が上手いサイト。今回の主参照です。</p>
+
+      <div class="refsite">
+        <h3><a href="https://www.komoriseiki.com/" target="_blank" rel="noopener">株式会社小森精機</a><span class="url">komoriseiki.com</span><span class="tag">精密部品加工</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: トップが「宣言の一文 → 数字で見る会社 → 強み4項目 → 対応製品カード → 設備紹介」と、セクションごとに組み方が切り替わる。動きにほぼ頼らない静的な作り。</li>
+          <li><strong>効いている理由</strong>: 組み方の変化そのものが読み進むリズムを作る。1つの型の繰り返しでは生まれない。</li>
+          <li><strong>日光溶材なら</strong>: 「数字で見る日光溶材」（創業55年・取扱ガス種・配送エリア・取引先数）を理念の直後に置く型をそのまま流用できる。</li>
+        </ul>
+        <p class="meta">色調: 白＋紺 ／ 動き: ほぼ無し（動画・演出ライブラリ不検出）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://nobuhara-trading.co.jp/" target="_blank" rel="noopener">延原商事株式会社</a><span class="url">nobuhara-trading.co.jp</span><span class="tag">研磨材の商社</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 事業をまず一覧グリッドで見せ、その後1事業ずつ「写真と文章の左右交互」で深掘りする<strong>広角→望遠</strong>の2段構え。</li>
+          <li><strong>効いている理由</strong>: 事業数が少なくても「一覧で全体 → 交互で各論」という密度の変化が単調さを消す。温白（オフホワイト）＋チャコールの2トーンも上品。</li>
+          <li><strong>日光溶材なら</strong>: 高圧ガス／医療ガス／溶接材料などの数本立てにそのまま合う型。製品ページを「実績・用途中心の読み物型」にする方針（6/25決定）とも一致。</li>
+        </ul>
+        <p class="meta">色調: 温白＋チャコール ／ 動き: 初回の読み込み演出のみ（背景動画なし）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://shinnippon-keiki.co.jp/" target="_blank" rel="noopener">新日本計器株式会社</a><span class="url">shinnippon-keiki.co.jp</span><span class="tag">計器の専門商社</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 「想い（文章）→ 事業（写真＋説明）→ 支持される理由（列挙）→ 取扱メーカーのロゴ一覧」。文字の濃い場面と軽い場面が交互に来る。業態が日光溶材にかなり近い。</li>
+          <li><strong>効いている理由</strong>: 商社の信頼は、商品写真よりも「選ばれる理由」「取扱メーカー」を独立したセクションに立てることで、構造として伝わる。</li>
+          <li><strong>日光溶材なら</strong>: 「取扱メーカー」のロゴ帯は仕入網の証明としてそのまま移植可能。完全に静的なページで実現できている証拠でもある。</li>
+        </ul>
+        <p class="meta">色調: 白＋青紺 ／ 動き: 無し（完全静的）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://miyamoto-kanagata.co.jp/" target="_blank" rel="noopener">株式会社宮本金型製作所</a><span class="url">miyamoto-kanagata.co.jp</span><span class="tag">金型の設計・製造</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: ページ全体がほぼ純白で、お知らせの1セクションだけ薄グレーの帯。大型写真＋文章の左右交互と、実績のグリッドの使い分け。</li>
+          <li><strong>効いている理由</strong>: 色帯を「全セクション交互」にせず1箇所に絞ると、白が生きて帯が効く。</li>
+          <li><strong>日光溶材なら</strong>: 現行プロトタイプの「白／薄緑の交互」への直接の対案。背景の色替えをやめ、色帯は1〜2箇所（数字帯・理念）に絞る。</li>
+        </ul>
+        <p class="meta">色調: ほぼ純白＋紺 ／ 動き: フェード・スライダー程度（動画なし）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://www.nakaicoh.co.jp/" target="_blank" rel="noopener">株式会社ナカイコー</a><span class="url">nakaicoh.co.jp</span><span class="tag">紙の総合商社</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 徹底してシンプルな白基調の中に、紙業らしい遊び（印刷インキ4色のカーソル演出）を<strong>一点だけ</strong>。</li>
+          <li><strong>効いている理由</strong>: 装飾を「業種として必然のある一点」に限定すると、シンプルでも記憶に残る。</li>
+          <li><strong>日光溶材なら</strong>: その「一点」は既にあります（理念の緑→青グラデーション帯）。増やさず、際立たせる方向の裏付けに。カーソル演出そのものは好みが分かれるため参照外。</li>
+        </ul>
+        <p class="meta">色調: 白＋青 ／ 動き: カーソル演出のみ</p>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="sec" id="s4">
+      <h2>B. 同業（ガス・溶材・商社）の手本（5件）</h2>
+      <p class="groupnote">構成の粒度・信頼の見せ方・問い合わせ導線の採寸元。同じ業界で「ここまでやれる」の実例です。</p>
+
+      <div class="refsite">
+        <h3><a href="https://www.watari.co.jp/" target="_blank" rel="noopener">株式会社渡商会</a><span class="url">watari.co.jp</span><span class="tag">産業・医療ガス／溶接材料（横浜・創業100年）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 「信頼の100年、挑戦のその先へ」の一文から入り、会社 → 事業 → 社会活動 → お知らせの順に信頼を積む構成。業種構成が日光溶材とほぼ同一。</li>
+          <li><strong>効いている理由</strong>: 「創業年＋一文のビジョン」だけの冒頭が、動画なしで十分に成立している。</li>
+          <li><strong>日光溶材なら</strong>: 「地域で55年。」の一文で始める現行の方向の先例。事業分類・拠点の見せ方の粒度も採寸元にできる。</li>
+        </ul>
+        <p class="meta">色調: 白＋紺 ／ 動き: 無し</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://www.iwasawa-grp.co.jp/" target="_blank" rel="noopener">株式会社イワサワ</a><span class="url">iwasawa-grp.co.jp</span><span class="tag">医療ガス・在宅医療・高圧ガス輸送（横浜）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 地域のガス会社がこの水準まで作れるという、いちばん等身大の実例。カードの列数を3列→4列と変えて単調さを避けている。問い合わせ入口を一般用と採用用で分けている。</li>
+          <li><strong>効いている理由</strong>: 地は白のまま、彩度は写真に任せる——写真が入った後のサイトの姿を想像する材料になる。</li>
+          <li><strong>日光溶材なら</strong>: 撮影後（7月中旬〜下旬予定）の写真の使い方の手本。採用ページの分岐は6/25の決定とも合致。</li>
+        </ul>
+        <p class="meta">色調: 白基調ミニマル ／ 動き: スクロール誘導アイコン程度</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://fksanso.co.jp/" target="_blank" rel="noopener">福岡酸素株式会社</a><span class="url">fksanso.co.jp</span><span class="tag">高圧ガス製造・販売（九州）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 「こんなところに『ふくさん』」——自社のガスが暮らしのどこに届いているかを生活シーンで見せるセクション。地図・スライダー・グリッドと、セクションごとに型が変わる。</li>
+          <li><strong>効いている理由</strong>: BtoBの商材を、非専門家（地域の人・採用候補者）にも読める入口に翻訳している。</li>
+          <li><strong>日光溶材なら</strong>: 「川口のこんなところに日光溶材」（病院・工場・建設現場・飲食店の炭酸…）を1セクション化すると、地域密着のいちばん分かりやすい証明になる。</li>
+        </ul>
+        <p class="meta">色調: 白＋濃紺 ／ 動き: 控えめな演出あり（背景動画なし）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://www.koatsugas.co.jp/" target="_blank" rel="noopener">高圧ガス工業株式会社</a><span class="url">koatsugas.co.jp</span><span class="tag">高圧ガスメーカー（上場・大手枠）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 製品を品目名ではなく「用途・事例」から探させる導線。</li>
+          <li><strong>効いている理由</strong>: 専門商材は、名前ではなく「使われ方」で探される。</li>
+          <li><strong>日光溶材なら</strong>: 製品ページを実績・用途中心の読み物型にする方針（6/25決定）の裏付け。用途別（切断・食品・医療）の束ね方を採寸。</li>
+        </ul>
+        <p class="meta">色調: 白基調の落ち着いたコーポレート ／ 動き: 控えめ（背景動画なし）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://www.karman.co.jp/" target="_blank" rel="noopener">株式会社カーマン</a><span class="url">karman.co.jp</span><span class="tag">精密ネジの専門商社（大阪）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 数十名規模の専門商社サイトの、現実的な完成度の基準線。英字のセクションラベルと余白の統一だけで「安っぽくない」を達成。</li>
+          <li><strong>効いている理由</strong>: 電話番号を隠さず複数箇所に明記——電話文化が残る商流に合った設計。</li>
+          <li><strong>日光溶材なら</strong>: 電話の窓口を本社1本に集約する方針（6/25決定）の実装参考。</li>
+        </ul>
+        <p class="meta">色調: 白＋最小限のアクセント ／ 動き: 無し</p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section class="sec" id="s5">
+      <h2>C. 色の実例 — 明るいオレンジの検討用（3件）</h2>
+      <p class="groupnote">6/25の打ち合わせで社長より「トップは明るいトーン（オレンジ寄り）」のご希望をいただいています。カラー3案（プロトタイプ内 color-variations.html）の判断材料として、<strong>白基調のままオレンジ・暖色を品よく使っている実例</strong>です。</p>
+
+      <div class="refsite">
+        <h3><a href="https://enecloud.co.jp/" target="_blank" rel="noopener">エネクラウド株式会社</a><span class="url">enecloud.co.jp</span><span class="tag">エネルギーマネジメント</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 白地に明るいオレンジ〜アンバーを、ボタン・見出し・図版だけに絞って使用。配分の体感はおよそ「白9：オレンジ1弱」。</li>
+          <li><strong>効いている理由</strong>: 暖色でも、使う場所を絞れば軽薄にならず清潔さが保てる——「オレンジ＝安っぽくなりがち」への反例。</li>
+          <li><strong>日光溶材なら</strong>: オレンジ系の案を選ぶ場合の、色の配分のいちばんの採寸元。</li>
+        </ul>
+        <p class="meta">色調: 白＋オレンジ／アンバー ／ 動き: 出現フェードのみ（動画・演出ライブラリ不検出）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://showa-kogyo.com/" target="_blank" rel="noopener">株式会社昭和工業</a><span class="url">showa-kogyo.com</span><span class="tag">ビルピット・タンク保守（福岡・地域インフラ）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 「清潔の青」＋「人の温度のオレンジ」の2色を白地で併用。規模・地域密着度が日光溶材に近い等身大の例。</li>
+          <li><strong>効いている理由</strong>: 堅さ（保安）と親しみを2色の役割分担で両立。ガス＝保安（青）と炎・人（オレンジ）という意味の対応は、日光溶材の業態にも合う。</li>
+          <li><strong>日光溶材なら</strong>: 「緑×青を維持しつつオレンジを差す」折衷案を考える場合の実例。</li>
+        </ul>
+        <p class="meta">色調: 白〜薄グレー＋青＋オレンジ ／ 動き: 文字の流れる演出あり（そこは参照外・背景動画なし）</p>
+      </div>
+
+      <div class="refsite">
+        <h3><a href="https://izmsj.co.jp/" target="_blank" rel="noopener">イヅミ商事株式会社</a><span class="url">izmsj.co.jp</span><span class="tag">産業部品の専門商社（名古屋）</span></h3>
+        <ul class="dot">
+          <li><strong>ここを見る</strong>: 真っ白ではなく<strong>生成り（オフホワイト）</strong>の地に、深い青1色で締めた配色。</li>
+          <li><strong>効いている理由</strong>: 地の色をわずかに温めるだけで「白いのに冷たくない」が作れる。</li>
+          <li><strong>日光溶材なら</strong>: オレンジを大きく使わずに「明るいトーン」のご希望に応える<strong>第3の道</strong>（地色を温める）。構成ではなく色だけを参照。</li>
+        </ul>
+        <p class="meta">色調: 生成り＋深青 ／ 動き: スライダー・演出あり（色のみ参照・背景動画なし）</p>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="sec" id="s6">
+      <h2>次の一手 — プロトタイプへの当てはめ（たたき台）</h2>
+      <p>現行プロトタイプの各セクションに、上記から取り出した「型」を割り当てる案です。<strong>実施は次のデザイン改訂（v4）として、ご相談のうえ進めます。</strong></p>
+      <table class="doc">
+        <thead><tr><th>現行セクション</th><th>現行の組み方</th><th>次版の型（案）</th><th>参照</th></tr></thead>
+        <tbody>
+          <tr><td>冒頭（一文＋問い合わせ）</td><td>全幅</td><td>維持</td><td>渡商会</td></tr>
+          <tr><td>数字帯</td><td>深緑の帯</td><td>「数字で見る日光溶材」へ拡充</td><td>小森精機</td></tr>
+          <tr><td>こんなこと、（お客様の課題）</td><td>カード格子</td><td>現場の声の読み物風に（密度を下げる）</td><td>新日本計器</td></tr>
+          <tr><td>現場で必要なもの、（製品）</td><td>カード格子</td><td>一覧グリッド → 用途別に写真＋文章の左右交互で深掘り</td><td>延原商事・高圧ガス工業</td></tr>
+          <tr><td>地域で55年。（強み）</td><td>カード格子</td><td>左右交互、または「川口のこんなところに日光溶材」</td><td>福岡酸素</td></tr>
+          <tr><td>お取引の流れ</td><td>ステップ</td><td>維持（型がすでに固有）</td><td>—</td></tr>
+          <tr><td>理念（緑→青の帯）</td><td>グラデーション帯</td><td>維持（サイトで唯一のグラデ＝一点）</td><td>ナカイコー（考え方）</td></tr>
+          <tr><td>よくあるご質問</td><td>リスト</td><td>維持（軽い場面として活かす）</td><td>—</td></tr>
+          <tr><td>背景色の使い方</td><td>白／薄緑の交互</td><td>色帯を1〜2箇所に絞る</td><td>宮本金型</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <p class="ct">要点</p>
+        <p>全セクションを作り替えるのではなく、<strong>カード格子の3連続を解消し、背景色の交互を絞る</strong>——この2手だけでも「飽きがこない」に大きく効きます。色（緑×青／オレンジ系）の裁定とは独立に進められます。</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section class="sec" id="s7">
+      <h2>参照から外したもの・要確認</h2>
+      <p>「動画・アニメーションの多いサイトは参照外」の基準を、調査過程で実際に適用した例です（サイトの良し悪しではなく、今回の方針との相性です）。</p>
+      <ul class="dot">
+        <li>機械工具商社の大手サイト（トップがループ再生の背景動画）／溶接材料メーカーのサイト（冒頭に導入動画）／全面に視差スクロール演出のある化学系サイト——いずれも内容は立派ですが、除外基準に該当するため掲載していません。</li>
+      </ul>
+      <div class="callout warn">
+        <p class="ct">要確認</p>
+        <p>6/24の打ち合わせでご紹介いただいた参考サイト（記録上 <code>tokyukuramo.jp</code>）は、現在ドメインにつながりません（移転・閉鎖、または当方の記録時の綴り違いの可能性）。<strong>正確なサイト名を次回お打ち合わせで確認</strong>させてください。</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="docfoot">
+    <span class="conf">取扱注意</span><br>
+    本資料は打ち合わせ用です。掲載した他社サイトは公開情報であり、デザインの参考として「見る観点」を添えたものです。<br>
+    © 株式会社日光溶材／Webサイトリニューアル リファレンスサイト集 v1.0（2026-07-16）
+  </footer>
+
+</article>
+
+</body>
+</html>
