@@ -106,13 +106,15 @@ h2.title{font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.4;color:var(--ink);f
 .wave{display:none}
 
 /* ---------- 写真プレースホルダー(クライアント撮影待ち) ---------- */
+/* 撮影待ちの写真枠。あえてパレット外の水色にして「仮」であることを一目で分かるようにする
+   （施主指定 2026-07-27。写真が入ったら .ph ごと差し替える） */
 .ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  background:#f7faf8;border:1px dashed #b9d4c7;color:#6f8c7d;border-radius:var(--r);
+  background:#e6f1f8;border:1px dashed #a4c8de;color:#5b7d95;border-radius:var(--r);
   font-size:.9rem;font-weight:500;padding:22px;gap:6px;overflow:hidden}
-.ph::after{content:"PHOTO";position:absolute;top:10px;right:12px;font-family:var(--ff-en);font-size:.6rem;font-weight:600;letter-spacing:.18em;color:#9db8ab}
+.ph::after{content:"PHOTO";position:absolute;top:10px;right:12px;font-family:var(--ff-en);font-size:.6rem;font-weight:600;letter-spacing:.18em;color:#8db0c9}
 .ph.ph-note::after{content:"未確定"} /* 写真以外の未確定情報プレースホルダー用 */
 .ph .ico{display:none}
-.ph small{display:block;font-weight:400;font-size:.74rem;color:#8aa295;letter-spacing:.02em;line-height:1.55}
+.ph small{display:block;font-weight:400;font-size:.74rem;color:#7b9db4;letter-spacing:.02em;line-height:1.55}
 .r-3x4{aspect-ratio:3/4}.r-4x3{aspect-ratio:4/3}.r-16x9{aspect-ratio:16/9}.r-1x1{aspect-ratio:1/1}.r-5x4{aspect-ratio:5/4}
 
 /* ---------- ヒーロー ---------- */

@@ -5,19 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>採用情報｜株式会社日光溶材</title>
-<meta name="description" content="株式会社日光溶材の採用情報。川口・北関東で地域の現場を支える仕事です。現在の募集状況はこのページでお知らせします。採用に関するお問い合わせもお気軽にどうぞ。">
+<meta name="description" content="株式会社日光溶材の採用情報。埼玉県川口市・加須市の2拠点で、地域の現場を支える仕事です。募集状況はこのページでお知らせします。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/v6-layout.css?v=5">
+<script>document.documentElement.className+=" js";</script>
 </head>
 <body>
+
+<div class="v6-rail" id="rail">採用情報</div>
 
 <header class="site-header" id="header">
   <div class="wrap">
     <a class="brand" href="index.html" aria-label="株式会社日光溶材 トップ">
       <svg class="mark" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13b481"/><stop offset="1" stop-color="#1f93cf"/></linearGradient></defs>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13b481"/><stop offset="1" stop-color="#e08a2e"/></linearGradient></defs>
         <circle cx="22" cy="22" r="21" fill="#eafaf3"/>
         <circle cx="22" cy="22" r="12" fill="url(#lg)"/>
         <path d="M22 13.5c4.6 2 5.6 7.6 0 16-5.6-8.4-4.6-14 0-16z" fill="#fff" opacity=".92"/>
@@ -31,7 +35,7 @@
       <a class="navlink" href="products.html">取扱製品・サービス</a>
       <a class="navlink" href="company.html">会社案内・アクセス</a>
       <a class="navlink" href="recruit.html" aria-current="page">採用情報</a>
-      <a class="tel" href="tel:0482242151">048-224-2151<small>本社・平日受付</small></a>
+      <a class="tel" href="tel:0482242151">048-224-2151<small>受付：平日 ◯:◯〜◯:◯</small></a>
       <a class="btn btn-primary" href="company.html#contact">お問い合わせ</a>
     </nav>
   </div>
@@ -39,50 +43,81 @@
 
 <main>
 
-<!-- ページヘッダー -->
-<section class="hero" style="padding-bottom:64px">
-  <div class="wrap reveal" style="max-width:820px">
-    <span class="badge"><svg class="icn-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C6.5 16.5 5.5 9.5 12 3.5c6.5 6 5.5 13 0 17.5z"/><path d="M12 8.5v9"/></svg> Recruit</span>
-    <h1 style="font-size:clamp(2rem,5vw,3rem)">採用情報。</h1>
-    <p class="hero-sub">日光溶材で、地域の現場を支える仕事をしませんか。募集状況はこのページでお知らせします。</p>
+<!-- ===== ページヘッダ ===== -->
+<section class="v6-hero v6-phead" data-rail="採用情報">
+  <div class="v6-hero-media">
+    <div class="ph">働く様子の写真<small>手元・後ろ姿など（顔は写さない）</small></div>
+  </div>
+  <div class="wrap">
+    <div class="v6-hero-copy">
+      <span class="badge rv"><svg class="icn-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21C6.5 16.5 5.5 9.5 12 3.5c6.5 6 5.5 13 0 17.5z"/><path d="M12 8.5v9"/></svg> Recruit</span>
+      <h1 class="v6-h1 rv d1">採用情報。</h1>
+      <p class="v6-hero-sub rv d2">日光溶材で、地域の現場を支える仕事をしませんか。募集状況はこのページでお知らせします。</p>
+    </div>
   </div>
 </section>
 
-<!-- 現在の募集状況 -->
-<section class="section bg-mint">
+<!-- ===== 現在の募集状況 ===== -->
+<section class="pad-l" data-rail="募集状況">
   <div class="wrap">
-    <div class="shead center reveal">
+    <div class="v6-shead center rv">
       <span class="eyebrow">Openings</span>
-      <h2 class="title">現在の募集状況</h2>
+      <h2 class="v6-h2">現在の募集状況</h2>
     </div>
-    <div class="reveal" style="max-width:820px;margin:0 auto">
-      <div class="ph ph-note" style="aspect-ratio:auto;padding:40px">現在の募集状況を確認中です<small>公開前にクライアント確認のうえ、募集有無をこの枠に反映します</small></div>
+
+    <div class="v6-openings rv d1" style="max-width:820px;margin:0 auto">
+      <p class="st">現在の募集状況を確認中です</p>
+      <p class="note">※ 公開前にクライアント確認のうえ、募集の有無をこの枠に反映します</p>
     </div>
 
     <!-- ▼▼ 募集中に切り替えるときの職種カード雛形（募集がないあいだはコメントのまま） ▼▼
-         運用手順1｜募集開始時：このブロックを囲むコメント記号を外して下のカードを表示し、上の「確認中」ブロック（class="ph" のdiv）を削除する。
-         運用手順2｜募集終了時：下のカードを再びコメント記号で囲み、上の「確認中」ブロックを戻す。
-    <div class="reveal" style="max-width:820px;margin:24px auto 0">
-      <table class="spec">
-        <tr><th>職種名</th><td>（例）ガス配送・ルート営業</td></tr>
-        <tr><th>勤務地</th><td>（例）本社（埼玉県川口市）／北関東営業所（加須市）</td></tr>
-        <tr><th>雇用形態</th><td>（例）正社員</td></tr>
-        <tr><th>仕事内容</th><td>（例）取引先へのガス容器の配送と、現場のご用聞き・ご提案。</td></tr>
-      </table>
+         運用手順1｜募集開始時：このブロックを囲むコメント記号を外し、上の .v6-openings ブロックを削除する。
+         運用手順2｜募集終了時：下のカードを再びコメント記号で囲み、上の .v6-openings ブロックを戻す。
+    <div class="v6-jobs">
+      <div class="v6-job">
+        <dl>
+          <dt>職種名</dt><dd>（例）ガス配送・ルート営業</dd>
+          <dt>雇用形態</dt><dd>（例）正社員</dd>
+          <dt>勤務地</dt><dd>（例）本社（埼玉県川口市）</dd>
+          <dt>仕事内容</dt><dd>（例）取引先へのガス容器の配送と、現場のご用聞き・ご提案。</dd>
+        </dl>
+      </div>
+      <div class="v6-job">
+        <dl><dt>職種名</dt><dd></dd><dt>雇用形態</dt><dd></dd><dt>勤務地</dt><dd></dd><dt>仕事内容</dt><dd></dd></dl>
+      </div>
+      <div class="v6-job">
+        <dl><dt>職種名</dt><dd></dd><dt>雇用形態</dt><dd></dd><dt>勤務地</dt><dd></dd><dt>仕事内容</dt><dd></dd></dl>
+      </div>
     </div>
     ▲▲ 職種カード雛形ここまで ▲▲ -->
   </div>
 </section>
 
-<!-- お問い合わせ導線 -->
-<section class="section cta-band">
-  <div class="wrap reveal">
-    <h2>採用に関するお問い合わせも、<span class="hl">お気軽に</span>どうぞ。</h2>
-    <p>「まず話を聞いてみたい」だけでも歓迎です。お電話・メール・フォームからどうぞ。</p>
-    <div class="cta-row">
-      <a class="btn btn-primary btn-lg" href="company.html#contact">お問い合わせ <span class="arw">→</span></a>
-      <a class="btn btn-tel btn-lg" href="tel:0482242151"><svg class="icn-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h3.2l1.6 4.4-2.1 1.6a14 14 0 0 0 6.8 6.8l1.6-2.1 4.4 1.6v3.2a1.8 1.8 0 0 1-2 1.8C10.3 20.1 3.9 13.7 3.2 5.5a1.8 1.8 0 0 1 1.8-2z"/></svg> 048-224-2151</a>
+<!-- ===== 働く場所 ===== -->
+<section class="pad-m" style="background:var(--mint)" data-rail="働く場所">
+  <div class="wrap">
+    <div class="v6-workplace">
+      <div class="rv">
+        <h2 class="v6-h2">働く場所</h2>
+        <p class="v6-lead">本社（埼玉県川口市）と北関東営業所（加須市）の2拠点。地域のモノづくりや医療の現場を、ガスと技術で支えています。</p>
+      </div>
+      <div class="pics rv d1">
+        <div class="ph">本社まわりの写真</div>
+        <div class="ph">北関東営業所の写真</div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="v6-cta" data-rail="お問い合わせ">
+  <div class="wrap rv">
+    <h2>採用に関するお問い合わせも、<span class="hl">お気軽に。</span></h2>
+    <div class="tel">
+      <a href="tel:0482242151">048-224-2151</a>
+      <small>受付：平日 ◯:◯〜◯:◯</small>
+    </div>
+    <a class="btn btn-primary btn-lg" href="company.html#contact">お問い合わせ <span class="arw">→</span></a>
   </div>
 </section>
 
@@ -129,6 +164,6 @@
   <a class="mb-primary" href="company.html#contact">お問い合わせ</a>
 </div>
 
-<script src="js/site.js"></script>
+<script src="js/site.js?v=2"></script>
 </body>
 </html>

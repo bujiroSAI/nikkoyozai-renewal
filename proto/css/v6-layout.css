@@ -1,0 +1,315 @@
+/* =========================================================
+   日光溶材サイト v6 レイアウト層（style.css v6 への差分）
+   正本: design_lab/5_works/20260724_日光溶材_ビジュアル/レイアウト設計_v1.md
+        design_lab/4_skins/2026-07-15_日光溶材_サイト.md（トークン・禁じ手・モーション）
+   L1 裁ち落とし / L2 ヒーロー=一枚の場 / L3 非対称グリッド / L4 罫線で組む
+   L5 装飾の一点集中 / L6 余白3段 / L7 柱(縦組み) / L8 一点のアナログ
+   写真への文字乗せ: 見出し・番号のみ。減光を敷く。本文は写真外（web職能§写真の主権）
+   形の変化: 円形マスク1種類のみ（ガスのサムネイル・資格バッジ）
+   モーション: signature = 下から16px・320ms・cubic-bezier(.2,.7,.2,1)
+   ========================================================= */
+
+/* 裁ち落とし（margin:calc(50% - 50vw)）が右端をはみ出して横スクロールを生むのを塞ぐ。
+   overflow-x:hidden はスクロールコンテナを作って position:sticky のヘッダーを壊すため clip を使う */
+html{overflow-x:clip}
+body{overflow-x:clip}
+
+/* ---------- L6 余白の3段階 ---------- */
+.pad-s{padding:64px 0}
+.pad-m{padding:96px 0}
+.pad-l{padding:128px 0}
+@media(max-width:920px){.pad-s{padding:48px 0}.pad-m{padding:64px 0}.pad-l{padding:76px 0}}
+
+/* ---------- ジャンプ率 ---------- */
+.v6-h1{font-size:clamp(2.4rem,5.6vw,4.2rem);font-weight:700;line-height:1.24;letter-spacing:.01em;color:var(--ink);margin:0}
+.v6-h1 .hl{color:var(--green)}
+.v6-h2{font-size:clamp(1.45rem,2.7vw,2.05rem);font-weight:700;line-height:1.45;letter-spacing:.015em;color:var(--ink);margin:0}
+.v6-lead{color:var(--ink-soft);margin-top:14px;font-size:1.02rem;line-height:1.9;max-width:32em}
+.v6-shead{margin:0 0 44px}
+.v6-shead.center{text-align:center}
+.v6-shead.center .v6-lead{margin-left:auto;margin-right:auto}
+
+/* =========================================================
+   モーション（signature motion・正本: design_lab/モーション_v1）
+   M1 状態の伝達 / M2 連続性 / M3 注意の誘導 / M4 量の可視化
+   ========================================================= */
+/* 隠すのは「JSが動いている」ときだけ。JSが無効・失敗しても本文は必ず読める
+   （モーション_v1 §4 動きの中に情報を隠さない／§5 動きに依存せず内容が完結する） */
+.js .rv{opacity:0;transform:translateY(16px);
+  transition:opacity .32s cubic-bezier(.2,.7,.2,1),transform .32s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+/* stagger は 60ms・最大4個で打ち切り */
+.rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}
+.rv.d3{transition-delay:.18s}.rv.d4{transition-delay:.24s}
+
+@media(prefers-reduced-motion:reduce){
+  /* 「全部止める」ではなく、移動と拡大だけをやめる。
+     色・不透明度の変化(=M1 状態の伝達)は残す——消すと操作の手応えが失われる */
+  .js .rv,.rv{opacity:1;transform:none;transition:none}
+  .btn:hover,.v6-svc-card:hover,.tcard:hover{transform:none}
+  html{scroll-behavior:auto}
+}
+
+/* =========================================================
+   L2 ヒーロー / ページヘッダ — 一枚の場（写真は端まで裁ち落とし）
+   ========================================================= */
+.v6-hero{position:relative;background:var(--mint);overflow:hidden}
+.v6-hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,47%) 1fr;
+  align-items:center;min-height:clamp(500px,74vh,720px)}
+.v6-hero-copy{padding:56px 0}
+.v6-hero .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+  border-radius:6px;padding:8px 14px;font-size:.82rem;font-weight:500;color:var(--green-ink)}
+.v6-hero-copy .v6-h1{margin-top:24px}
+.v6-hero-sub{margin-top:22px;font-size:1.06rem;color:var(--ink);line-height:1.9;max-width:26em}
+.v6-hero-copy .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+.v6-hero-note{margin-top:14px;font-size:.84rem;color:var(--ink-soft)}
+
+/* 写真域：絶対配置で画面右端まで＝真の裁ち落とし */
+.v6-hero-media{position:absolute;top:0;right:0;bottom:0;width:53vw;z-index:1;display:flex}
+.v6-hero-media .ph{flex:1;border-radius:0;border-top:none;border-right:none;border-bottom:none}
+.v6-hero-media::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--mint) 0%,rgba(250,243,232,0) 22%)}
+/* 創業55年（写真域の右下・細枠のボックス） */
+.v6-since{position:absolute;right:26px;bottom:26px;z-index:3;background:rgba(255,255,255,.94);
+  border:1px solid var(--line);border-radius:6px;padding:10px 18px;text-align:center;line-height:1.15}
+.v6-since .t{display:block;font-size:.68rem;color:var(--ink-soft);letter-spacing:.08em}
+.v6-since .n{font-family:var(--ff-en);font-weight:700;font-size:1.5rem;color:var(--green-ink)}
+.v6-since .n small{font-size:.5em;margin-left:1px}
+
+/* 下位ページのヘッダは一段落とす（階層の明示＋語中改行の回避）。
+   コピー列も広げないと「取扱製品・サービ/ス。」のように語中で折れる */
+.v6-phead .wrap{grid-template-columns:minmax(0,56%) 1fr;min-height:clamp(360px,50vh,480px)}
+.v6-phead .v6-h1{font-size:clamp(1.95rem,4vw,3.1rem)}
+.v6-phead .v6-hero-media{width:47vw}
+.v6-phead .v6-hero-sub{max-width:30em}
+
+@media(max-width:920px){
+  .v6-hero .wrap,.v6-phead .wrap{grid-template-columns:1fr;min-height:0}
+  .v6-hero-copy{padding:40px 0 0}
+  .v6-hero-media{position:relative;width:auto;height:56vw;min-height:230px;
+    margin:30px calc(50% - 50vw) 0;top:auto;right:auto;bottom:auto}
+  .v6-hero-media::after{background:linear-gradient(180deg,var(--mint) 0%,rgba(250,243,232,0) 20%)}
+  .v6-since{right:16px;bottom:16px}
+}
+
+/* ---------- 数字帯（M4 量の可視化：カウントアップ） ---------- */
+.v6-stats{background:var(--green-ink);color:#fff}
+.v6-stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:60px;padding-bottom:60px}
+.v6-stat{text-align:center;position:relative}
+.v6-stat+.v6-stat::before{content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+  height:56px;width:1px;background:rgba(255,255,255,.18)}
+.v6-stat .n{font-family:var(--ff-en);font-weight:700;font-size:clamp(2rem,4.6vw,2.9rem);line-height:1}
+.v6-stat .n small{font-size:.46em;font-weight:600;margin-left:3px}
+.v6-stat .t{margin-top:10px;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.85)}
+@media(max-width:920px){
+  .v6-stats .wrap{grid-template-columns:repeat(2,1fr);gap:30px 16px}
+  .v6-stat:nth-child(2)::before,.v6-stat:nth-child(3)::before{display:none}
+}
+@media(max-width:420px){.v6-stats .wrap{grid-template-columns:1fr}.v6-stat::before{display:none!important}}
+
+/* =========================================================
+   R2 お困りごと — 縦罫線で横3分割（理由の横帯と軸が直交する）
+   ========================================================= */
+.v6-trouble{display:grid;grid-template-columns:repeat(3,1fr)}
+.v6-trouble .t{padding:0 34px;border-left:1px solid var(--line)}
+.v6-trouble .t:first-child{padding-left:0;border-left:none}
+.v6-trouble .t:last-child{padding-right:0}
+.v6-trouble h3{font-size:1.06rem;font-weight:700;color:var(--green-ink);line-height:1.55;margin-bottom:12px}
+.v6-trouble p{font-size:.93rem;color:var(--ink-soft)}
+.v6-trouble-foot{margin-top:52px;text-align:center;font-size:1.18rem;font-weight:500;color:var(--ink)}
+.v6-trouble-foot .hl{font-weight:700}
+@media(max-width:920px){
+  .v6-trouble{grid-template-columns:1fr}
+  .v6-trouble .t{padding:24px 0;border-left:none;border-top:1px solid var(--line)}
+  .v6-trouble .t:first-child{border-top:none;padding-top:0}
+  .v6-trouble-foot{margin-top:32px}
+}
+
+/* =========================================================
+   L3 サービス — 非対称グリッド（1大＋3小）
+   写真の上に乗せるのは番号とカテゴリ名だけ。説明文は写真の外
+   ========================================================= */
+.v6-svc{display:grid;grid-template-columns:1.06fr 1fr 1fr;gap:22px}
+.v6-svc-card{grid-column:span 1;display:flex;flex-direction:column}
+.v6-svc-card.lead{grid-row:1 / span 2}
+.v6-svc-card.wide{grid-column:2 / span 2}
+/* a要素は既定 inline のため高さが効かない。block+flexで確実に面を作る */
+.v6-svc-media{display:block;flex:1;position:relative;overflow:hidden;border-radius:var(--r);min-height:210px}
+.v6-svc-card.lead .v6-svc-media{min-height:430px}
+.v6-svc-media .ph{position:absolute;inset:0;border-radius:0;border:1px dashed #a4c8de}
+/* 減光：文字がある下側だけ。写真が入っても白文字が読める */
+.v6-svc-media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:52%;pointer-events:none;
+  background:linear-gradient(180deg,rgba(18,63,48,0) 0%,rgba(18,63,48,.72) 100%)}
+.v6-svc-label{position:absolute;left:20px;right:20px;bottom:16px;z-index:2;display:flex;align-items:baseline;gap:10px}
+.v6-svc-label .num{font-family:var(--ff-en);font-weight:700;font-size:1.5rem;color:#fff;line-height:1}
+.v6-svc-label h3{font-size:1.02rem;font-weight:700;color:#fff;line-height:1.4}
+.v6-svc-card.lead .v6-svc-label .num{font-size:2rem}
+.v6-svc-card.lead .v6-svc-label h3{font-size:1.2rem}
+.v6-svc-desc{margin-top:12px;font-size:.9rem;color:var(--ink-soft);line-height:1.8}
+.v6-svc-card:hover .v6-svc-media{box-shadow:var(--card-sh-hv)}
+@media(max-width:920px){
+  .v6-svc{grid-template-columns:1fr;gap:20px}
+  .v6-svc-card.lead{grid-row:auto}
+  .v6-svc-card.wide{grid-column:auto}
+  .v6-svc-card.lead .v6-svc-media{min-height:230px}
+  .v6-svc-media{min-height:200px}
+}
+
+/* ---------- 選ばれる理由（横帯・軸は横） ---------- */
+.v6-reasons{display:flex;flex-direction:column;max-width:980px;margin:0 auto;border-top:1px solid var(--line)}
+.v6-reason{display:grid;grid-template-columns:56px 62px minmax(180px,236px) 1fr;align-items:center;gap:26px;
+  padding:26px 6px;border-bottom:1px solid var(--line);transition:background .2s}
+.v6-reason:hover{background:var(--mint)}
+.v6-reason .rn{font-family:var(--ff-en);font-weight:700;font-size:1.3rem;color:var(--green)}
+.v6-reason .ic{line-height:0}
+.v6-reason .ic .icn{width:34px;height:34px}
+.v6-reason h3{font-size:1.06rem;font-weight:700;color:var(--ink);line-height:1.45;margin:0}
+.v6-reason p{font-size:.92rem;color:var(--ink-soft);margin:0}
+@media(max-width:920px){
+  .v6-reason{grid-template-columns:44px 1fr;gap:8px 16px;padding:22px 4px}
+  .v6-reason .ic{display:none}
+  .v6-reason h3,.v6-reason p{grid-column:2}
+}
+
+/* ---------- R3 お取引の流れ（抜けだが空白ではない：番号が主役） ---------- */
+.v6-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;position:relative}
+.v6-flow::before{content:"";position:absolute;left:0;right:0;top:30px;height:1px;background:var(--line)}
+.v6-flow .st{position:relative;padding-right:14px}
+.v6-flow .sn{font-family:var(--ff-en);font-weight:700;font-size:2.7rem;line-height:1;color:var(--green);
+  background:#fff;padding-right:14px;position:relative;z-index:1;display:inline-block}
+.v6-flow h3{font-size:.98rem;font-weight:700;color:var(--green-ink);margin:14px 0 6px}
+.v6-flow p{font-size:.86rem;color:var(--ink-soft)}
+@media(max-width:920px){
+  .v6-flow{grid-template-columns:1fr 1fr;gap:28px 20px}
+  .v6-flow::before{display:none}
+  .v6-flow .sn{font-size:2.1rem}
+}
+
+/* ---------- 最終CTA（3分割：文言｜電話｜ボタン） ---------- */
+.v6-cta{background:var(--mint)}
+.v6-cta .wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:36px;
+  padding-top:52px;padding-bottom:52px}
+.v6-cta h2{font-size:clamp(1.3rem,2.4vw,1.75rem);font-weight:700;color:var(--ink);margin:0}
+.v6-cta .tel{display:flex;flex-direction:column;align-items:center;text-align:center;
+  border-left:1px solid var(--line);border-right:1px solid var(--line);padding:4px 24px}
+.v6-cta .tel a{font-family:var(--ff-en);font-weight:700;font-size:clamp(1.5rem,3vw,2.1rem);color:var(--green-ink);line-height:1.1}
+.v6-cta .tel small{font-size:.78rem;color:var(--ink-soft);margin-top:5px}
+@media(max-width:920px){
+  .v6-cta .wrap{grid-template-columns:1fr;gap:20px;text-align:center;justify-items:center}
+  .v6-cta .tel{border:none;padding:0}
+}
+
+/* =========================================================
+   L7 柱（セクション名を縦組みで左端に）
+   ========================================================= */
+.v6-rail{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:50;
+  writing-mode:vertical-rl;font-size:.72rem;letter-spacing:.24em;color:var(--ink-soft);
+  font-weight:500;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:14px}
+.v6-rail::before{content:"";width:1px;height:26px;background:var(--line)}
+@media(max-width:1420px){.v6-rail{display:none}}
+
+/* =========================================================
+   製品ページ — カテゴリを罫線で組み、写真を左右交互に裁ち落とす
+   ========================================================= */
+.v6-cat{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+  padding:64px 0;border-bottom:1px solid var(--line)}
+.v6-cat-media{position:relative;aspect-ratio:4/3}
+.v6-cat-media .ph{position:absolute;inset:0}
+.v6-cat:nth-of-type(odd) .v6-cat-media{margin-left:calc(50% - 50vw)}
+.v6-cat:nth-of-type(odd) .v6-cat-media .ph{border-left:none;border-radius:0 var(--r) var(--r) 0}
+.v6-cat:nth-of-type(even) .v6-cat-media{order:2;margin-right:calc(50% - 50vw)}
+.v6-cat:nth-of-type(even) .v6-cat-media .ph{border-right:none;border-radius:var(--r) 0 0 var(--r)}
+.v6-cat .num{font-family:var(--ff-en);font-weight:700;font-size:2.1rem;color:var(--green);line-height:1;
+  display:inline-block;margin-right:12px;vertical-align:-2px}
+.v6-cat h3{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;color:var(--ink);margin:10px 0 12px}
+.v6-cat .note{color:var(--ink-soft);margin-bottom:16px;max-width:30em}
+/* 副次カテゴリ（05〜07）は密度を落とす：3列・写真は16:9 */
+.v6-cats-sm{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;padding:56px 0}
+.v6-cats-sm .v6-cat-media{aspect-ratio:16/9;margin:0}
+.v6-cats-sm .v6-cat-media .ph{border-radius:var(--r);border:1px dashed #a4c8de}
+.v6-cats-sm h3{font-size:clamp(1.1rem,1.9vw,1.32rem);margin:8px 0 10px}
+.v6-cats-sm .num{font-size:1.6rem}
+@media(max-width:920px){
+  .v6-cat{grid-template-columns:1fr;gap:22px;padding:40px 0}
+  .v6-cat:nth-of-type(even) .v6-cat-media{order:0;margin:0 calc(50% - 50vw)}
+  .v6-cat:nth-of-type(odd) .v6-cat-media{margin:0 calc(50% - 50vw)}
+  .v6-cat-media .ph{border-radius:0!important;border-left:none!important;border-right:none!important}
+  .v6-cats-sm{grid-template-columns:1fr;gap:34px;padding:36px 0}
+}
+
+/* ---------- ガスの利用シーン（各カテゴリの中に入れ子） ----------
+   形の変化＝円形マスク（1種類・1つの粒＝1つのガス） */
+.v6-gas{margin-top:26px;border-top:1px solid var(--line)}
+.v6-gas-h{display:flex;align-items:center;gap:10px;padding:16px 0 10px;
+  font-size:.88rem;font-weight:700;color:var(--green-ink)}
+.v6-gas-h .icn{width:20px;height:20px}
+.v6-gas details{border-top:1px solid var(--line)}
+.v6-gas details:first-of-type{border-top:none}
+.v6-gas summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:52px 62px 1fr 28px;
+  align-items:center;gap:14px;padding:14px 0;transition:background .18s}
+.v6-gas summary::-webkit-details-marker{display:none}
+.v6-gas summary:hover{background:var(--mint)}
+/* 円形マスク（撮影待ちは水色の円） */
+.v6-gas .thumb{width:52px;height:52px;border-radius:50%;overflow:hidden;
+  background:#e6f1f8;border:1px dashed #a4c8de;display:block}
+.v6-gas .sym{font-family:var(--ff-en);font-weight:700;font-size:1.16rem;color:var(--green-ink);line-height:1}
+.v6-gas .sym sub{font-size:.62em;font-weight:600}
+.v6-gas .nm{font-weight:700;font-size:.98rem;color:var(--ink);display:block;margin-bottom:3px}
+.v6-gas .one{font-size:.86rem;color:var(--ink-soft);display:block}
+.v6-gas .mk{justify-self:end;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);
+  color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem;line-height:1;
+  transition:transform .2s,border-color .2s}
+.v6-gas details[open] .mk{transform:rotate(45deg);border-color:var(--green)}
+.v6-gas .body{padding:4px 0 20px 128px;display:flex;flex-direction:column;gap:8px}
+.v6-gas .row{display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start;
+  background:var(--mint);border-radius:6px;padding:11px 14px}
+.v6-gas .row .lb{font-size:.76rem;font-weight:700;color:var(--green-ink);white-space:nowrap}
+.v6-gas .row p{font-size:.88rem;color:var(--ink-soft);margin:0}
+@media(max-width:920px){
+  .v6-gas summary{grid-template-columns:44px 54px 1fr 24px;gap:10px}
+  .v6-gas .thumb{width:44px;height:44px}
+  .v6-gas .body{padding-left:0}
+  .v6-gas .row{grid-template-columns:1fr;gap:4px}
+}
+
+/* =========================================================
+   会社案内 — 資格の円形バッジ（形の変化＝円形マスク）
+   ========================================================= */
+.v6-quals{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:26px}
+.v6-qual{width:132px;height:132px;border-radius:50%;border:1px solid var(--green);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:14px;background:#fff;flex:none}
+.v6-qual .icn{width:26px;height:26px;margin-bottom:6px}
+.v6-qual .t{font-size:.68rem;color:var(--ink-soft);line-height:1.4}
+.v6-qual .n{font-family:var(--ff-en);font-weight:700;font-size:1.05rem;color:var(--green-ink);margin-top:3px}
+.v6-qual.main{width:186px;height:186px;border-width:1.5px}
+.v6-qual.main .icn{width:34px;height:34px;margin-bottom:8px}
+.v6-qual.main .t{font-size:.82rem;font-weight:700;color:var(--green-ink)}
+.v6-qual.main .n{font-size:2.1rem;margin-top:2px}
+@media(max-width:560px){
+  .v6-qual{width:106px;height:106px}
+  .v6-qual.main{width:150px;height:150px}
+  .v6-qual.main .n{font-size:1.7rem}
+}
+
+/* 地図の枠（撮影/埋め込み待ち） */
+.v6-map{aspect-ratio:16/10;border-radius:var(--r);background:#e6f1f8;border:1px dashed #a4c8de;
+  display:flex;align-items:center;justify-content:center;color:#5b7d95;font-size:.86rem;font-weight:500}
+
+/* =========================================================
+   採用 — 募集状況と職種カードの雛形
+   ========================================================= */
+.v6-openings{border:1px solid var(--green);border-radius:var(--r-lg);padding:44px 28px;text-align:center;background:#fff}
+.v6-openings .st{font-size:clamp(1.15rem,2.4vw,1.6rem);font-weight:700;color:var(--green-ink)}
+.v6-openings .note{margin-top:12px;font-size:.84rem;color:var(--ink-soft)}
+.v6-jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:34px}
+.v6-job{border:1px dashed var(--line);border-radius:var(--r-lg);padding:24px}
+.v6-job dl{margin:0;display:flex;flex-direction:column;gap:0}
+.v6-job dt{font-size:.78rem;color:var(--ink-soft);font-weight:700;padding:11px 0 4px}
+.v6-job dd{margin:0;border-bottom:1px dashed var(--line);min-height:14px}
+@media(max-width:920px){.v6-jobs{grid-template-columns:1fr}}
+
+.v6-workplace{display:grid;grid-template-columns:1fr 1.25fr;gap:40px;align-items:center}
+.v6-workplace .pics{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.v6-workplace .pics .ph{aspect-ratio:4/3}
+@media(max-width:920px){.v6-workplace{grid-template-columns:1fr;gap:26px}}
