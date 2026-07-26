@@ -22,11 +22,59 @@
   --card-sh:0 1px 2px rgba(16,50,38,.04), 0 10px 28px rgba(16,50,38,.06);
   --card-sh-hv:0 2px 4px rgba(16,50,38,.05), 0 16px 36px rgba(16,50,38,.10);
 
-  --maxw:1140px;
+  --maxw:1140px;          /* 旧・互換用。版面は --frame-max が正 */
   --r:10px;
   --r-lg:14px;
   --ff-jp:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
   --ff-en:"Outfit",var(--ff-jp);
+  --ff-mincho:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
+
+  /* =========================================================
+     v7 基盤トークン（2026-07-27）
+     正本: design_lab 5_works/20260724_日光溶材_ビジュアル/v7設計仕様
+     級数の決定権はここに一元化する。以降のCSSに新しい clamp() を書かない
+     ========================================================= */
+
+  /* --- 幅の3層：面は px/vw（画面から決まる）／行は em（文字から決まる） --- */
+  --gutter:clamp(20px,3vw,44px);   /* 1440 → 43.2px */
+  --frame-max:1360px;              /* frame 上限。1440で版面1353.6px = 94.0% */
+  --gut:clamp(16px,1.7vw,24px);    /* 12列のガター */
+  --measure:32em;                  /* リード・答えの行長 */
+  --measure-b:30em;                /* 本文の行長 */
+  --read-max:1000px;               /* 「読む」セクションの版面 */
+
+  /* --- 余白3段（固定px → viewport相対） --- */
+  --pad-s:clamp(52px,5.2vw,84px);   /* 1440 → 74.9px */
+  --pad-m:clamp(72px,8.4vw,128px);  /* 1440 → 121.0px */
+  --pad-l:clamp(96px,12.6vw,190px); /* 1440 → 181.4px */
+
+  /* --- 読む帯（固定px・viewportで縮めない） --- */
+  --fs-cap:12px; --fs-label:14px; --fs-body:16px; --fs-lead:19px; --fs-h3:23px;
+
+  /* --- 空帯：1440時点で 24〜39px には何も置かない（1.74倍のジャンプ） --- */
+
+  /* --- 見る帯・和文 --- */
+  --fs-d1:clamp(1.5rem,1.50vw + 1.15rem,2.5rem);     /* 24 →  40px */
+  --fs-d2:clamp(1.625rem,3.00vw + 0.92rem,3.625rem); /* 26 →  58px */
+  --fs-d3:clamp(2rem,4.69vw + 0.90rem,5.125rem);     /* 32 →  82px */
+  --fs-d4:clamp(2.5rem,6.76vw + 0.92rem,7rem);       /* 40 → 112px */
+  /* --- 見る帯・欧文（数字専用） --- */
+  --fs-num:clamp(2.5rem,4.50vw + 1.44rem,5.5rem);    /* 40 →  88px */
+
+  /* --- 行送り・字間・ウェイト --- */
+  --lh-d4:1.14; --lh-d3:1.22; --lh-d2:1.32; --lh-d1:1.42;
+  --lh-h3:1.60; --lh-lead:1.80; --lh-body:1.85;
+  --ls-d:-0.03em; --ls-m:-0.015em;
+  --fw-d:500;  /* 56px以上は必ず500。和文Boldは字幅が変わらず黒みだけ増える */
+  --fw-h:700; --fw-b:400;
+
+  --hd:76px;   /* ヘッダー高。sticky の基準。実数直書きを禁止 */
+
+  /* --- モーション：カーブと方向は1つ、振幅だけ3段 --- */
+  --mo-ease:cubic-bezier(.2,.7,.2,1);
+  --mo-micro:160ms; --mo-state:240ms; --mo-rule:700ms;
+  --mo-in-a:640ms; --mo-in-b:480ms; --mo-in-c:380ms;
+  --mo-d-a:24px;   --mo-d-b:14px;   --mo-d-c:8px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -39,7 +87,11 @@ img{max-width:100%;height:auto;display:block}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,h4,p,ul,figure,dl{margin:0}
 ul{padding:0;list-style:none}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+/* v7 幅の3層。frame=既定の版面（1440で94.0%）／bleed=色面・写真・罫線／read=読む塊 */
+.wrap{width:100%;max-width:calc(var(--frame-max,1360px) + var(--gutter,24px)*2);
+  margin-inline:auto;padding-inline:var(--gutter,24px)}
+.bleed{margin-inline:calc(50% - 50vw)}  /* width:100vw は書かない（スクロールバー分ずれる） */
+.wrap-read{width:min(100%,var(--read-max,1000px));margin-inline:auto}
 .en{font-family:var(--ff-en);font-weight:600;letter-spacing:.02em}
 .hl{color:var(--green)}
 .nowrap{white-space:nowrap}

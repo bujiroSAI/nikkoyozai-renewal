@@ -14,17 +14,19 @@
 html{overflow-x:clip}
 body{overflow-x:clip}
 
-/* ---------- L6 余白の3段階 ---------- */
-.pad-s{padding:64px 0}
-.pad-m{padding:96px 0}
-.pad-l{padding:128px 0}
-@media(max-width:920px){.pad-s{padding:48px 0}.pad-m{padding:64px 0}.pad-l{padding:76px 0}}
+/* ---------- L6 余白の3段階（v7: 固定px → viewport相対） ---------- */
+.pad-s{padding-block:var(--pad-s,64px)}
+.pad-m{padding-block:var(--pad-m,96px)}
+.pad-l{padding-block:var(--pad-l,128px)}
 
-/* ---------- ジャンプ率 ---------- */
-.v6-h1{font-size:clamp(2.4rem,5.6vw,4.2rem);font-weight:700;line-height:1.24;letter-spacing:.01em;color:var(--ink);margin:0}
+/* ---------- v7 type scale の割り当て（決定権は style.css の :root） ---------- */
+.v6-h1{font-size:var(--fs-d4,4rem);font-weight:var(--fw-d,500);
+  line-height:var(--lh-d4,1.14);letter-spacing:var(--ls-d,-.03em);color:var(--ink);margin:0}
 .v6-h1 .hl{color:var(--green)}
-.v6-h2{font-size:clamp(1.45rem,2.7vw,2.05rem);font-weight:700;line-height:1.45;letter-spacing:.015em;color:var(--ink);margin:0}
-.v6-lead{color:var(--ink-soft);margin-top:14px;font-size:1.02rem;line-height:1.9;max-width:32em}
+.v6-h2{font-size:var(--fs-d1,2.5rem);font-weight:var(--fw-h,700);
+  line-height:var(--lh-d1,1.42);letter-spacing:var(--ls-m,-.015em);color:var(--ink);margin:0}
+.v6-lead{color:var(--ink-soft);margin-top:16px;font-size:var(--fs-lead,19px);
+  line-height:var(--lh-lead,1.8);max-width:var(--measure,32em)}
 .v6-shead{margin:0 0 44px}
 .v6-shead.center{text-align:center}
 .v6-shead.center .v6-lead{margin-left:auto;margin-right:auto}
@@ -35,17 +37,34 @@ body{overflow-x:clip}
    ========================================================= */
 /* 隠すのは「JSが動いている」ときだけ。JSが無効・失敗しても本文は必ず読める
    （モーション_v1 §4 動きの中に情報を隠さない／§5 動きに依存せず内容が完結する） */
-.js .rv{opacity:0;transform:translateY(16px);
-  transition:opacity .32s cubic-bezier(.2,.7,.2,1),transform .32s cubic-bezier(.2,.7,.2,1)}
+/* M-1 出現の3段化（v7）。カーブと方向は1つのまま、振幅だけを3段にする。
+   signature motion は「型を1つにする」規範であって「振幅まで1つにする」規範ではない
+   ——v6は16px/320msを1ページ33回反復し、これが「静的」の主因になっていた */
+.js .rv{opacity:0;transform:translateY(var(--mo-d-b,14px));
+  transition:opacity var(--mo-in-b,480ms) var(--mo-ease,ease-out),
+             transform var(--mo-in-b,480ms) var(--mo-ease,ease-out)}
+.js .rv-a{transform:translateY(var(--mo-d-a,24px));transition-duration:var(--mo-in-a,640ms)}
+.js .rv-c{transform:translateY(var(--mo-d-c,8px));transition-duration:var(--mo-in-c,380ms)}
 .js .rv.in{opacity:1;transform:none}
-/* stagger は 60ms・最大4個で打ち切り */
-.rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.12s}
-.rv.d3{transition-delay:.18s}.rv.d4{transition-delay:.24s}
+/* stagger 70ms・5段で打ち切り */
+.rv.d1{transition-delay:70ms}.rv.d2{transition-delay:140ms}.rv.d3{transition-delay:210ms}
+.rv.d4{transition-delay:280ms}.rv.d5{transition-delay:350ms}
+
+/* M-2/M-4 「引く」動き：罫線を左→右へ。border-top は transform できないので疑似要素で作る */
+.dw{position:relative}
+.js .dw::before{transform:scaleX(0);transform-origin:left;
+  transition:transform var(--mo-rule,700ms) var(--mo-ease,ease-out)}
+.js .dw.in::before{transform:scaleX(1)}
+
+/* 安全網：site.js が落ちても 2.5秒後に本文が必ず出る（.rv-safe は head の setTimeout で付く） */
+.rv-safe .rv{opacity:1!important;transform:none!important}
+.rv-safe .dw::before{transform:none!important}
 
 @media(prefers-reduced-motion:reduce){
   /* 「全部止める」ではなく、移動と拡大だけをやめる。
      色・不透明度の変化(=M1 状態の伝達)は残す——消すと操作の手応えが失われる */
   .js .rv,.rv{opacity:1;transform:none;transition:none}
+  .js .dw::before,.dw::before{transform:none}   /* 罫線は最初から全長。線は残す */
   .btn:hover,.v6-svc-card:hover,.tcard:hover{transform:none}
   html{scroll-behavior:auto}
 }
@@ -54,8 +73,10 @@ body{overflow-x:clip}
    L2 ヒーロー / ページヘッダ — 一枚の場（写真は端まで裁ち落とし）
    ========================================================= */
 .v6-hero{position:relative;background:var(--mint);overflow:hidden}
-.v6-hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,47%) 1fr;
-  align-items:center;min-height:clamp(500px,74vh,720px)}
+.v6-hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,58%) 1fr;
+  align-items:center;
+  min-height:100vh;                 /* Safari 15.4未満のfallback。必ず先に書く */
+  min-height:min(100svh,1000px)}
 .v6-hero-copy{padding:56px 0}
 .v6-hero .badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
   border-radius:6px;padding:8px 14px;font-size:.82rem;font-weight:500;color:var(--green-ink)}
@@ -65,7 +86,7 @@ body{overflow-x:clip}
 .v6-hero-note{margin-top:14px;font-size:.84rem;color:var(--ink-soft)}
 
 /* 写真域：絶対配置で画面右端まで＝真の裁ち落とし */
-.v6-hero-media{position:absolute;top:0;right:0;bottom:0;width:53vw;z-index:1;display:flex}
+.v6-hero-media{position:absolute;top:0;right:0;bottom:0;width:42vw;z-index:1;display:flex}
 .v6-hero-media .ph{flex:1;border-radius:0;border-top:none;border-right:none;border-bottom:none}
 .v6-hero-media::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(90deg,var(--mint) 0%,rgba(250,243,232,0) 22%)}
@@ -78,13 +99,21 @@ body{overflow-x:clip}
 
 /* 下位ページのヘッダは一段落とす（階層の明示＋語中改行の回避）。
    コピー列も広げないと「取扱製品・サービ/ス。」のように語中で折れる */
-.v6-phead .wrap{grid-template-columns:minmax(0,56%) 1fr;min-height:clamp(360px,50vh,480px)}
-.v6-phead .v6-h1{font-size:clamp(1.95rem,4vw,3.1rem)}
-.v6-phead .v6-hero-media{width:47vw}
-.v6-phead .v6-hero-sub{max-width:30em}
+/* 下層は72svhに留める（全画面級にしない）＝トップとの差で階層を示す */
+.v6-phead .wrap{grid-template-columns:minmax(0,62%) 1fr;min-height:72svh}
+.v6-phead .v6-h1{font-size:var(--fs-d3,3.2rem)}
+.v6-phead .v6-hero-media{width:38vw}
+.v6-phead .v6-hero-sub{max-width:var(--measure,32em)}
+@media(max-width:1279px){.v6-phead .wrap{grid-template-columns:minmax(0,68%) 1fr}
+  .v6-phead .v6-hero-media{width:32vw}}
 
+/* 中間幅：コピー列を広げて112pxの見出しが折れないようにする */
+@media(max-width:1279px){
+  .v6-hero .wrap{grid-template-columns:minmax(0,64%) 1fr}
+  .v6-hero-media{width:36vw}
+}
 @media(max-width:920px){
-  .v6-hero .wrap,.v6-phead .wrap{grid-template-columns:1fr;min-height:0}
+  .v6-hero .wrap,.v6-phead .wrap{grid-template-columns:1fr;min-height:0}  /* 全画面級の打ち消し */
   .v6-hero-copy{padding:40px 0 0}
   .v6-hero-media{position:relative;width:auto;height:56vw;min-height:230px;
     margin:30px calc(50% - 50vw) 0;top:auto;right:auto;bottom:auto}
@@ -94,13 +123,15 @@ body{overflow-x:clip}
 
 /* ---------- 数字帯（M4 量の可視化：カウントアップ） ---------- */
 .v6-stats{background:var(--green-ink);color:#fff}
-.v6-stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:60px;padding-bottom:60px}
+.v6-stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+  min-height:42svh;align-content:center;padding-block:var(--pad-s,60px)}
 .v6-stat{text-align:center;position:relative}
 .v6-stat+.v6-stat::before{content:"";position:absolute;left:-12px;top:50%;transform:translateY(-50%);
-  height:56px;width:1px;background:rgba(255,255,255,.18)}
-.v6-stat .n{font-family:var(--ff-en);font-weight:700;font-size:clamp(2rem,4.6vw,2.9rem);line-height:1}
-.v6-stat .n small{font-size:.46em;font-weight:600;margin-left:3px}
-.v6-stat .t{margin-top:10px;font-size:.85rem;font-weight:500;color:rgba(255,255,255,.85)}
+  height:88px;width:1px;background:rgba(255,255,255,.18)}
+.v6-stat .n{font-family:var(--ff-en);font-weight:var(--fw-d,500);
+  font-size:var(--fs-num,3.5rem);line-height:1;letter-spacing:var(--ls-d,-.03em)}
+.v6-stat .n small{font-size:.46em;font-weight:600;margin-left:3px;letter-spacing:0}
+.v6-stat .t{margin-top:14px;font-size:var(--fs-label,14px);font-weight:500;color:rgba(255,255,255,.85)}
 @media(max-width:920px){
   .v6-stats .wrap{grid-template-columns:repeat(2,1fr);gap:30px 16px}
   .v6-stat:nth-child(2)::before,.v6-stat:nth-child(3)::before{display:none}
@@ -129,34 +160,45 @@ body{overflow-x:clip}
    L3 サービス — 非対称グリッド（1大＋3小）
    写真の上に乗せるのは番号とカテゴリ名だけ。説明文は写真の外
    ========================================================= */
-.v6-svc{display:grid;grid-template-columns:1.06fr 1fr 1fr;gap:22px}
+/* v7: セクションを全画面級(92svh)にし、grid が高さを配る */
+.v6-svc-sec{min-height:100vh;min-height:min(92svh,900px);
+  display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(64px,7vh,96px)}
+.v6-svc{display:grid;grid-template-columns:5fr 4fr 3fr;gap:var(--gut,22px);flex:1;min-height:0}
 .v6-svc-card{grid-column:span 1;display:flex;flex-direction:column}
 .v6-svc-card.lead{grid-row:1 / span 2}
 .v6-svc-card.wide{grid-column:2 / span 2}
 /* a要素は既定 inline のため高さが効かない。block+flexで確実に面を作る */
 .v6-svc-media{display:block;flex:1;position:relative;overflow:hidden;border-radius:var(--r);min-height:210px}
 .v6-svc-card.lead .v6-svc-media{min-height:430px}
+/* 921px以上でのみ固定高を外す。モバイルへ漏らすと .ph が absolute のためカードが高さ0で消える */
+@media(min-width:921px){.v6-svc-card.lead .v6-svc-media{min-height:0}}
 .v6-svc-media .ph{position:absolute;inset:0;border-radius:0;border:1px dashed #a4c8de}
 /* 減光：文字がある下側だけ。写真が入っても白文字が読める */
-.v6-svc-media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:52%;pointer-events:none;
-  background:linear-gradient(180deg,rgba(18,63,48,0) 0%,rgba(18,63,48,.72) 100%)}
+/* 減光は文字がある下側だけ。白文字が確実に読める濃度に（実測6.6:1以上） */
+.v6-svc-media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56%;pointer-events:none;
+  background:linear-gradient(180deg,rgba(18,63,48,0) 0%,rgba(18,63,48,.82) 100%)}
 .v6-svc-label{position:absolute;left:20px;right:20px;bottom:16px;z-index:2;display:flex;align-items:baseline;gap:10px}
 .v6-svc-label .num{font-family:var(--ff-en);font-weight:700;font-size:1.5rem;color:#fff;line-height:1}
 .v6-svc-label h3{font-size:1.02rem;font-weight:700;color:#fff;line-height:1.4}
-.v6-svc-card.lead .v6-svc-label .num{font-size:2rem}
-.v6-svc-card.lead .v6-svc-label h3{font-size:1.2rem}
-.v6-svc-desc{margin-top:12px;font-size:.9rem;color:var(--ink-soft);line-height:1.8}
+.v6-svc-card.lead .v6-svc-label .num{font-size:var(--fs-d1,2.5rem)}
+.v6-svc-card.lead .v6-svc-label h3{font-size:var(--fs-h3,23px)}
+.v6-svc-desc{margin-top:12px;font-size:var(--fs-body,16px);color:var(--ink-soft);
+  line-height:var(--lh-body,1.85);max-width:var(--measure-b,30em)}
 .v6-svc-card:hover .v6-svc-media{box-shadow:var(--card-sh-hv)}
 @media(max-width:920px){
+  .v6-svc-sec{min-height:0;padding-block:var(--pad-m,64px)}
   .v6-svc{grid-template-columns:1fr;gap:20px}
-  .v6-svc-card.lead{grid-row:auto}
-  .v6-svc-card.wide{grid-column:auto}
+  .v6-svc-card.lead{grid-row:auto!important}
+  .v6-svc-card.wide{grid-column:auto!important}
   .v6-svc-card.lead .v6-svc-media{min-height:230px}
   .v6-svc-media{min-height:200px}
 }
 
 /* ---------- 選ばれる理由（横帯・軸は横） ---------- */
-.v6-reasons{display:flex;flex-direction:column;max-width:980px;margin:0 auto;border-top:1px solid var(--line)}
+/* 「読む」セクション＝版面を広げないことで、1fr が伸びて行長70字になる事故を回避する */
+.v6-reasons{display:flex;flex-direction:column;width:min(100%,var(--read-max,1000px));
+  margin:0 auto;border-top:1px solid var(--line)}
 .v6-reason{display:grid;grid-template-columns:56px 62px minmax(180px,236px) 1fr;align-items:center;gap:26px;
   padding:26px 6px;border-bottom:1px solid var(--line);transition:background .2s}
 .v6-reason:hover{background:var(--mint)}
@@ -173,16 +215,24 @@ body{overflow-x:clip}
 
 /* ---------- R3 お取引の流れ（抜けだが空白ではない：番号が主役） ---------- */
 .v6-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;position:relative}
-.v6-flow::before{content:"";position:absolute;left:0;right:0;top:30px;height:1px;background:var(--line)}
+.v6-flow::before{content:"";position:absolute;left:0;right:0;top:44px;height:1px;background:var(--line)}
+/* M-4 節の到来：緑線を左→右へ引く（transform のみ。border は transform できない） */
+.v6-flow::after{content:"";position:absolute;left:0;right:0;top:44px;height:1px;background:var(--green);
+  transform:scaleX(0);transform-origin:left}
+.js .v6-flow::after{transition:transform var(--mo-rule,700ms) var(--mo-ease,ease-out)}
+.js .v6-flow.in::after{transform:scaleX(1)}
+.rv-safe .v6-flow::after{transform:none}
 .v6-flow .st{position:relative;padding-right:14px}
-.v6-flow .sn{font-family:var(--ff-en);font-weight:700;font-size:2.7rem;line-height:1;color:var(--green);
+.v6-flow .sn{font-family:var(--ff-en);font-weight:var(--fw-d,500);font-size:var(--fs-num,3rem);
+  line-height:1;color:var(--green);letter-spacing:var(--ls-d,-.03em);
   background:#fff;padding-right:14px;position:relative;z-index:1;display:inline-block}
-.v6-flow h3{font-size:.98rem;font-weight:700;color:var(--green-ink);margin:14px 0 6px}
-.v6-flow p{font-size:.86rem;color:var(--ink-soft)}
+.v6-flow h3{font-size:var(--fs-h3,23px);font-weight:700;color:var(--green-ink);margin:16px 0 8px;
+  line-height:var(--lh-h3,1.6)}
+.v6-flow p{font-size:var(--fs-body,16px);color:var(--ink-soft);line-height:var(--lh-body,1.85)}
+@media(prefers-reduced-motion:reduce){.v6-flow::after{transform:none}}
 @media(max-width:920px){
   .v6-flow{grid-template-columns:1fr 1fr;gap:28px 20px}
-  .v6-flow::before{display:none}
-  .v6-flow .sn{font-size:2.1rem}
+  .v6-flow::before,.v6-flow::after{display:none}
 }
 
 /* ---------- 最終CTA（3分割：文言｜電話｜ボタン） ---------- */
@@ -313,3 +363,147 @@ body{overflow-x:clip}
 .v6-workplace .pics{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .v6-workplace .pics .ph{aspect-ratio:4/3}
 @media(max-width:920px){.v6-workplace{grid-template-columns:1fr;gap:26px}}
+
+/* =========================================================
+   v7 追補（2026-07-27）— 参考モダンサイト4件の実測をもとにした改訂
+   正本: design_lab 5_works/20260724_日光溶材_ビジュアル/v7設計仕様
+   ========================================================= */
+
+/* --- 理念：全画面級(86svh)＋明朝。グラデは唯一の一点として維持する --- */
+.creed{min-height:86svh;display:flex;align-items:center;padding-block:var(--pad-l,92px)}
+.creed-main{font-family:var(--ff-mincho,serif);
+  font-size:var(--fs-d3,3.2rem);font-weight:500;letter-spacing:-.02em;
+  line-height:var(--lh-d3,1.22);margin-top:12px}
+.creed-sub{margin-top:22px;font-size:var(--fs-lead,19px)}
+.creed-body{max-width:var(--measure,32em);margin-top:26px;font-size:var(--fs-body,16px)}
+@media(max-width:920px){.creed{min-height:0}}
+
+/* --- 最終CTA：46svh・見出し40px。h2列は縮んで折り返せるようにする --- */
+.v6-cta .wrap{grid-template-columns:minmax(320px,1fr) auto auto;
+  min-height:46svh;align-content:center;padding-block:var(--pad-m,52px)}
+.v6-cta h2{font-size:var(--fs-d1,2.5rem);line-height:var(--lh-d1,1.42);letter-spacing:var(--ls-m,-.015em)}
+.v6-cta .tel a{font-size:var(--fs-d1,2.5rem);letter-spacing:var(--ls-d,-.03em)}
+.v6-cta .tel small{font-size:var(--fs-cap,12px)}
+@media(max-width:920px){.v6-cta .wrap{grid-template-columns:1fr;min-height:0}}
+
+/* --- お困りごと --- */
+.v6-trouble h3{font-size:var(--fs-h3,23px);line-height:var(--lh-h3,1.6);margin-bottom:14px}
+.v6-trouble p{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85);max-width:var(--measure-b,30em)}
+/* 節の結論＝次節へ渡す唯一の文。ここだけ58pxに上げる */
+.v6-trouble-foot{font-size:var(--fs-d2,2.6rem);font-weight:var(--fw-d,500);
+  line-height:var(--lh-d2,1.32);letter-spacing:var(--ls-m,-.015em);margin-top:var(--pad-s,56px)}
+
+/* --- 選ばれる理由 --- */
+.v6-reason h3{font-size:var(--fs-h3,23px);line-height:var(--lh-h3,1.6)}
+.v6-reason p{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85)}
+.v6-reason .rn{font-size:var(--fs-lead,19px)}
+.v6-reason{transition:background var(--mo-micro,160ms) var(--mo-ease,ease-out)}
+
+/* --- FAQ：カード枠を外し罫線1本で組む（L4 罫線で組む） --- */
+.faq{width:min(100%,var(--read-max,1000px));margin-inline:auto;gap:0;border-top:1px solid var(--line)}
+.faq details{background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0}
+.faq details:hover{border-color:var(--line)}
+.faq summary{font-size:var(--fs-h3,23px);line-height:var(--lh-h3,1.6);padding:26px 56px 26px 0;
+  transition:color var(--mo-micro,160ms) var(--mo-ease,ease-out)}
+.faq summary:hover{color:var(--green-deep)}
+.faq summary::after{right:6px}
+.faq .a{padding:0 56px 26px 0;max-width:var(--measure,32em);font-size:var(--fs-body,16px);
+  line-height:var(--lh-body,1.85)}
+
+/* --- 製品ページ カテゴリ：番号を88pxのブロックに。左右は data-side で明示 --- */
+.v6-cat{grid-template-columns:minmax(0,58%) 1fr;gap:clamp(28px,4vw,48px);
+  padding-block:var(--pad-m,64px)}
+.v6-cat[data-side="r"]{grid-template-columns:1fr minmax(0,58%)}
+.v6-cat[data-side="l"] .v6-cat-media{grid-column:1;margin-left:calc(50% - 50vw);margin-right:0}
+.v6-cat[data-side="r"] .v6-cat-media{grid-column:2;order:2;margin-right:calc(50% - 50vw);margin-left:0}
+.v6-cat:first-of-type .v6-cat-media{aspect-ratio:5/4}   /* 01 = 主力 */
+.v6-cat .v6-cat-media{aspect-ratio:16/10}               /* 02〜04 */
+.v6-cat .num{display:block;font-size:var(--fs-num,3rem);font-weight:var(--fw-d,500);
+  line-height:1;margin:0 0 6px;letter-spacing:var(--ls-d,-.03em);vertical-align:baseline}
+.v6-cat h3{font-size:var(--fs-d1,2.5rem);font-weight:var(--fw-h,700);
+  line-height:var(--lh-d1,1.42);letter-spacing:var(--ls-m,-.015em);margin:0 0 16px}
+.v6-cat .note{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85);max-width:var(--measure-b,30em)}
+/* M-2 節の到来：上端に1pxの罫を左→右へ引く（4本が同じ余白段で連続する唯一の箇所） */
+.v6-cat.dw::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--line)}
+@media(max-width:920px){
+  .v6-cat{grid-template-columns:1fr}
+  .v6-cat[data-side="r"]{grid-template-columns:1fr}
+  .v6-cat[data-side="l"] .v6-cat-media,
+  .v6-cat[data-side="r"] .v6-cat-media{grid-column:auto;order:0;margin-inline:calc(50% - 50vw)}
+}
+
+/* --- 製品ページ 副次カテゴリ 05〜07：ここで密度を落とし 01-04 の全画面級を効かせる --- */
+.v6-cats-sm{gap:34px;padding-block:var(--pad-s,56px)}
+.v6-cats-sm .num{font-size:var(--fs-d1,2.5rem);display:block;line-height:1;margin-bottom:4px}
+.v6-cats-sm h3{font-size:var(--fs-h3,23px);line-height:var(--lh-h3,1.6);margin:6px 0 12px}
+.v6-cats-sm .note{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85)}
+
+/* --- ガスのアコーディオン --- */
+.v6-gas .sym{font-size:var(--fs-h3,23px)}
+.v6-gas .nm{font-size:var(--fs-body,16px)}
+.v6-gas .one{font-size:var(--fs-label,14px)}
+.v6-gas summary{transition:background var(--mo-micro,160ms) var(--mo-ease,ease-out)}
+.v6-gas .row p{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85)}
+/* M-7 開閉に連続性を与える。初回描画時に画面外で走らないよう .ready でガード */
+.ready .v6-gas details[open] .body,
+.ready .faq details[open] .a{animation:gasIn var(--mo-state,260ms) var(--mo-ease,ease-out) both}
+@keyframes gasIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .ready .v6-gas details[open] .body,.ready .faq details[open] .a{animation:none}
+}
+
+/* --- 大面プレースホルダーの静粛化：無地の面として置く（"PHOTO"チップと破線を外す） --- */
+.ph-lg{border:none;background:#e6f1f8;border-radius:0}
+.ph-lg::after{content:none}
+.ph-lg small{display:none}
+.ph-lg{font-size:var(--fs-cap,12px);color:#3f6a86}
+
+/* --- 柱：小さい級数のまま大きな縦の造形物にする（日本新薬から取り出した性質） --- */
+.v6-rail{left:16px;font-size:15px;font-weight:500;letter-spacing:.32em;flex-direction:column;gap:14px}
+.v6-rail::before{width:1px;height:96px;background:var(--line)}
+.v6-rail::after{content:"";width:1px;height:96px;background:var(--line)}
+.v6-rail.on-dark{color:rgba(255,255,255,.86)}
+.v6-rail.on-dark::before,.v6-rail.on-dark::after{background:rgba(255,255,255,.35)}
+@media not all and (min-width:1280px){.v6-rail{display:none}}
+@media(max-height:719px){.v6-rail{display:none}}
+
+/* --- ヘッダーの状態伝達：高さは変えない（変えると読んでいる位置が跳ねる） --- */
+.site-header{transition:background var(--mo-state,240ms) var(--mo-ease,ease-out),
+  border-color var(--mo-state,240ms) var(--mo-ease,ease-out)}
+.site-header .brand .mark{transition:width var(--mo-state,240ms) var(--mo-ease,ease-out),
+  height var(--mo-state,240ms) var(--mo-ease,ease-out)}
+/* 既定＝スクロール済みの見え方。JSが落ちても枠線は必ず出る（fail-safe） */
+html.at-top .site-header{background:rgba(255,255,255,.90);border-bottom-color:transparent}
+html.at-top .site-header .brand .mark{width:38px;height:38px}
+.site-header .brand .mark{width:34px;height:34px}
+@media(prefers-reduced-motion:reduce){
+  .site-header .brand .mark,html.at-top .site-header .brand .mark{width:38px;height:38px}
+}
+
+/* --- マイクロ反応を160msに統一 --- */
+.btn{transition:background var(--mo-micro,160ms) var(--mo-ease,ease-out),
+  color var(--mo-micro,160ms) var(--mo-ease,ease-out),
+  border-color var(--mo-micro,160ms) var(--mo-ease,ease-out),
+  transform var(--mo-micro,160ms) var(--mo-ease,ease-out),
+  box-shadow var(--mo-micro,160ms) var(--mo-ease,ease-out)}
+.btn:hover .arw{transform:translateX(4px)}
+.v6-svc-card .v6-svc-media{transition:transform var(--mo-micro,160ms) var(--mo-ease,ease-out),
+  box-shadow var(--mo-micro,160ms) var(--mo-ease,ease-out)}
+.v6-svc-card:hover .v6-svc-media{transform:translateY(-2px)}
+@media(prefers-reduced-motion:reduce){.v6-svc-card:hover .v6-svc-media{transform:none}}
+
+/* --- ラベル・タグ・注記の級数を統合（58種→11種の一部） --- */
+.eyebrow{font-size:var(--fs-label,14px)}
+.pr-tag{font-size:var(--fs-label,14px)}
+.itemlist li{font-size:var(--fs-label,14px)}
+.permits li,.quals li{font-size:var(--fs-label,14px)}
+.spec th,.spec td{font-size:var(--fs-body,16px)}
+.form-note{font-size:var(--fs-cap,12px)}
+.v6-hero-note{font-size:var(--fs-label,14px)}
+.v6-hero-sub{font-size:var(--fs-lead,19px);line-height:var(--lh-lead,1.8);max-width:var(--measure,32em)}
+.badge{font-size:var(--fs-label,14px)}
+
+/* 選ばれる理由：h3 を 23px に上げたため見出し列が不足し「一括対/応」と折れていた。
+   実測 11字 × 23px × 0.985 = 249px。列を 250〜290px に広げる */
+.v6-reason{grid-template-columns:56px 62px minmax(250px,290px) 1fr;gap:24px}
+@media(max-width:920px){.v6-reason{grid-template-columns:44px 1fr;gap:8px 16px}}
