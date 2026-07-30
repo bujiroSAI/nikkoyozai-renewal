@@ -1,10 +1,14 @@
 /* =========================================================
-   株式会社日光溶材 公式サイト 共通スクリプト v6（依存ライブラリなし）
+   株式会社日光溶材 公式サイト 共通スクリプト v8（依存ライブラリなし）
    - モバイルメニュー開閉
    - M3 注意の誘導：スクロール到達で現れる（動きの値は CSS 側 .rv）
+   - M3 窓の開閉：.win（clip-path の駆動は CSS 側の transition）
    - M4 量の可視化：数字帯のカウントアップ（初回1回だけ）
-   - L7 柱：スクロール位置に応じたセクション名の切替
+   - M7 理念の一景：スクロール位置が決める連続値 --sun（IO の in 区間だけ rAF）
+   scroll イベントリスナは 1本も使わない（番兵要素＋IO＋rAF で作る）
+   L7 柱は v8 R-7 で廃止（CSS の display:none。JS 経路もここから削除した）
    正本: design_lab/1_principles/モーション_v1.md
+        design_lab/5_works/20260727_日光溶材_v8/実装申し送り_v1.md
    ========================================================= */
 (function () {
   'use strict';
@@ -17,7 +21,7 @@
   /* --- 最優先：reduced-motion / IO非対応なら、まず本文を解放する --- */
   if (reduce || !('IntersectionObserver' in window)) {
     safe(function () {
-      var all = document.querySelectorAll('.rv, .reveal, .dw');
+      var all = document.querySelectorAll('.rv, .reveal, .dw, .win');
       Array.prototype.forEach.call(all, function (el) { el.classList.add('in'); });
     });
   }
@@ -47,7 +51,7 @@
   /* --- M1/M2 出現と「引く」動き（.rv / .dw → .in）。旧 .reveal も拾う --- */
   safe(function () {
     if (reduce || !('IntersectionObserver' in window)) return; /* 上で解放済み */
-    var items = document.querySelectorAll('.rv, .reveal, .dw');
+    var items = document.querySelectorAll('.rv:not(.win), .reveal:not(.win), .dw:not(.win)');
     if (!items.length) return;
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
@@ -55,6 +59,25 @@
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
     Array.prototype.forEach.call(items, function (el) { io.observe(el); });
+  });
+
+  /* --- M3 窓の開閉（.win → .in）。番兵は「親」であって窓自身ではない ---
+     閉じた窓は clip-path:inset(0 0 0 100%)。IO は clip された分を交差矩形から外すため、
+     窓自身を観測すると交差面積が常に 0 で発火しない（実測 ratio=0）。親を番兵にする */
+  safe(function () {
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var wins = document.querySelectorAll('.win');
+    if (!wins.length) return;
+    var iow = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var t = en.target;
+        if (t.classList.contains('win')) { t.classList.add('in'); }
+        Array.prototype.forEach.call(t.querySelectorAll('.win'), function (el) { el.classList.add('in'); });
+        iow.unobserve(t);
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
+    Array.prototype.forEach.call(wins, function (el) { iow.observe(el.parentElement || el); });
   });
 
   /* --- M5 ヘッダーの状態伝達。scroll リスナは使わず番兵要素をIOで観測する --- */
@@ -109,19 +132,27 @@
     Array.prototype.forEach.call(nums, function (el) { io2.observe(el); });
   }
 
-  /* --- L7 柱（縦組みのセクション名）。暗色の全幅面の上では色を反転する --- */
+  /* --- M7 理念の一景：スクロールが一日ぶんの光を運ぶ（R-2）---
+     0→1 の連続値を1本だけ持つ。終点は理念の下端でなく「次節の上端」＝節をまたぐ。
+     scroll リスナは張らない。IO が in の区間だけ rAF を回し、out で必ず止める。
+     駆動するのは合成に乗る2プロパティ（transform / opacity）だけ、対象は2要素（§F 検査17） */
   safe(function () {
-    var rail = document.getElementById('rail');
-    var secs = document.querySelectorAll('[data-rail]');
-    if (!rail || !secs.length || !('IntersectionObserver' in window)) return;
-    var io3 = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        rail.textContent = en.target.getAttribute('data-rail');
-        rail.classList.toggle('on-dark', en.target.hasAttribute('data-rail-dark'));
+    var creed = document.querySelector('.creed');
+    if (!creed || reduce || !('IntersectionObserver' in window)) return;
+    var end = creed.nextElementSibling, raf = 0;
+    function tick() {
+      var a = creed.getBoundingClientRect().top;
+      var b = end ? end.getBoundingClientRect().top : a + creed.offsetHeight;
+      var d = b - a, p = d > 0 ? (window.innerHeight - a) / d : 1;
+      root.style.setProperty('--sun', String(p < 0 ? 0 : p > 1 ? 1 : p));
+      raf = requestAnimationFrame(tick);
+    }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { if (!raf) raf = requestAnimationFrame(tick); }
+        else if (raf) { cancelAnimationFrame(raf); raf = 0; }
       });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    Array.prototype.forEach.call(secs, function (s) { io3.observe(s); });
+    }, { threshold: 0 }).observe(creed);
   });
 
   /* --- M7 details の開閉アニメ。初回描画で画面外の open が走らないようガードする --- */

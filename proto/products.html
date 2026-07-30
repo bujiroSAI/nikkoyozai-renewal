@@ -9,14 +9,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=8">
-<link rel="stylesheet" href="css/v6-layout.css?v=8">
+<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/v6-layout.css?v=14">
 <script>document.documentElement.className+=" js at-top";setTimeout(function(){document.documentElement.classList.add("rv-safe")},2500);</script>
 </head>
 <body>
 <div id="top-sentinel" aria-hidden="true" style="position:absolute;top:0;height:1px;width:1px"></div>
-
-<div class="v6-rail" id="rail" aria-hidden="true">取扱製品</div>
 
 <header class="site-header" id="header">
   <div class="wrap">
@@ -45,8 +43,8 @@
 <main>
 
 <!-- ===== ページヘッダ ===== -->
-<section class="v6-hero v6-phead" data-rail="取扱製品">
-  <div class="v6-hero-media">
+<section class="v6-hero v6-phead" data-form="窓面">
+  <div class="v6-hero-media win" data-win="xr">
     <div class="ph ph-lg">取扱製品のイメージ写真<small>ボンベ／圧力計 など</small></div>
   </div>
   <div class="wrap">
@@ -58,11 +56,11 @@
   </div>
 </section>
 
-<div class="wrap" data-rail="カテゴリ">
+<div class="wrap">
 
   <!-- ===== 01 産業用ガス（ガス6件） ===== -->
-  <section class="v6-cat dw" data-side="l">
-    <div class="v6-cat-media rv"><div class="ph ph-lg">産業用ガスの写真<small>ボンベ／容器置き場</small></div></div>
+  <section class="v6-cat dw" data-side="l" data-form="抜き面">
+    <div class="v6-cat-media win rv" data-win="x"><div class="ph ph-lg">産業用ガスの写真<small>ボンベ／容器置き場</small></div></div>
     <div class="rv d1">
       <span class="pr-tag">Industrial Gas</span>
       <h3><span class="num">01</span>産業用ガス</h3>
@@ -120,8 +118,8 @@
   </section>
 
   <!-- ===== 02 医療用ガス（ガス2件） ===== -->
-  <section class="v6-cat dw" data-side="r">
-    <div class="v6-cat-media rv"><div class="ph ph-lg">医療用ガス・機器の写真<small>医療ガス設備／在宅用機器</small></div></div>
+  <section class="v6-cat dw" data-form="窓面">
+    <div class="v6-cat-media win rv" data-win="y"><div class="ph ph-lg">医療用ガス・機器の写真<small>医療ガス設備／在宅用機器</small></div></div>
     <div class="rv d1">
       <span class="pr-tag">Medical Gas</span>
       <h3><span class="num">02</span>医療用ガス・各種医療機器</h3>
@@ -151,8 +149,8 @@
   </section>
 
   <!-- ===== 03 LPガス（ガス1件） ===== -->
-  <section class="v6-cat dw" data-side="l">
-    <div class="v6-cat-media rv"><div class="ph ph-lg">LPガス・機器の写真<small>給湯・厨房機器</small></div></div>
+  <section class="v6-cat dw" data-side="l" data-form="抜き面">
+    <div class="v6-cat-media win rv" data-win="xr"><div class="ph ph-lg">LPガス・機器の写真<small>給湯・厨房機器</small></div></div>
     <div class="rv d1">
       <span class="pr-tag">LP Gas</span>
       <h3><span class="num">03</span>LPガス・ガス機器</h3>
@@ -175,8 +173,8 @@
   </section>
 
   <!-- ===== 04 冷媒ガス・空調（ガス1件） ===== -->
-  <section class="v6-cat dw" data-side="r">
-    <div class="v6-cat-media rv"><div class="ph ph-lg">冷媒ガス・空調の写真<small>冷媒回収機／空調設備</small></div></div>
+  <section class="v6-cat dw" data-form="窓面">
+    <div class="v6-cat-media win rv" data-win="yb"><div class="ph ph-lg">冷媒ガス・空調の写真<small>冷媒回収機／空調設備</small></div></div>
     <div class="rv d1">
       <span class="pr-tag">Refrigerant &amp; Air-con</span>
       <h3><span class="num">04</span>冷媒ガス・空調</h3>
@@ -203,7 +201,7 @@
 <!-- ===== 05〜07（副次カテゴリ・3列コンパクト） ===== -->
 <div class="wrap">
   <div class="v6-cats-sm">
-    <section class="rv">
+    <section class="rv" data-form="罫組み">
       <div class="v6-cat-media"><div class="ph">溶接機・溶接材料の写真</div></div>
       <span class="pr-tag" style="display:block;margin-top:16px">Welding</span>
       <h3><span class="num">05</span>溶接機・溶接材料</h3>
@@ -212,14 +210,14 @@
         <li>パナソニック 溶接機</li><li>ダイヘン 溶接機</li><li>神戸製鋼 溶接材料</li><li>日鐵住金 溶接材料</li><li>日本ウェルディングロッド</li>
       </ul>
     </section>
-    <section class="rv d1">
+    <section class="rv d1" data-form="罫組み">
       <div class="v6-cat-media"><div class="ph">電動工具の写真</div></div>
       <span class="pr-tag" style="display:block;margin-top:16px">Power Tools</span>
       <h3><span class="num">06</span>電動工具・その他</h3>
       <p class="note">現場で使う電動工具も各種取り扱っています。</p>
       <ul class="itemlist"><li>パナソニック</li><li>マキタ</li><li>日立</li></ul>
     </section>
-    <section class="rv d2">
+    <section class="rv d2" data-form="罫組み">
       <div class="v6-cat-media"><div class="ph">超音波機器・ガス圧接の写真</div></div>
       <span class="pr-tag" style="display:block;margin-top:16px">Ultrasonic &amp; Pressure Welding</span>
       <h3><span class="num">07</span>超音波機器・ガス圧接関連</h3>
@@ -230,9 +228,9 @@
 </div>
 
 <!-- ===== CTA ===== -->
-<section class="v6-cta" data-rail="お問い合わせ">
+<section class="v6-cta" data-form="片流れ">
   <div class="wrap rv">
-    <h2>「これ、扱ってますか？」の<span class="hl">ひと言でOK。</span></h2>
+    <h2>ガスや周辺機材について、<span class="hl">日光溶材にお任せください。</span></h2>
     <div class="tel">
       <a href="tel:0482242151">048-224-2151</a>
       <small>受付：平日 ◯:◯〜◯:◯</small>
@@ -284,6 +282,6 @@
   <a class="mb-primary" href="company.html#contact">お問い合わせ</a>
 </div>
 
-<script src="js/site.js?v=4"></script>
+<script src="js/site.js?v=6"></script>
 </body>
 </html>

@@ -59,13 +59,17 @@ body{overflow-x:clip}
 /* 安全網：site.js が落ちても 2.5秒後に本文が必ず出る（.rv-safe は head の setTimeout で付く） */
 .rv-safe .rv{opacity:1!important;transform:none!important}
 .rv-safe .dw::before{transform:none!important}
+.rv-safe .win{clip-path:none!important}   /* v8 R-3: 窓は 2.5秒後に必ず全開になる */
 
 @media(prefers-reduced-motion:reduce){
   /* 「全部止める」ではなく、移動と拡大だけをやめる。
      色・不透明度の変化(=M1 状態の伝達)は残す——消すと操作の手応えが失われる */
   .js .rv,.rv{opacity:1;transform:none;transition:none}
   .js .dw::before,.dw::before{transform:none}   /* 罫線は最初から全長。線は残す */
-  .btn:hover,.v6-svc-card:hover,.tcard:hover{transform:none}
+  .btn:hover,.v6-svc-card:hover,.tcard:hover,.card:hover{transform:none}
+  .btn .arw{transition:none}
+  .btn:hover .arw{transform:none}               /* v8 E-4 の解消（2規則のうち1本目） */
+  .win{clip-path:none!important;transition:none}/* v8 R-3: 窓は最初から全開 */
   html{scroll-behavior:auto}
 }
 
@@ -160,10 +164,11 @@ body{overflow-x:clip}
    L3 サービス — 非対称グリッド（1大＋3小）
    写真の上に乗せるのは番号とカテゴリ名だけ。説明文は写真の外
    ========================================================= */
-/* v7: セクションを全画面級(92svh)にし、grid が高さを配る */
-.v6-svc-sec{min-height:100vh;min-height:min(92svh,900px);
+/* v8 R-1: 全画面級の高さは hero と理念の2箇所だけ。取扱いはここから降りる。
+   min(78svh,700px) = 900px 画面で 700px ≤ 0.84×innerHeight(756px) を満たす */
+.v6-svc-sec{min-height:78vh;min-height:min(78svh,700px);
   display:flex;flex-direction:column;justify-content:center;
-  padding-block:clamp(64px,7vh,96px)}
+  padding-block:var(--pad-m,121px)}
 .v6-svc{display:grid;grid-template-columns:5fr 4fr 3fr;gap:var(--gut,22px);flex:1;min-height:0}
 .v6-svc-card{grid-column:span 1;display:flex;flex-direction:column}
 .v6-svc-card.lead{grid-row:1 / span 2}
@@ -173,11 +178,15 @@ body{overflow-x:clip}
 .v6-svc-card.lead .v6-svc-media{min-height:430px}
 /* 921px以上でのみ固定高を外す。モバイルへ漏らすと .ph が absolute のためカードが高さ0で消える */
 @media(min-width:921px){.v6-svc-card.lead .v6-svc-media{min-height:0}}
-.v6-svc-media .ph{position:absolute;inset:0;border-radius:0;border:1px dashed #a4c8de}
-/* 減光：文字がある下側だけ。写真が入っても白文字が読める */
-/* 減光は文字がある下側だけ。白文字が確実に読める濃度に（実測6.6:1以上） */
+.v6-svc-media .ph{position:absolute;inset:0;border-radius:0;border:0}  /* v8 E-12: 大面から破線を外す */
+/* 減光：文字がある下側だけ。写真が入っても白文字が読める。
+   v8 検証で是正——0→.82 の直線ランプだと、ラベルの「文字ボックス上端」の位置では
+   減光がまだ .54 までしか乗らず、白の h3(16px) が実測 3.50:1 で §F 検査8 の 4.5:1 を割った
+   （小カード実測: .num 3.40／h3 3.50。lead カードだけが 4.59／4.94 で通っていた）。
+   終点の濃度は変えず、立ち上がりを 60% で頭打ちにしてラベル帯を平らな濃度にする。
+   是正後の実測は §検証記録_v8。仮の面(#e6f1f8)は写真より明るいので、写真が入れば必ずこれ以上出る */
 .v6-svc-media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56%;pointer-events:none;
-  background:linear-gradient(180deg,rgba(18,63,48,0) 0%,rgba(18,63,48,.82) 100%)}
+  background:linear-gradient(180deg,rgba(18,63,48,0) 0%,rgba(18,63,48,.8) 60%,rgba(18,63,48,.86) 100%)}
 .v6-svc-label{position:absolute;left:20px;right:20px;bottom:16px;z-index:2;display:flex;align-items:baseline;gap:10px}
 .v6-svc-label .num{font-family:var(--ff-en);font-weight:700;font-size:1.5rem;color:#fff;line-height:1}
 .v6-svc-label h3{font-size:1.02rem;font-weight:700;color:#fff;line-height:1.4}
@@ -250,13 +259,13 @@ body{overflow-x:clip}
 }
 
 /* =========================================================
-   L7 柱（セクション名を縦組みで左端に）
+   L7 柱（縦組みの節名 rail）— v8 R-7① で廃止
+   主要読者の幅で消える装置は装置として存在していない（表現視座 R-7）。
+   実測 E-1: v7 が足した 1280px 化は、この位置にあった @media(max-width:1420px) に
+   打ち消されて一度も効いていなかった。閾値を直すのではなく、装置ごと捨てる。
+   **無条件の1宣言にする**——媒体クエリを1つも残さない（残骸が次の版で復活するため）
    ========================================================= */
-.v6-rail{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:50;
-  writing-mode:vertical-rl;font-size:.72rem;letter-spacing:.24em;color:var(--ink-soft);
-  font-weight:500;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:14px}
-.v6-rail::before{content:"";width:1px;height:26px;background:var(--line)}
-@media(max-width:1420px){.v6-rail{display:none}}
+.v6-rail{display:none}
 
 /* =========================================================
    製品ページ — カテゴリを罫線で組み、写真を左右交互に裁ち落とす
@@ -265,10 +274,9 @@ body{overflow-x:clip}
   padding:64px 0;border-bottom:1px solid var(--line)}
 .v6-cat-media{position:relative;aspect-ratio:4/3}
 .v6-cat-media .ph{position:absolute;inset:0}
-.v6-cat:nth-of-type(odd) .v6-cat-media{margin-left:calc(50% - 50vw)}
-.v6-cat:nth-of-type(odd) .v6-cat-media .ph{border-left:none;border-radius:0 var(--r) var(--r) 0}
-.v6-cat:nth-of-type(even) .v6-cat-media{order:2;margin-right:calc(50% - 50vw)}
-.v6-cat:nth-of-type(even) .v6-cat-media .ph{border-right:none;border-radius:var(--r) 0 0 var(--r)}
+/* v8 E-11 の解消: 左右の割りを nth-of-type(odd/even) から外した。
+   1件増減で左右が全反転する（M3）だけでなく、「型は並び順でなく内容が決める」に正面から反する。
+   左右は data-side（型ブロック側で data-form から導く）が決める＝下の v7 追補ブロックが正 */
 .v6-cat .num{font-family:var(--ff-en);font-weight:700;font-size:2.1rem;color:var(--green);line-height:1;
   display:inline-block;margin-right:12px;vertical-align:-2px}
 .v6-cat h3{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:700;color:var(--ink);margin:10px 0 12px}
@@ -276,14 +284,12 @@ body{overflow-x:clip}
 /* 副次カテゴリ（05〜07）は密度を落とす：3列・写真は16:9 */
 .v6-cats-sm{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;padding:56px 0}
 .v6-cats-sm .v6-cat-media{aspect-ratio:16/9;margin:0}
-.v6-cats-sm .v6-cat-media .ph{border-radius:var(--r);border:1px dashed #a4c8de}
+.v6-cats-sm .v6-cat-media .ph{border-radius:0;border:0}  /* v8 E-12: 大面から破線を外す */
 .v6-cats-sm h3{font-size:clamp(1.1rem,1.9vw,1.32rem);margin:8px 0 10px}
 .v6-cats-sm .num{font-size:1.6rem}
 @media(max-width:920px){
   .v6-cat{grid-template-columns:1fr;gap:22px;padding:40px 0}
-  .v6-cat:nth-of-type(even) .v6-cat-media{order:0;margin:0 calc(50% - 50vw)}
-  .v6-cat:nth-of-type(odd) .v6-cat-media{margin:0 calc(50% - 50vw)}
-  .v6-cat-media .ph{border-radius:0!important;border-left:none!important;border-right:none!important}
+  .v6-cat-media .ph{border-radius:0!important}
   .v6-cats-sm{grid-template-columns:1fr;gap:34px;padding:36px 0}
 }
 
@@ -343,8 +349,9 @@ body{overflow-x:clip}
 }
 
 /* 地図の枠（撮影/埋め込み待ち） */
-.v6-map{aspect-ratio:16/10;border-radius:var(--r);background:#e6f1f8;border:1px dashed #a4c8de;
-  display:flex;align-items:center;justify-content:center;color:#5b7d95;font-size:.86rem;font-weight:500}
+.v6-map{aspect-ratio:16/10;border-radius:0;background:#e6f1f8;border:0;   /* v8 E-12: 大面から破線を外す */
+  /* v8 検証: #5b7d95 は #e6f1f8 の上で 3.803:1。仮の面の上の文字は 4.5:1（§F 検査8）→ .ph と同値の 5.06:1 へ */
+  display:flex;align-items:center;justify-content:center;color:#3f6a86;font-size:var(--fs-label,14px);font-weight:500}
 
 /* =========================================================
    採用 — 募集状況と職種カードの雛形
@@ -369,14 +376,17 @@ body{overflow-x:clip}
    正本: design_lab 5_works/20260724_日光溶材_ビジュアル/v7設計仕様
    ========================================================= */
 
-/* --- 理念：全画面級(86svh)＋明朝。グラデは唯一の一点として維持する --- */
-.creed{min-height:86svh;display:flex;align-items:center;padding-block:var(--pad-l,92px)}
+/* --- 理念：サイト唯一の全画面級の「色面」（v8 R-1）＋明朝。グラデは唯一の一点として維持する ---
+     占有面の余白は段外（高さは svh が作る）ので padding-block は 0 にする */
+.creed{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding-block:0}
 .creed-main{font-family:var(--ff-mincho,serif);
   font-size:var(--fs-d3,3.2rem);font-weight:500;letter-spacing:-.02em;
   line-height:var(--lh-d3,1.22);margin-top:12px}
 .creed-sub{margin-top:22px;font-size:var(--fs-lead,19px)}
 .creed-body{max-width:var(--measure,32em);margin-top:26px;font-size:var(--fs-body,16px)}
-@media(max-width:920px){.creed{min-height:0}}
+/* v8 R-1/R-7: 一景は狭い幅でも消さない。主要読者の幅で消える装置は装置として存在していない。
+   min-height なので内容が越えたら伸びる（切れない）。占有面の余白は段外＝padding-block:0 のまま */
+@media(max-width:920px){.creed{min-height:100vh;min-height:100svh;padding-block:0}}
 
 /* --- 最終CTA：46svh・見出し40px。h2列は縮んで折り返せるようにする --- */
 .v6-cta .wrap{grid-template-columns:minmax(320px,1fr) auto auto;
@@ -456,16 +466,9 @@ body{overflow-x:clip}
 .ph-lg{border:none;background:#e6f1f8;border-radius:0}
 .ph-lg::after{content:none}
 .ph-lg small{display:none}
-.ph-lg{font-size:var(--fs-cap,12px);color:#3f6a86}
+.ph-lg{font-size:var(--fs-label,14px);color:#3f6a86}  /* v8: 面取りの器を本文帯に揃える(5.95px) */
 
-/* --- 柱：小さい級数のまま大きな縦の造形物にする（日本新薬から取り出した性質） --- */
-.v6-rail{left:16px;font-size:15px;font-weight:500;letter-spacing:.32em;flex-direction:column;gap:14px}
-.v6-rail::before{width:1px;height:96px;background:var(--line)}
-.v6-rail::after{content:"";width:1px;height:96px;background:var(--line)}
-.v6-rail.on-dark{color:rgba(255,255,255,.86)}
-.v6-rail.on-dark::before,.v6-rail.on-dark::after{background:rgba(255,255,255,.35)}
-@media not all and (min-width:1280px){.v6-rail{display:none}}
-@media(max-height:719px){.v6-rail{display:none}}
+/* --- 柱（v7 追補）は v8 R-7① で全削除。E-1 の残骸を1つも残さない --- */
 
 /* --- ヘッダーの状態伝達：高さは変えない（変えると読んでいる位置が跳ねる） --- */
 .site-header{transition:background var(--mo-state,240ms) var(--mo-ease,ease-out),
@@ -487,6 +490,8 @@ html.at-top .site-header .brand .mark{width:38px;height:38px}
   transform var(--mo-micro,160ms) var(--mo-ease,ease-out),
   box-shadow var(--mo-micro,160ms) var(--mo-ease,ease-out)}
 .btn:hover .arw{transform:translateX(4px)}
+/* v8 E-4 の解消（2規則のうち2本目）。該当規則の直近に打ち消しを置く */
+@media(prefers-reduced-motion:reduce){.btn:hover .arw{transform:none}}
 .v6-svc-card .v6-svc-media{transition:transform var(--mo-micro,160ms) var(--mo-ease,ease-out),
   box-shadow var(--mo-micro,160ms) var(--mo-ease,ease-out)}
 .v6-svc-card:hover .v6-svc-media{transform:translateY(-2px)}
@@ -507,3 +512,406 @@ html.at-top .site-header .brand .mark{width:38px;height:38px}
    実測 11字 × 23px × 0.985 = 249px。列を 250〜290px に広げる */
 .v6-reason{grid-template-columns:56px 62px minmax(250px,290px) 1fr;gap:24px}
 @media(max-width:920px){.v6-reason{grid-template-columns:44px 1fr;gap:8px 16px}}
+
+/* =========================================================
+   v8 層（2026-07-27）
+   正本: design_lab 5_works/20260727_日光溶材_v8/実装申し送り_v1.md（§B が設計値の正本）
+        表現視座_v1.md §4b（型の語彙7種・全25節への割当・bleed の4階級）
+        CDレビュー_02.md（通過。着手ゲート A-1／A-2 は解消済み＝申し送り R2a）
+
+   ■ このブロックに置いてよい規則の条件（v7 の事故の再発防止・申し送り §E-4）
+     末尾追記は既存の @media(max-width:920px) 打ち消し群より後に来るため、
+     無条件の規則を置くとモバイルが壊れる。したがってここに置くのは
+       ① [data-form] / [data-win] の属性スコープ（特異度 0,2,0 以上）を持ち、
+       ② 自分の 920px 以下の姿を必ず同じブロックの中に書いたもの
+     に限る。既存規則の「打ち消し」は該当ブロックの直近で行った
+     （rail・nth-of-type・大面の破線・全画面級の高さ・reduce の .arw）。
+
+   ■ 新設した属性（HTML 側の担当へ）
+     data-form="占有面|抜き面|窓面|計器帯|罫組み|階段|片流れ"  … 各 section に1つ
+     data-win="x|xr|y|yb"  … 窓の器（.win を持つ要素）に1つ。開く向き
+     class="win"           … 窓の器（媒体を包む要素）。.ph そのものには付けない
+     class="ray"           … 光の線1本。理念（連続値）と hero（予告・静止）
+   ========================================================= */
+
+/* ---------- 型の下敷き（bleed の線・余白・頭の位置の基準） ---------- */
+[data-form]{position:relative}
+
+/* =========================================================
+   P3 級数 — 実測25種を11トークンへ畳む（R-11・AI-2）
+   10(ロゴ) 12 14 16 19 23 40 58 82 96(欧文数字) 112
+   最小隣接比 1.143（14→16）／空帯 1箇所（23→40 = 1.739）
+   ========================================================= */
+.brand .name{font-size:var(--fs-lead,19px)}
+.brand .name small{font-size:var(--fs-logo,10px)}
+.navlink{font-size:var(--fs-body,16px)}
+.nav .tel{font-size:var(--fs-body,16px)}
+.nav .tel small{font-size:var(--fs-label,14px)}   /* R-9 受付時間を電話と同じ器・同じ級数へ */
+.nav-toggle{font-size:var(--fs-lead,19px)}
+.btn,.btn-lg{font-size:var(--fs-body,16px)}
+.v6-hero .badge,.hero .badge{font-size:var(--fs-label,14px)}
+/* class="v6-svc-card lead" が汎用の .lead（1.04rem・max-width:32em・ink-soft）を拾っていた。
+   級数の取りこぼしであると同時に、大カードに 32em の上限が掛かる版面の事故でもある */
+.v6-svc-card.lead{font-size:var(--fs-body,16px);color:inherit;margin-top:0;max-width:none}
+.v6-since .t{font-size:var(--fs-cap,12px)}
+.v6-since .n{font-size:var(--fs-h3,23px)}
+.v6-since .n small{font-size:var(--fs-cap,12px);margin-left:2px}
+.v6-stat .n small{font-size:var(--fs-d1,40px);letter-spacing:0}
+.v6-svc-label .num{font-size:var(--fs-h3,23px)}
+.v6-svc-label h3{font-size:var(--fs-body,16px)}
+.faq summary::after{font-size:var(--fs-h3,23px)}
+.v6-gas-h{font-size:var(--fs-label,14px)}
+.v6-gas .sym sub{font-size:var(--fs-label,14px)}
+.v6-gas .row .lb{font-size:var(--fs-cap,12px)}
+.v6-gas .mk{font-size:var(--fs-body,16px)}
+.quals li b{font-size:var(--fs-body,16px)}
+.v6-qual .t{font-size:var(--fs-cap,12px)}
+.v6-qual .n{font-size:var(--fs-body,16px)}
+.v6-qual.main .t{font-size:var(--fs-label,14px)}
+.v6-qual.main .n{font-size:var(--fs-d1,40px)}
+.v6-openings .st{font-size:var(--fs-h3,23px)}
+.v6-openings .note{font-size:var(--fs-label,14px)}
+.v6-job dt{font-size:var(--fs-cap,12px)}
+.office-body h3{font-size:var(--fs-lead,19px)}
+.office-body dl{font-size:var(--fs-body,16px)}
+.contact-card h3{font-size:var(--fs-lead,19px)}
+.crow .lab{font-size:var(--fs-cap,12px)}
+.crow .big{font-size:var(--fs-h3,23px)}
+form label{font-size:var(--fs-label,14px)}
+form label .req{font-size:var(--fs-cap,12px)}
+form input,form textarea{font-size:var(--fs-body,16px)}
+.pdf{font-size:var(--fs-label,14px)}
+.pdf .tag{font-size:var(--fs-cap,12px)}
+.site-footer,.site-footer h4{font-size:var(--fs-label,14px)}
+.foot-brand .name{font-size:var(--fs-lead,19px)}
+.foot-creed{font-size:var(--fs-body,16px)}
+.foot-creed small{font-size:var(--fs-label,14px)}
+.copy{font-size:var(--fs-cap,12px)}
+.mobilebar a{font-size:var(--fs-body,16px)}
+/* 既存の狭幅の級数指定（style.css @420 / @560）を、同じ11トークンの中で置き換える */
+@media(max-width:420px){.brand .name{font-size:var(--fs-body,16px)}}
+@media(max-width:560px){.v6-qual.main .n{font-size:var(--fs-h3,23px)}}
+
+/* =========================================================
+   P4 R-4 面取り — 角丸を全廃し、角は --chamfer で削る
+   当てるのは「塗りが可視の面」だけ。文字を直接持つ箱と、輪郭で立つ箱には当てない。
+   輪郭に clip-path を当てると角で輪郭が切れて開く（申し送り R-4 条件⑥）
+   面取りと窓（.win）はどちらも clip-path なので同居できない。
+   器が面を兼ねる箇所（.v6-map）は窓を優先する（R-3 は must・R-4 は want）
+   ========================================================= */
+:root{--chamfer-path:polygon(
+  var(--chamfer,0px) 0,calc(100% - var(--chamfer,0px)) 0,
+  100% var(--chamfer,0px),100% calc(100% - var(--chamfer,0px)),
+  calc(100% - var(--chamfer,0px)) 100%,var(--chamfer,0px) 100%,
+  0 calc(100% - var(--chamfer,0px)),0 var(--chamfer,0px));
+ --chamfer-path-b:polygon(
+  0 0,100% 0,100% calc(100% - var(--chamfer,0px)),
+  calc(100% - var(--chamfer,0px)) 100%,var(--chamfer,0px) 100%,0 calc(100% - var(--chamfer,0px)))}
+.chamfer,.ph,.btn-primary,.btn-white{clip-path:var(--chamfer-path,none)}
+/* 減光は面の下端に接しているので、下2つの角だけ同じ量で削って面と一致させる */
+.v6-svc-media::after{clip-path:var(--chamfer-path-b,none)}
+.v6-hero-media::after{clip-path:var(--chamfer-path,none)}
+/* clip-path は box-shadow を切り落とす。面から影を外し、必要なら1pxの輪郭に置換する */
+.v6-svc-card:hover .v6-svc-media,.hero-media .ph,.prodrow .ph{box-shadow:none}
+.btn-primary:hover,.btn-white:hover{box-shadow:none}
+/* R-4 角丸の残り（実数直書き）を 0 に落とす。円形マスクは products .v6-gas .thumb の1箇所だけ残す */
+.nav-toggle,.hero .badge,.v6-hero .badge,.badge,.v6-since,.itemlist li,.permits li,.quals li,
+.pdf,.pdf .tag,form input,form textarea,form label .req,.v6-gas .row,.v6-gas .mk,
+.v6-reason .ic,.reason .ic,.v6-qual,.spec,.office,.contact-card,.v6-openings,.v6-job,
+.faq details,.card,.tcard,.step,.hero-chip,.mobilebar a{border-radius:0}
+
+/* =========================================================
+   P5 R-3 窓の開閉 — IO ＋ CSS transition（rAF 不要）
+   .win は媒体の器に付ける。中身は変形しない（scaleX を採らない理由・§G）
+   ========================================================= */
+.js .win{clip-path:inset(0 100% 0 0);
+  transition:clip-path var(--mo-win,640ms) var(--mo-ease,ease-out)}
+.js .win[data-win="xr"]{clip-path:inset(0 0 0 100%)}
+.js .win[data-win="y"] {clip-path:inset(0 0 100% 0)}
+.js .win[data-win="yb"]{clip-path:inset(100% 0 0 0)}
+.js .win.in{clip-path:inset(0 0 0 0)}
+/* 器がフォーカス可能なとき、リング（outline-offset:3px）が clip に切られないようにする */
+.win:focus-visible,.win:focus-within{clip-path:none}
+
+/* =========================================================
+   P5 R-2 理念の一景 — スクロール位置が決める連続値 --sun（0→1）
+   終点は理念の下端でなく次節（FAQ）の上端。JS は §F 検査17 の2要素だけを駆動する
+   ========================================================= */
+.ray{position:absolute;inset-block:0;inset-inline-start:0;width:2px;
+  background:var(--accent,#b45309);transform-origin:top;transform:scaleY(1);
+  pointer-events:none;z-index:1}
+/* 駆動対象は2要素だけ（§F 検査17）——線の「長さ」と、葉の「明るさ」。
+   §C R-2 は2つ目を .creed-main の opacity としていたが、実測で採れない:
+   理念の面 --grad の最悪点（橙端 #b45309）に白文字を全不透明で置いても 5.02:1 しかなく、
+   opacity を 0.93 未満へ落とすと 4.5:1 を割る（0.35 では 2.11:1）。
+   文字の可読性を連続値に譲るのは原理1「動きの中に情報を隠さない」に反するので、
+   明るさの駆動先を「装飾の葉」（文字でない・34×34px）へ移した。振幅は同じ 0.35→1 */
+.creed .ray{transform:scaleY(var(--sun,1))}
+.creed .leaf{opacity:calc(.35 + var(--sun,1) * .65)}
+.creed-main{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .creed .ray{transform:none}
+  .creed .leaf{opacity:1}
+}
+/* 理念の面の上には .rv を1つも置かない（点の最大段を連続値へ移した・§C R-2 条件⑤） */
+.creed .rv{opacity:1;transform:none;transition:none}
+
+/* =========================================================
+   P2 R-17 節の頭の位置 — 中央揃えは占有面（理念）ただ1節に限る
+   理念は節見出しを持たない（継承コピーは <p class="creed-main">）ので
+   section h1,h2,h3 の computed textAlign === 'center' は 0件になる（§F 検査15①）
+   ========================================================= */
+.v6-shead.center,.shead.center,.center,.cta-band,.v6-openings,.v6-trouble-foot{
+  text-align:left;margin-left:0;margin-right:0}
+.v6-shead.center .v6-lead,.shead.center .lead{margin-left:0;margin-right:0}
+.v6-shead.center .eyebrow,.shead.center .eyebrow{justify-content:flex-start}
+@media(max-width:920px){.v6-cta .wrap{text-align:left;justify-items:start}}
+[data-form="占有面"]{text-align:center}
+
+/* =========================================================
+   P2 R-14／R-15／R-16 — 7つの型
+   3値（bleed 階級／列構成／媒体の有無）が全型で一意（1440 と 375 の両方で検算済）
+   ========================================================= */
+
+/* ---------- 1. 占有面（bleed 一・1列/1列・媒体無・padding 0＝svh・中央） ---------- */
+[data-form="占有面"]{padding-block:0}
+[data-form="占有面"] .v6-shead{text-align:center;margin-inline:auto}
+
+/* ---------- 2. 抜き面（bleed 二・1列/1列・媒体有・--pad-l・頭は面の内側の下端） ---------- */
+[data-form="抜き面"]{padding-block:var(--pad-l,181px)}
+[data-form="抜き面"].v6-cat{grid-template-columns:minmax(0,1fr);gap:0;align-items:start}
+[data-form="抜き面"][data-side] .v6-cat-media{
+  grid-column:1;order:-1;margin-inline:calc(50% - 50vw);aspect-ratio:21/9}
+[data-form="抜き面"] .pr-tag{display:block;margin-top:0}
+[data-form="抜き面"] h3{margin-top:6px}
+@media(max-width:920px){
+  [data-form="抜き面"].v6-cat{grid-template-columns:minmax(0,1fr)}
+  [data-form="抜き面"][data-side] .v6-cat-media{aspect-ratio:16/9}
+}
+
+/* ---------- 3. 窓面（bleed 無・2列 58/42 → 1列・媒体有・--pad-m・頭は窓の対岸） ---------- */
+[data-form="窓面"]{padding-block:var(--pad-m,121px)}
+/* hero だけが段外（高さは svh が作る・§B）。他の窓面は --pad-m を持つ */
+[data-form="窓面"].v6-hero{padding-block:0}
+[data-form="窓面"].v6-cat{grid-template-columns:minmax(0,58%) minmax(0,42%)}
+[data-form="窓面"].v6-cat[data-side="r"]{grid-template-columns:minmax(0,42%) minmax(0,58%)}
+[data-form="窓面"] .v6-cat-media{aspect-ratio:4/3;margin-inline:0}
+[data-form="窓面"] .v6-shead{text-align:left;margin-inline:0}
+[data-form="窓面"] .v6-workplace .pics .ph{aspect-ratio:4/3}
+/* v8 検証で是正（bleed 階級を「無」に戻す）——役2 §4b-3「窓は壁に開くもので、壁ごと消えたら
+   窓ではなくなる。窓面と抜き面の差が消えると型が1つ減る」／§B bleed 表の hero は「端まで出ない」。
+   .v6-hero-media は v6 由来の裁ち落とし（絶対配置 right:0）で全4ページの hero が階級三になり、
+   ≤920px では下の margin-inline 負値で階級二＝抜き面と同一シグネチャ（二・1列・媒体有）に融合していた
+   （products では 01 抜き面 と 02 窓面 が隣接同型に落ちる＝§F 検査14①②の不合格）。
+   版面の右端は「ガター」と「--frame-max による余り」の大きい方。1440=43.2px／1920=280px／375=16px */
+[data-form="窓面"]{--frame-x:calc(max(0px,(100% - var(--frame-max,1360px) - var(--gutter,44px)*2)/2) + var(--gutter,44px));
+  --frame-w:calc(100% - var(--frame-x)*2)}
+/* 幅も vw から「版面の列」へ移す。vw のままだと右端を引いた分だけ左へ伸びてコピー列を踏む
+   （1920 で h1 に 118px かぶるのを実測）。列と同値にすると窓は 2列 58/42（下層は 62/38）に一致する */
+[data-form="窓面"] .v6-hero-media{right:var(--frame-x);width:calc(var(--frame-w) * .42)}
+[data-form="窓面"].v6-phead .v6-hero-media{width:calc(var(--frame-w) * .38)}
+/* ≤1279 は下層も 64/36 になる——`.v6-phead .wrap{…68%…}` は同特異度で後勝ちの
+   `.v6-hero .wrap{…64%…}` に必ず負けており、実測でも 64% だった（v7 から死んでいた規則）。
+   窓の幅もそれに合わせる（.32 にすると 1024 で列より 38.5px 狭くなる） */
+@media(max-width:1279px){
+  [data-form="窓面"] .v6-hero-media,
+  [data-form="窓面"].v6-phead .v6-hero-media{width:calc(var(--frame-w) * .36)}
+}
+@media(max-width:920px){
+  [data-form="窓面"].v6-cat,[data-form="窓面"].v6-cat[data-side="r"]{grid-template-columns:minmax(0,1fr)}
+  /* ここに margin-inline:calc(50% - 50vw) を置いていたのが 375/768 での型の融合の直接の原因 */
+  [data-form="窓面"] .v6-cat-media{margin-inline:0}
+  /* .v6-hero-media は .wrap の外（section 直下）にあるので、狭幅では自分で版面の内側へ入れる。
+     width の上書き（.v6-phead .v6-hero-media{width:32vw}）もここで戻さないと 375 で 120px に潰れる */
+  [data-form="窓面"] .v6-hero-media{margin-inline:var(--frame-x);width:auto;right:auto}
+}
+
+/* ---------- 4. 計器帯（bleed 一・4列/2列・媒体無・--pad-s・頭は器の左肩） ---------- */
+[data-form="計器帯"]{padding-block:var(--pad-s,75px);
+  background:var(--green-ink,#123f30);color:#fff}
+[data-form="計器帯"] .v6-shead,[data-form="計器帯"] .v6-h2,[data-form="計器帯"] h3{color:#fff}
+[data-form="計器帯"].v6-stats .wrap{grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--gut,24px) clamp(20px,3vw,44px)}
+[data-form="計器帯"] .v6-stat{text-align:left}
+[data-form="計器帯"] .v6-stat+.v6-stat::before{left:calc(-1 * var(--gut,24px) / 2)}
+/* 器（数字＋ラベル）を全ページで同一にする（R-10）。company 許認可も同じ器に入れる */
+[data-form="計器帯"] .v6-quals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--gut,24px) clamp(20px,3vw,44px);justify-content:start;align-items:start}
+[data-form="計器帯"] .v6-qual,[data-form="計器帯"] .stat{width:auto;height:auto;flex:none;
+  display:block;padding:0;border:0;background:transparent;border-radius:0;text-align:left}
+[data-form="計器帯"] .v6-qual .icn{display:none}
+[data-form="計器帯"] .v6-qual .n,[data-form="計器帯"] .stat .n{display:block;
+  font-family:var(--ff-en,sans-serif);font-weight:var(--fw-d,500);
+  font-size:var(--fs-num,96px);line-height:1;letter-spacing:var(--ls-d,-.03em);color:#fff}
+[data-form="計器帯"] .v6-qual .t,[data-form="計器帯"] .stat .t{display:block;margin-top:14px;
+  font-size:var(--fs-label,14px);font-weight:500;color:rgba(255,255,255,.85);text-align:left}
+/* 箱を作らない（R-15）：地と異なる background・2辺以上の border・box-shadow を 0 件にする */
+[data-form="計器帯"] .quals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0 clamp(20px,3vw,44px)}
+[data-form="計器帯"] .quals li,[data-form="計器帯"] .permits li{border:0;background:transparent;
+  border-radius:0;box-shadow:none;padding:12px 0;color:rgba(255,255,255,.9);
+  border-block-end:1px solid rgba(255,255,255,.18)}
+[data-form="計器帯"] .quals li b{color:#fff}
+[data-form="計器帯"] .permits{justify-content:flex-start!important;gap:0 clamp(20px,3vw,44px)}
+[data-form="計器帯"] .v6-shead,[data-form="計器帯"] .v6-shead.center{text-align:left;margin-inline:0}
+[data-form="計器帯"] .eyebrow{color:rgba(255,255,255,.72)}
+[data-form="計器帯"] .eyebrow::before{background:rgba(255,255,255,.5)}
+/* v8 検証で是正: .hl は .v6-h2 の「子」で自前の color:var(--green) を持つため、上の
+   [data-form="計器帯"] .v6-h2{color:#fff} を継承しない。深緑の面の上に #0e8c63 が残り、
+   company 許認可「スタッフが対応します。」(40px w700) が実測 2.782:1 で 3:1 を割っていた。
+   白へ揃える＝11.80:1。この節でだけ強調の色差は消えるが、色を1色も増やさない側を採る */
+[data-form="計器帯"] .hl{color:#fff}
+@media(max-width:920px){
+  /* 罫組みの2列と計器帯の2列だけは狭幅でも列を減らさない（3値が融合して型が消えるため） */
+  [data-form="計器帯"].v6-stats .wrap{grid-template-columns:repeat(2,minmax(0,1fr))}
+  [data-form="計器帯"] .v6-quals{grid-template-columns:repeat(2,minmax(0,1fr))}
+  [data-form="計器帯"] .quals{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ---------- 5. 罫組み（bleed 四・2列 14ch/1fr → 5.5ch/1fr・媒体無・--pad-l・頭は罫の起点） ----------
+   面も箱も一つも置かない。罫は必ず1辺のみ（2辺で交差した時点で箱になる）
+   線だけが画面の端まで出る＝地の色を変えずに画面を大きく使える唯一の手段（役2 §4b-3） */
+[data-form="罫組み"]{padding-block:var(--pad-l,181px)}
+[data-form="罫組み"]::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:var(--line,#dde7e1)}
+[data-form="罫組み"] .v6-shead,[data-form="罫組み"] .v6-shead.center{text-align:left;margin-inline:0}
+/* 行 = 2列。左の 14ch は罫の起点をつくる空き列（文言を1文字も足さない） */
+[data-form="罫組み"] .v6-trouble{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+[data-form="罫組み"] .v6-trouble .t,
+[data-form="罫組み"] .faq details,
+[data-form="罫組み"] .v6-openings,
+[data-form="罫組み"] .v6-job{display:grid;grid-template-columns:14ch minmax(0,1fr);
+  gap:0 clamp(16px,2vw,32px);
+  padding:var(--gut,24px) 0;margin:0;
+  border:0;border-block-start:1px solid var(--line,#dde7e1);
+  background:transparent;box-shadow:none;border-radius:0;text-align:left}
+[data-form="罫組み"] .v6-trouble .t>*,
+[data-form="罫組み"] .v6-openings>*,
+[data-form="罫組み"] .v6-job>*{grid-column:2}
+[data-form="罫組み"] .v6-trouble .t:first-child{border-block-start:0;padding-top:0}
+[data-form="罫組み"] .faq{border-top:0;width:100%;max-width:none}
+[data-form="罫組み"] .faq summary{grid-column:1 / -1;padding:0 40px 0 0}
+[data-form="罫組み"] .faq .a{grid-column:2;padding:12px 40px 0 0;max-width:var(--measure,32em)}
+[data-form="罫組み"] .faq summary::after{right:6px;top:.7em;transform:none}
+[data-form="罫組み"] .faq details[open] summary::after{transform:rotate(45deg)}
+/* 会社概要の表：枠と地を外し、行の罫1本で組む（FAQ と同じ理由・原理5） */
+[data-form="罫組み"] .spec{border:0;background:transparent;border-radius:0;box-shadow:none}
+[data-form="罫組み"] .spec th,[data-form="罫組み"] .spec td{background:transparent;
+  border-bottom:0;border-top:1px solid var(--line,#dde7e1);padding:18px 0}
+[data-form="罫組み"] .spec th{width:14ch;padding-right:clamp(16px,2vw,32px)}
+[data-form="罫組み"] .spec tr:first-child th,[data-form="罫組み"] .spec tr:first-child td{border-top:0}
+[data-form="罫組み"] .itemlist li,[data-form="罫組み"] .permits li{border:0;background:transparent;
+  border-radius:0;padding:6px 0;margin-right:clamp(16px,2vw,32px)}
+/* 募集状況：3等分の格子をやめ、埋まっていない枠も罫のまま正直に並べる（R-15） */
+[data-form="罫組み"] .v6-jobs{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin-top:0}
+[data-form="罫組み"] .v6-job dt{grid-column:1}
+[data-form="罫組み"] .v6-job dd{grid-column:2;border-bottom:0}
+[data-form="罫組み"] .v6-job dl{display:grid;grid-template-columns:14ch minmax(0,1fr);
+  gap:0 clamp(16px,2vw,32px)}
+/* 05〜07：窓を与えず罫だけで切る（媒体無＝型の3値が成立する条件・役2 §4b-2） */
+/* 節の外周だけに --pad-l を付け、内側は --gut で切る（§B: 181/0・0/0・0/181）。
+   これで DOM section 基準でも「同一段の余白の3連続」が出ない */
+.v6-cats-sm{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gut,24px);padding-block:0}
+.v6-cats-sm>[data-form="罫組み"]{padding-block:0}
+.v6-cats-sm>[data-form="罫組み"]:first-child{padding-block-start:var(--pad-l,181px)}
+.v6-cats-sm>[data-form="罫組み"]:last-child{padding-block-end:var(--pad-l,181px)}
+.v6-cats-sm>[data-form="罫組み"]::before{left:calc(50% - 50vw);right:calc(50% - 50vw)}
+[data-form="罫組み"] .v6-cat-media{display:none}
+@media(max-width:920px){
+  .v6-cats-sm{grid-template-columns:minmax(0,1fr);gap:var(--gut,16px)}
+  [data-form="罫組み"] .v6-trouble .t,
+  [data-form="罫組み"] .faq details,
+  [data-form="罫組み"] .v6-openings,
+  [data-form="罫組み"] .v6-job,
+  [data-form="罫組み"] .v6-job dl{grid-template-columns:5.5ch minmax(0,1fr)}
+  [data-form="罫組み"] .spec th{width:auto}
+  [data-form="罫組み"] .spec th,[data-form="罫組み"] .spec td{display:block;padding:8px 0}
+  [data-form="罫組み"] .spec td{border-top:0;padding-bottom:18px}
+}
+
+/* ---------- 6. 階段（bleed 無・1列/1列・媒体無・--pad-m・頭は段の踏み面） ---------- */
+[data-form="階段"]{padding-block:var(--pad-m,121px)}
+[data-form="階段"] .v6-shead{text-align:left;margin-inline:0}
+[data-form="階段"] .v6-flow{grid-template-columns:minmax(0,1fr);gap:0}
+[data-form="階段"] .v6-flow::before,[data-form="階段"] .v6-flow::after{
+  left:0;right:auto;top:0;bottom:0;width:1px;height:auto;transform-origin:top}
+[data-form="階段"] .v6-flow::after{transform:scaleY(0)}
+.js [data-form="階段"] .v6-flow.in::after{transform:scaleY(1)}
+.rv-safe [data-form="階段"] .v6-flow::after{transform:none}
+[data-form="階段"] .v6-flow .st{padding:var(--gut,24px) 0 var(--gut,24px) clamp(20px,3vw,44px)}
+[data-form="階段"] .v6-flow .st:nth-child(2){margin-inline-start:4ch}
+[data-form="階段"] .v6-flow .st:nth-child(3){margin-inline-start:8ch}
+[data-form="階段"] .v6-flow .st:nth-child(4){margin-inline-start:12ch}
+[data-form="階段"] .v6-flow .sn{background:transparent;padding-right:0}
+@media(prefers-reduced-motion:reduce){[data-form="階段"] .v6-flow::after{transform:none}}
+@media(max-width:920px){
+  [data-form="階段"] .v6-flow{grid-template-columns:minmax(0,1fr);gap:0}
+  [data-form="階段"] .v6-flow::before,[data-form="階段"] .v6-flow::after{display:block}
+  [data-form="階段"] .v6-flow .st:nth-child(2){margin-inline-start:2ch}
+  [data-form="階段"] .v6-flow .st:nth-child(3){margin-inline-start:4ch}
+  [data-form="階段"] .v6-flow .st:nth-child(4){margin-inline-start:6ch}
+}
+
+/* ---------- 7. 片流れ（bleed 三・2列 34/66 → 1列・媒体無・--pad-s・頭は版面の片端） ----------
+   明るい端が画面の外へ抜け、暗い端が版面に残る。左右は節ごとに固定し nth で交互にしない */
+[data-form="片流れ"]{padding-block:var(--pad-s,75px)}
+[data-form="片流れ"]>.wrap{position:relative;display:grid;
+  grid-template-columns:minmax(0,34%) minmax(0,66%);
+  gap:var(--gut,24px) clamp(24px,4vw,64px);align-items:start;text-align:left}
+[data-form="片流れ"]>.wrap::before{content:"";position:absolute;top:0;
+  left:var(--gutter,24px);right:calc(50% - 50vw);height:1px;background:var(--line,#dde7e1)}
+[data-form="片流れ"]>.wrap>.v6-shead{grid-column:1;margin:0}
+[data-form="片流れ"]>.wrap>*:not(.v6-shead){grid-column:2}
+[data-form="片流れ"] .v6-reasons{width:100%;max-width:none;margin:0;border-top:0}
+[data-form="片流れ"] .v6-reason{grid-template-columns:minmax(0,1fr);gap:6px;
+  padding:var(--gut,24px) 0;background:transparent;box-shadow:none;
+  border:0;border-block-end:1px solid var(--line,#dde7e1)}
+[data-form="片流れ"] .v6-reason:hover{background:transparent}
+[data-form="片流れ"] .v6-reason .ic{display:none}
+[data-form="片流れ"] .contact-grid{grid-template-columns:minmax(0,1fr);gap:var(--gut,24px)}
+[data-form="片流れ"] .contact-card{background:transparent;border:0;border-radius:0;
+  box-shadow:none;padding:0}
+[data-form="片流れ"] .crow{border-bottom:0;border-top:1px solid var(--line,#dde7e1)}
+/* 最終CTA：見出しが片端に立ち、電話とボタンが反対側へ流れる */
+[data-form="片流れ"].v6-cta .wrap{grid-template-columns:minmax(0,34%) minmax(0,66%);
+  min-height:0;align-items:start;justify-items:start;text-align:left;
+  padding-block:var(--pad-s,75px)}
+[data-form="片流れ"].v6-cta h2{grid-column:1;grid-row:1 / span 2;margin:0}
+[data-form="片流れ"].v6-cta .tel{grid-column:2;grid-row:1;border:0;padding:0;
+  align-items:flex-start;text-align:left}
+[data-form="片流れ"].v6-cta .btn{grid-column:2;grid-row:2}
+@media(max-width:920px){
+  [data-form="片流れ"]>.wrap,[data-form="片流れ"].v6-cta .wrap{
+    grid-template-columns:minmax(0,1fr);justify-items:stretch;text-align:left}
+  [data-form="片流れ"]>.wrap>.v6-shead,[data-form="片流れ"]>.wrap>*:not(.v6-shead),
+  [data-form="片流れ"].v6-cta h2,[data-form="片流れ"].v6-cta .tel,
+  [data-form="片流れ"].v6-cta .btn{grid-column:1;grid-row:auto}
+  [data-form="片流れ"].v6-cta .btn{justify-self:stretch}
+}
+
+/* =========================================================
+   P3 R-6 索引の器 — 一件あたりの様式を厳格に等しくする
+   行数は1行に強制しない（情報を隠さない）。番号・英字ラベル・和名の y 位置を全件で一致させ、
+   一行説明だけが 1〜2行で伸びる（§C R-6 の代替）
+   ========================================================= */
+.idx-item{display:grid;grid-template-rows:auto auto auto minmax(1.85em,auto);
+  row-gap:var(--gut,24px);align-content:start}
+.idx-item .no{font-family:var(--ff-en,sans-serif);font-size:var(--fs-num,96px);
+  font-weight:var(--fw-d,500);line-height:1;letter-spacing:var(--ls-d,-.03em);color:var(--green,#0e8c63)}
+.idx-item .lb{font-size:var(--fs-label,14px);letter-spacing:.12em;color:var(--green,#0e8c63)}
+.idx-item .nm{font-size:var(--fs-h3,23px);font-weight:var(--fw-h,700);line-height:var(--lh-h3,1.6)}
+.idx-item .one{font-size:var(--fs-body,16px);line-height:var(--lh-body,1.85);color:var(--ink-soft,#5b6862)}
+/* R-18 縦組みは版面の中の索引ラベルとしてのみ。320〜1920 の全幅で表示を止めない */
+[data-form="罫組み"] .idx-item .lb{writing-mode:vertical-rl;max-block-size:100%}
+
+/* =========================================================
+   P2 R-5 部品自身の幅を基準に中身の寸法が決まる器
+   cqw で決めてよいのは余白と図象寸法だけ。font-size と --chamfer には使わない
+   （otoden の cqw 級数 111規則が P2 種類15・最小隣接比1.040 の直接の原因・§G）
+   ========================================================= */
+@supports (container-type:inline-size){
+  .v6-cat,.v6-svc-card,.v6-flow .st,.v6-cats-sm>section{container-type:inline-size}
+  .v6-cat .note,.v6-cats-sm .note{margin-block-start:1.6cqw}
+  .v6-flow .st h3{margin-block:1.8cqw .8cqw}
+  .v6-svc-desc{margin-block-start:2.4cqw}
+}

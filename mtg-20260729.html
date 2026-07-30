@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>日光溶材 Webサイトリニューアル マスターMTG資料</title>
+<style>
+  /* ===== 白背景・文書(Word)風 固定。ダークモード指定なし（静的資料の規範） ===== */
+  :root{
+    --canvas:#e9e9e6;
+    --paper:#ffffff;
+    --ink:#1a1a1a;
+    --ink2:#4a4a47;
+    --muted:#8a8985;
+    --line:#dcdcd6;
+    --rule:#c9c9c2;
+    --tinthead:#f4f4f0;
+    --box:#f8f8f5;
+    --brand:#0a6b4c;       /* 幹＝緑（サイト本体 --green-deep） */
+    --ev:#b45309;          /* 光＝日光オレンジ（サイト本体 --blue） */
+    --good:#1a7a1a; --warn:#9a6a00; --crit:#c0332f;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--canvas);color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+    line-height:1.7;font-size:14.5px}
+  .paper{max-width:900px;margin:20px auto 60px;background:var(--paper);
+    box-shadow:0 1px 4px rgba(0,0,0,.12);border-radius:3px;padding:52px 60px 60px}
+  @media(max-width:680px){.paper{padding:28px 20px 40px;margin:0}}
+  .doc-title{border-bottom:3px solid var(--brand);padding-bottom:14px;margin-bottom:6px}
+  .doc-title h1{font-size:23px;margin:0 0 4px;letter-spacing:.01em}
+  .doc-title .meta{font-size:13px;color:var(--ink2)}
+  nav.toc{display:flex;flex-wrap:wrap;gap:4px 6px;margin:14px 0 28px;font-size:12.5px}
+  nav.toc a{color:var(--brand);text-decoration:none;padding:2px 8px;border:1px solid var(--line);border-radius:14px}
+  nav.toc a:hover{background:var(--tinthead)}
+  section{margin:0 0 34px;scroll-margin-top:16px}
+  h2{font-size:18px;margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--rule);
+    display:flex;align-items:flex-start;gap:9px;line-height:1.45}
+  h2 .num{display:inline-flex;width:25px;height:25px;border-radius:5px;background:var(--brand);
+    color:#fff;font-size:13px;align-items:center;justify-content:center;flex:0 0 auto;margin-top:2px}
+  h3{font-size:14.5px;margin:18px 0 6px;color:var(--brand)}
+  .lead{color:var(--ink2);font-size:13.5px;margin:0 0 10px}
+  .note{font-size:12px;color:var(--muted)}
+  p{margin:6px 0}
+  ul,ol{margin:6px 0;padding-left:20px}
+  li{margin:3px 0}
+  b{font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .chip{font-size:12px;padding:2px 10px;border-radius:20px;border:1px solid var(--line);color:var(--ink2);background:#fff;display:inline-block}
+  .chip.done{color:var(--good);border-color:#bcd8bc;background:#f2f9f2}
+  .chip.warn{color:var(--warn);border-color:#e7d6a6;background:#fbf6e9}
+  .chip.crit{color:var(--crit);border-color:#e6b3b0;background:#fbeeed;font-weight:700}
+  .chip.tbd{color:var(--ev);border-color:#e7c3a6;background:#fbf1e9;font-weight:700}
+  .box{border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:4px;
+    padding:12px 15px;background:var(--box);margin:10px 0}
+  .box.decide{border-left-color:var(--ev)}
+  .box h4{margin:0 0 6px;font-size:13.5px}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{color:var(--ink);font-weight:700;background:var(--tinthead)}
+  .scroll{overflow-x:auto}
+  .tiles{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 14px}
+  .tile{flex:1 1 150px;border:1px solid var(--line);border-radius:6px;padding:11px 14px;background:#fff}
+  .tile .n{font-size:20px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+  .tile .n .was{font-size:13px;color:var(--muted);font-weight:400}
+  .tile .l{font-size:12px;color:var(--ink2)}
+  /* 構成図 */
+  .infra{border:1px solid var(--line);border-radius:6px;padding:16px 18px;background:#fff;margin:10px 0}
+  .infra .dom{display:inline-block;border:2px solid var(--brand);border-radius:5px;padding:6px 14px;font-weight:700;font-size:13.5px}
+  .legs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  @media(max-width:680px){.legs{grid-template-columns:1fr}}
+  .leg{border:1px solid var(--line);border-top:3px solid var(--ev);border-radius:5px;padding:10px 12px;background:var(--box)}
+  .leg .k{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+  .leg .v{font-size:13.5px;font-weight:700;margin:2px 0 4px}
+  .leg .d{font-size:12px;color:var(--ink2);word-break:break-all}
+  .aside{border:1px dashed var(--rule);border-radius:5px;padding:9px 12px;margin-top:12px;font-size:12.5px;color:var(--ink2);background:#fff}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+  @media(max-width:680px){.ba{grid-template-columns:1fr}}
+  .ba>div{border:1px solid var(--line);border-radius:5px;padding:10px 12px;font-size:12.5px;background:#fff}
+  .ba .h{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-bottom:4px}
+  .ba .after{border-left:3px solid var(--brand);background:var(--box)}
+  /* 関連資料（共有版のみ） */
+  .rel{border:1px solid var(--line);border-left:3px solid var(--ev);border-radius:4px;padding:12px 15px;background:var(--box);margin:0 0 28px}
+  .rel .t{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:7px}
+  .rel ul{margin:0;padding-left:18px;font-size:13px}
+  .rel li{margin:4px 0}
+  .rel a{color:var(--brand);font-weight:700}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:16px 0 0;border-top:1px solid var(--line);margin-top:30px}
+  @media print{body{background:#fff}.paper{box-shadow:none;margin:0;max-width:none;padding:0}nav.toc{display:none}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="paper">
+
+  <div class="doc-title">
+    <h1>株式会社 日光溶材 Webサイトリニューアル ｜ マスターMTG資料</h1>
+    <div class="meta">定例 2026-07-29（水）　第2版　更新 2026-07-30　｜　Studio Saitama</div>
+  </div>
+  <nav class="toc">
+    <a href="#agenda">0. 本日の主題</a><a href="#request">1. ご依頼事項</a>
+    <a href="#fixed">2. 前回のご指摘と修正</a><a href="#gas">3. ガス利用シーンの実装</a>
+    <a href="#design">4. デザインの作り直し</a><a href="#photo">5. 写真の擦り合わせ</a>
+    <a href="#infra">6. 引き継ぎの現況</a><a href="#schedule">7. スケジュール</a>
+    <a href="#decided">8. 決定ログ</a>
+  </nav>
+
+  <div class="rel">
+    <div class="t">あわせてご覧ください</div>
+    <ul>
+      <li><a href="proto/">新サイト（制作中の実物）</a>　トップ・取扱製品・会社案内・採用の4ページ。写真はすべて水色の枠で「ここに写真が入る」と表示している</li>
+      <li><a href="index.html">サイトの方針</a>　目的・お客様の課題・ターゲット・ページ構造案</li>
+      <li><a href="hikitsugi.html">引き継ぎ・公開方針</a>　現状・インフラ・公開の段取り（§6 の実査結果は本資料が最新）</li>
+    </ul>
+  </div>
+
+  <!-- 0 -->
+  <section id="agenda">
+    <h2><span class="num">0</span>本日は写真のイメージを揃え、来週前半のデザイン提示につなげる</h2>
+    <p class="lead">前回（6/25）以降、いただいた宿題への対応とサイトの作り込みを進めた。本日は写真の擦り合わせを主題に置き、引き継ぎの現況を共有する。</p>
+    <ol>
+      <li>前回のご指摘6件への対応の報告（§2）</li>
+      <li>ご提供の「ガス利用シーン説明 R1」をどう載せたかの報告と、載せきれなかった分の扱いのご相談（§3）</li>
+      <li><b>写真：どのページのどこに何が入るか（全17枠）の擦り合わせ</b>（§5）</li>
+      <li>引き継ぎ・公開の現況共有。前回の想定が一部変わった（§6）</li>
+    </ol>
+    <div class="box decide">
+      <h4>本日の「決めたいこと」</h4>
+      <div class="chips">
+        <span class="chip">撮影の日程と担当</span>
+        <span class="chip">人物写真に顔を写すか</span>
+        <span class="chip">17枠のうちどこまで撮るか（◎の8枠が最優先）</span>
+        <span class="chip">ガス原稿で載せきれなかった分を戻すか</span>
+        <span class="chip">大塚商会アルファメールの管理画面ログイン（§6）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 ご依頼事項 -->
+  <section id="request">
+    <h2><span class="num">1</span>お打ち合わせを受けて、2点お願いしたい</h2>
+    <p class="lead">8月末の公開に向けて、御社にお願いしたいことが2件ある。</p>
+
+    <h3>1-1. 現在のサイトの文言を、細部までご確認いただきたい</h3>
+    <p>事業者情報・商品情報は、<b>旧サイトからの引き継ぎとご提供資料をもとに載せている</b>。制作側では正誤を判断できないため、誤りと修正のご要望を洗い出していただきたい。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:14%">ページ</th><th style="width:26%">箇所</th><th>特にご確認いただきたい点</th></tr>
+      <tr><td>会社案内</td><td>会社概要</td><td>会社名／設立 昭和46年（1971年）8月／資本金 1,000万円／代表者 小林 克徳／従業員数 20名／本社・北関東営業所・倉庫の3住所</td></tr>
+      <tr><td>会社案内</td><td>有資格者一覧（12種）</td><td>資格名の表記。<b>取得していない資格が混ざっていないか</b></td></tr>
+      <tr><td>会社案内</td><td>事業所販売許可・登録（6種）</td><td>高圧ガス／液化石油ガス／特定液化石油ガス設備工事／毒物劇物／第一種フロン類回収／医薬品・高度管理医療機器。名称と、<b>現在も有効か</b></td></tr>
+      <tr><td>会社案内</td><td>拠点情報</td><td>電話・FAX・最寄駅。本社＝JR川口駅／埼玉高速 川口元郷駅、北関東＝東武 花崎駅 徒歩15分</td></tr>
+      <tr><td>会社案内</td><td>対応エリア</td><td>「川口市・加須市を中心に。エリア外もまずはご相談ください」の書き方でよいか</td></tr>
+      <tr><td>製品</td><td>取扱いガス9種・カテゴリ7種</td><td>名称の表記（溶解アセチレン／炭酸ガス 等）。<b>扱っていないものが混ざっていないか</b></td></tr>
+      <tr><td>製品</td><td>各ガスの「現場では」「まめ知識」</td><td>ご提供原稿を1段ずつに圧縮している（§3）。<b>意味が変わっていないか</b></td></tr>
+      <tr><td>トップ</td><td>数字バンド</td><td>創業55年／2拠点／川口・北関東。年数と拠点の表記に誤りがないか</td></tr>
+      <tr><td>全ページ</td><td>受付時間</td><td>現在 <code>◯:◯〜◯:◯</code> の伏字のまま。<b>確定値をご指定いただきたい</b></td></tr>
+      <tr><td>全ページ</td><td>事業内容の記述</td><td>「高圧ガス部門（工業ガス・医療用ガス）／機械部門（溶接機・FA機器 ほか）」で過不足ないか</td></tr>
+    </table>
+    </div>
+    <p class="note">戻し方は問わない。箇条書き・スクリーンショットへの書き込み・紙に赤入れ、いずれでも可。ページ名と箇所が分かれば十分。</p>
+
+    <h3>1-2. 沿革と代表者挨拶の原稿をご作成いただきたい</h3>
+    <p>新たに掲載することになった2つ。<b>会社案内ページ</b>に追加する。いずれも御社にてご作成いただきたい。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:20%">項目</th><th style="width:52%">内容</th><th>分量</th></tr>
+      <tr><td><b>沿革</b></td><td>創業から現在までの年表。年と出来事が分かる形で</td><td>—</td></tr>
+      <tr><td><b>代表者挨拶</b></td><td>代表取締役 小林 克徳 様のお名前で</td><td><b>300〜500字</b>（推奨）</td></tr>
+    </table>
+    </div>
+    <p class="note">※ 代表者のお写真は任意（§5 カットリスト B 参照）。挨拶文を載せる場合、お写真があると印象が大きく変わる。</p>
+
+    <div class="box">
+      <h4>お願い事項のまとめ</h4>
+      <div class="chips">
+        <span class="chip">① サイト文言のご確認（事業者情報・商品情報）</span>
+        <span class="chip">② 沿革の年表</span>
+        <span class="chip">③ 代表者挨拶（300〜500字）</span>
+        <span class="chip">④ 受付時間の確定値</span>
+        <span class="chip">⑤ 撮影日程（§5）</span>
+        <span class="chip">⑥ 大塚商会アルファメールの管理画面ログイン（§6）</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section id="fixed">
+    <h2><span class="num">2</span>前回（6/25）のご指摘は6件すべて反映済み</h2>
+    <p class="lead">6月25日の打ち合わせでいただいた指摘・決定と、それをどこにどう反映したか。現物は本日の画面で確認いただける。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:24%">前回のご指摘・決定</th><th style="width:36%">どう直したか</th><th style="width:26%">なぜそうしたか（反映の意図）</th><th style="width:14%">状態</th></tr>
+      <tr>
+        <td><b>「即見積り」の表現をやめ、ヒアリング・相談ベースに</b><br><span class="note">工業用ガスは即見積もりを出さない商習慣（シマ意識）への配慮</span></td>
+        <td>全ページのコピーを書き換え。「見積もり無料」「相見積もり」「今の価格を見直しませんか」「ご相談は無料です」は<b>全削除</b>。締めの一言は「<b>お気軽にご相談ください。</b>」（製品ページのみ「ガスや周辺機材について、日光溶材にお任せください。」）に。</td>
+        <td>価格の話を入口にしない。問い合わせの心理的ハードルは「安さ」ではなく「聞くだけでいい」で下げる。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td><b>製品ページを「実績・用途」中心の読み物型へ。PDF直置きは原則回避</b></td>
+        <td>製品ページを全面再設計。7カテゴリの中に各ガスを入れ子にし、ご提供いただいたシーン原稿を本文に据えた（詳細は§3）。SDS等のPDFは直置きしていない。</td>
+        <td>「何を売っているか」の羅列では強みが伝わらない。「どの現場で効くか」を先に見せ、当てはまる方に問い合わせてもらう。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td><b>トップの電話は本社1本に集約。全拠点は会社案内へ</b></td>
+        <td>トップの電話導線は本社 048-224-2151 の1本のみ。会社案内ページに本社・北関東営業所の2本を掲載。</td>
+        <td>選ばせない。誤着が増えるようなら拠点別を追加する段階運用。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td><b>カラーは「日光」に合う明るいオレンジ寄りを軸に。緑の併用は可</b></td>
+        <td><b>緑×日光オレンジ</b>を全ページに適用。緑＝会社の骨格（見出し・アイコン）、オレンジ＝行動（電話・問い合わせ・リンク）と役割を分けた。理念の帯は<b>緑→芽吹き→オレンジ</b>のグラデーション。</td>
+        <td>「草木を育む日光のように」を色そのもので言う。緑（草木）を橙（日光）が照らす並びにした。オレンジを装飾ではなく「押す場所」の色に固定したので、画面のどこを押せばよいか迷わない。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td><b>採用ページを簡易実装で追加（募集有無の切替ができる程度）</b></td>
+        <td>採用ページを新設。「現在の募集状況」の枠を1つ置き、募集開始／終了時に<b>その枠だけ差し替える</b>作り。切替手順をファイル内に注記済み。</td>
+        <td>外部の求人サービスを使っていないため、更新の手数を1箇所に閉じ込めた。募集がない期間も「無い」と書けるので、放置に見えない。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+      <tr>
+        <td><b>実名事例は許諾がなければ一般化した表現で</b></td>
+        <td>ご提供原稿に実名の記載がなかったため、いただいた表現のまま掲載。制作側で企業名・事例名を足していない。</td>
+        <td>許諾の確認が要る箇所をそもそも作らない。</td>
+        <td><span class="chip done">✅ 完了</span></td>
+      </tr>
+    </table>
+    </div>
+    <p class="note">※ 前回お見せしたデモは6月24日時点のもの。上記に加えてデザインそのものを作り直しており、本日ご覧いただく画面は前回とかなり印象が変わっている（§4）。</p>
+  </section>
+
+  <!-- 2 -->
+  <section id="gas">
+    <h2><span class="num">3</span>ご提供の「ガス利用シーン説明」は、製品ページの本文そのものになった</h2>
+    <p class="lead">2026-07-09付でいただいた9ガス分の原稿（産業用の利用シーン／雑学系の利用シーン）を、製品ページの中核に据えた。制作側で新たに用途を創作した箇所はない。</p>
+
+    <h3>置き方：ガスの一覧ではなく、カテゴリの中に入れ子にした</h3>
+    <p>7つの取扱カテゴリを立て、その中に該当するガスを畳んで収めた。ガス名の行を押すと「現場では」「まめ知識」の2段が開く。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:30%">カテゴリ</th><th style="width:44%">中に入れたガス</th><th style="width:26%">見出しに使った一言</th></tr>
+      <tr><td>01 産業用ガス</td><td>酸素／窒素／アルゴン／炭酸ガス／溶解アセチレン／水素（6）</td><td>「鉄を切り、魚を育てる」（酸素）ほか</td></tr>
+      <tr><td>02 医療用ガス・各種医療機器</td><td>医療用酸素／ヘリウム（2）</td><td>「MRIを冷やす、希少なガス」（ヘリウム）</td></tr>
+      <tr><td>03 LPガス・ガス機器</td><td>LPガス（1）</td><td>「厨房の火から、災害時の備えまで」</td></tr>
+      <tr><td>04 冷媒ガス・空調</td><td>アンモニア（1）</td><td>「食卓を支え、冷やす力にもなる」</td></tr>
+      <tr><td>05〜07 溶接機・溶接材料／電動工具／超音波機器・ガス圧接</td><td>—（ガスなし）</td><td>—</td></tr>
+    </table>
+    </div>
+    <div class="box">
+      <h4>意図：読み手は「ガスの名前」ではなく「自分の現場」から探す</h4>
+      <p>9ガスを平場に並べると、閲覧者は自分に関係のあるものを自力で見つけねばならない。カテゴリ → ガス → シーンの順に降りる形にすれば、医療機関の方は02だけ、鉄工所の方は01だけを見れば済む。酸素だけは産業用と医療用の性格が違うため、<b>2箇所に分けて別の文章で掲載</b>した。</p>
+    </div>
+
+    <h3>文章の扱い：内容は変えず、1項目2〜3文に整えた</h3>
+    <div class="ba">
+      <div>
+        <div class="h">いただいた原稿（窒素・産業用）</div>
+        食品工場では、お菓子やコーヒー、加工食品の袋詰め時に酸化を防ぐため封入されています。品質維持や賞味期限の延長に役立っています。／ステンレス切断におけるアシストガスとして使用されます。無酸化切断とも呼ばれ〜／電子部品や半導体工場では、酸化を防ぐための不活性ガスとして製造工程で広く利用されています。
+      </div>
+      <div class="after">
+        <div class="h">掲載（現場では）</div>
+        食品工場では袋詰め時に封入して酸化を防ぎ、品質維持や賞味期限の延長に役立ちます。ステンレスの「無酸化切断」のアシストガスや、半導体・電子部品の製造でも不活性ガスとして使われます。
+      </div>
+    </div>
+    <p class="note">3項目を1段に圧縮。技術用語（無酸化切断・不活性ガス）は残した。専門の方が読んで痩せて見えないことを優先している。</p>
+
+    <div class="box">
+      <h4>アセチレンの「（←利用シーンではない？）」というご注記について</h4>
+      <p>「アセトンなどに溶かした状態で専用ボンベに充填されている」——利用シーンではないが、<b>採用した</b>。ボンベを扱う理由の説明として一般の読み手に効くため、「まめ知識」に置いている。</p>
+    </div>
+
+    <h3>載せきれなかった分がある（本日のご相談）</h3>
+    <p>1ガスにつき「現場では」「まめ知識」の各1段に固定したため、いただいた中から次を落とした。<b>内容に問題があったわけではなく、枠に収めるための取捨</b>。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:20%">ガス</th><th>掲載を見送った内容</th></tr>
+      <tr><td>窒素</td><td>レーシングカー・航空機のタイヤ充填／ガソリンスタンド等での一般車への窒素充填（空気圧安定・タイヤ寿命・燃費）</td></tr>
+      <tr><td>アルゴン</td><td>展示ケースでの美術品・文化財の酸化防止</td></tr>
+      <tr><td>炭酸ガス</td><td>炭酸飲料の発泡剤／人工炭酸泉・炭酸シャンプー・化粧水などの美容・健康分野<span class="note">（原稿の誤変換箇所を含むため要確認扱いとした）</span></td></tr>
+      <tr><td>水素</td><td>ロケット燃料（H3ロケット）<span class="note">※ 見出しの一言「半導体から、ロケットまで」には残している</span></td></tr>
+      <tr><td>アンモニア</td><td>肥料原料としての位置づけ／次世代エネルギー・水素の輸送媒体としての研究</td></tr>
+      <tr><td>ヘリウム</td><td>供給が限られる天然資源であること／風船・飛行船・プロペラのないドローン研究</td></tr>
+      <tr><td>LPガス</td><td>キャンプ用コンロ・アウトドア機器</td></tr>
+    </table>
+    </div>
+    <div class="box decide">
+      <h4>ご相談</h4>
+      <p>A：このまま（1ガス2段で軽く読める）／B：関心の高いガスだけ段を増やして戻す／C：全量を載せる。<br>制作側の推奨は<b>A</b>。読み物として軽いことが問い合わせにつながると考えている。ただし営業でよく話題になるガスがあれば、そこだけBで厚くしたい。</p>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section id="design">
+    <h2><span class="num">4</span>デザインは前回デモから作り直した——静的で画面を小さく使っていたため</h2>
+    <p class="lead">前回のデモは情報は揃っていたが、画面が静的で、近年のサイトと並べたときに見劣りする状態だった。同業・他業種のサイトを実測し、差が出ている箇所を数値で特定したうえで直した。</p>
+    <div class="tiles">
+      <div class="tile"><div class="n">112px <span class="was">← 67px</span></div><div class="l">最も大きい文字（参考サイトは144〜170px）</div></div>
+      <div class="tile"><div class="n">94% <span class="was">← 79%</span></div><div class="l">画面幅に対する版面（余らせすぎていた）</div></div>
+      <div class="tile"><div class="n">4箇所 <span class="was">← 0箇所</span></div><div class="l">画面いっぱいを使うセクション</div></div>
+    </div>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:32%">変えたこと</th><th>なぜそうしたか</th></tr>
+      <tr><td><b>幅を2種類に分けた</b></td><td>写真や色の面は画面いっぱいまで広げ、読ませる文章だけは従来どおりの幅に留める。従来は両方を同じ幅で扱っていたため、広げると文章が読みにくく、読みやすくすると画面が余る、という板挟みになっていた。</td></tr>
+      <tr><td><b>文字の大小をはっきりさせた</b></td><td>似た大きさの文字が58種類あり、どこが重要かが伝わっていなかった。11種類に絞り、見出しと本文の差を大きく開けた。</td></tr>
+      <tr><td><b>画面いっぱいのセクションを4箇所つくった</b></td><td>トップの冒頭、取扱いの紹介、理念、製品ページの先頭。スクロールに「場面の切り替わり」が生まれ、読み進める区切りになる。</td></tr>
+      <tr><td><b>スクロールで現れる動きに強弱をつけた</b></td><td>すべて同じ動きだと単調になる。重要な見出しは大きく、細かい要素は控えめに現れる3段階にした。</td></tr>
+      <tr><td><b>理念の一節を明朝体・大きめの縦組み寄りに</b></td><td>「草木を育む日光のように」は会社の言葉であり、商品説明と同じ体裁では埋もれる。</td></tr>
+      <tr><td><b>外部のアニメーション部品は入れなかった</b></td><td>導入すると表示が重くなり、将来の引き継ぎ時に「これは何のファイルか」が増える。標準の技術だけで同じ見た目を実現した。</td></tr>
+    </table>
+    </div>
+    <p class="note">※ 画像はすべて<b>水色の枠</b>で「ここに写真が入る」と表示している。仮であることが一目で分かるよう、サイトで使わない色にしてある。この枠が§5の17箇所。</p>
+  </section>
+
+  <!-- 4 -->
+  <section id="photo">
+    <h2><span class="num">5</span>写真は全17枠。うち◎8枠が揃えば公開できる</h2>
+    <p class="lead">本日の主題。現在サイト上で「水色の枠」になっている箇所と、そこに入る写真の一覧。全部を撮る必要はない。</p>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:6%">優先</th><th style="width:18%">ページ</th><th style="width:30%">入る場所</th><th>撮っていただきたいもの</th></tr>
+      <tr><td><b>◎</b></td><td>トップ</td><td>冒頭・画面いっぱい</td><td>サイトの顔になる1枚。ガス容器置き場／現場／スタッフのいずれか</td></tr>
+      <tr><td><b>◎</b></td><td>トップ</td><td>取扱い 産業用ガス</td><td>ボンベ／容器置き場（色分けが映えると良い）</td></tr>
+      <tr><td>○</td><td>トップ</td><td>取扱い 医療用ガス</td><td>在宅用医療機器など</td></tr>
+      <tr><td>○</td><td>トップ</td><td>取扱い LPガス</td><td>給湯・厨房機器</td></tr>
+      <tr><td><b>◎</b></td><td>トップ</td><td>取扱い 溶接機・工具</td><td>溶接機材／電動工具</td></tr>
+      <tr><td><b>◎</b></td><td>製品</td><td>冒頭・画面いっぱい</td><td>ボンベ／圧力計まわりの寄り</td></tr>
+      <tr><td><b>◎</b></td><td>製品</td><td>01 産業用ガス</td><td>ボンベ／容器置き場（トップとは別アングル）</td></tr>
+      <tr><td>○</td><td>製品</td><td>02 医療用ガス</td><td>医療ガス設備／在宅用機器</td></tr>
+      <tr><td>○</td><td>製品</td><td>03 LPガス</td><td>給湯・厨房機器</td></tr>
+      <tr><td>○</td><td>製品</td><td>04 冷媒ガス・空調</td><td>冷媒回収機／空調設備</td></tr>
+      <tr><td><b>◎</b></td><td>製品</td><td>05 溶接機・溶接材料</td><td>溶接機・溶接棒など</td></tr>
+      <tr><td>○</td><td>製品</td><td>06 電動工具</td><td>電動工具</td></tr>
+      <tr><td>○</td><td>製品</td><td>07 超音波機器・ガス圧接</td><td>該当機器</td></tr>
+      <tr><td><b>◎</b></td><td>会社案内</td><td>冒頭・画面いっぱい</td><td>倉庫の通路／容器置き場など、会社の空気が出る1枚</td></tr>
+      <tr><td><b>◎</b></td><td>採用</td><td>冒頭・画面いっぱい</td><td>働く様子（手元・後ろ姿）</td></tr>
+      <tr><td>○</td><td>採用</td><td>拠点 本社</td><td>本社まわりの外観</td></tr>
+      <tr><td>○</td><td>採用</td><td>拠点 北関東営業所</td><td>営業所まわりの外観</td></tr>
+    </table>
+    </div>
+
+    <div class="box decide">
+      <h4>本日決めたいこと</h4>
+      <ol>
+        <li><b>撮影日と担当者。</b>8月上旬のレビューに載せるには、8月初旬までに写真が要る。</li>
+        <li><b>人物の顔を写すか。</b>現在は「顔を写さない（手元・後ろ姿）」前提で作っている。顔出しが可能なら、採用ページとトップの説得力が大きく変わる。社内の同意が要る話のため、本日方針だけ決めたい。</li>
+        <li><b>◎の8枠に絞るか、○も含めて17枠撮るか。</b>◎が揃えば公開はできる。</li>
+      </ol>
+    </div>
+
+    <h3>撮影のコツ（スマートフォンで問題ない）</h3>
+    <ul>
+      <li>明るい時間・自然光で。室内は電気を全部点ける。</li>
+      <li><b>背景を片付けてから</b>撮る。雑多な物の写り込みが「安っぽさ」の最大の原因。</li>
+      <li>水平・垂直を意識（スマートフォンのグリッド表示をON）。</li>
+      <li>同じ被写体を<b>横位置と縦位置の両方</b>で。ページによって必要な向きが違う。</li>
+      <li>加工前のオリジナルを保存しておく。</li>
+    </ul>
+  </section>
+
+  <!-- 5 -->
+  <section id="infra">
+    <h2><span class="num">6</span>引き継ぎ：ドメイン・メール・ホームページの3つとも大塚商会に載っていた</h2>
+    <p class="lead">前回は「回線＝ぷらら、メール＝大塚商会、ホームページはぷららのプチウェブか」と推定でお伝えしていた。本日までに公開情報を実査したところ、<b>推定が一部外れていた</b>。</p>
+
+    <h3>実査の結果（2026-07-28・公開情報のみで確認）</h3>
+    <div class="infra">
+      <div class="dom">nikko-a.co.jp</div>
+      <div class="legs">
+        <div class="leg">
+          <div class="k">DNS（住所の案内板）</div>
+          <div class="v">大塚商会 アルファメール</div>
+          <div class="d">amdns03.alpha-mail.jp ／ kotetsu.alpha-lt.net</div>
+        </div>
+        <div class="leg">
+          <div class="k">MX（メールの宛先）</div>
+          <div class="v">大塚商会 アルファメール</div>
+          <div class="d">ampub01〜04.alpha-mail.net</div>
+        </div>
+        <div class="leg">
+          <div class="k">A（ホームページの置き場所）</div>
+          <div class="v">大塚商会 アルファメール</div>
+          <div class="d">webltw88.alpha-mail.jp</div>
+        </div>
+      </div>
+      <div class="aside">ぷらら＝回線（インターネット接続）。<b>現時点の実査では、ホームページの配信にもドメインの案内板にも関与していない。</b>ただしドメインの登録窓口（更新料の請求元）がぷららである可能性は残る＝要確認。</div>
+    </div>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:30%">確認した事項</th><th style="width:44%">結果</th><th style="width:26%">意味</th></tr>
+      <tr><td>ドメインの登録名義</td><td><b>株式会社 日光溶材</b>（2001-09-12 登録）</td><td>貴社の資産。第三者名義になっていない。</td></tr>
+      <tr><td>ドメインの有効期限</td><td>2026-09-30</td><td>公開目標（8月末）の直後。更新の請求元は要確認。</td></tr>
+      <tr><td>ホームページの最終更新</td><td>2014-08-22</td><td>サーバーの応答から実測。約12年。</td></tr>
+      <tr><td>常時SSL（https）</td><td>未対応（証明書がドメインと一致しない）</td><td>今回の公開で解消する。</td></tr>
+    </table>
+    </div>
+
+    <div class="box">
+      <h4>結論：確認いただくアカウントは実質1つに絞れた</h4>
+      <p>前回は<b>3アカウント</b>（ぷらら／大塚商会／ドメイン管理）のご確認をお願いしていた。実査の結果、Web・メール・DNSがすべて大塚商会アルファメールに載っているため、<b>大塚商会アルファメールの管理画面（online.alpha-web.jp）1つ</b>が押さえられれば公開まで進める。</p>
+      <p>しかもこの場合、<b>今のホームページと同じ場所に新しいサイトを置き換えるだけで済む</b>。DNSを触らないため、会社のメールは一切影響を受けない——前回申し上げた「最短・最安全ルート」が実際に使える見込みが立った。</p>
+    </div>
+
+    <div class="scroll">
+    <table>
+      <tr><th style="width:38%">やること</th><th style="width:22%">どなたが</th><th>補足</th></tr>
+      <tr><td><b>大塚商会アルファメールの管理画面ログインの確認</b></td><td>貴社（営業ご担当経由）</td><td>ここが押さえられれば公開まで進める。各社への問い合わせは契約者である貴社からでないと受け付けられない。</td></tr>
+      <tr><td>ドメインの登録窓口（更新料の請求元）の確認</td><td>貴社</td><td>ぷらら／大塚商会のどちらか。請求書で判別できる。9月末の更新期限に関わる。</td></tr>
+      <tr><td>ぷららの「独自ドメイン登録」「プチウェブ」契約が残っているか</td><td>貴社</td><td>使われていない契約が残っている可能性。整理の対象になりうる。</td></tr>
+      <tr><td>ぷららの手掛かり書類（前回発見分）の内容確認</td><td>貴社</td><td>上記2件の判断材料になる。</td></tr>
+      <tr><td>契約名義の代表者名の現況確認</td><td>貴社</td><td>古い書類と現在の会社案内で代表者名の記載が異なる。手続き時に必要になる。</td></tr>
+      <tr><td>公開作業（向き先の切替・設置）</td><td>制作側</td><td>ログインが揃い次第着手する。</td></tr>
+    </table>
+    </div>
+    <p class="note">※ 上記は公開情報（whois・DNS・サーバー応答）からの実査結果。契約の実態（どこに何を支払っているか）は書類でのご確認が必要。</p>
+    <div class="box">
+      <h4>揃わない場合も止まらない</h4>
+      <p>ログインが手元にない場合でも、契約者ご本人であれば各社サポートで再発行できることが多い。それも難しい場合は、<b>メールは今のまま据え置き、ホームページだけ新しい住所で先に公開する</b>（前回ご説明の代替案）。この場合もメールは止まらない。</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section id="schedule">
+    <h2><span class="num">7</span>スケジュール：8月末の本番公開を目指す</h2>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:22%">時期</th><th style="width:52%">内容</th><th>担当</th></tr>
+      <tr><td>8月上旬</td><td>サイトデザインのご提示</td><td>制作</td></tr>
+      <tr><td>8月上旬</td><td>写真撮影／サイト文言のご確認（§1-1）／沿革・代表者挨拶（§1-2）</td><td>日光溶材様</td></tr>
+      <tr><td>8月中旬</td><td>写真・沿革・代表者挨拶を反映してクイックレビュー</td><td>双方</td></tr>
+      <tr><td><b>8月末</b></td><td><b>本番公開</b></td><td>制作</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="decided">
+    <h2><span class="num">8</span>決定事項ログ</h2>
+    <div class="scroll">
+    <table>
+      <tr><th style="width:14%">日付</th><th style="width:56%">決定</th><th>出所</th></tr>
+      <tr><td>2026-07-24</td><td>カラーは<b>緑＝幹 × 日光オレンジ＝光</b>のB案を採用（3案比較のうえ確定）</td><td>制作側裁定</td></tr>
+      <tr><td>2026-06-25</td><td>製品ページは「実績・用途」中心の読み物型に刷新。SDS等のPDF直置きは原則回避。実名事例は許諾がなければ一般化</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-25</td><td>見積もり文言は「ヒアリング・相談」トーンへ全面修正（工業用ガスの商習慣に配慮）</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-25</td><td>トップの電話番号は当面本社1本に集約。全拠点は会社案内ページに</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-25</td><td>トップは「日光」に合う明るいトーン（オレンジ寄り）を軸にする。緑の併用は可</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-25</td><td>採用ページを簡易実装で追加（募集有無の切替が可能な程度）</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-25</td><td>撮影は7月中旬〜下旬。8月頭に写真反映後クイックレビュー → 8月末 本番公開</td><td>MTG議事録</td></tr>
+      <tr><td>2026-06-24</td><td>更新性は不要のため CMS は採用せず静的サイト。代わりに「将来誰でも引き継げる作り」を前提化</td><td>クライアント方針</td></tr>
+      <tr><td>2026-06-24</td><td>問い合わせ窓口は電話・メールのみ（LINE不採用）</td><td>クライアント方針</td></tr>
+      <tr><td>2026-06-24</td><td>写真は貴社スマートフォンでの自前撮影。旧サイトの画像は使わない</td><td>クライアント方針</td></tr>
+      <tr><td>2026-06-24</td><td>「草木を育む日光のように／新しい価値を創造します」はテキストで継承</td><td>クライアント方針</td></tr>
+      <tr><td>2026-06-24</td><td>デザインの判断軸＝清潔感・品性・シンプル・安っぽくない・飽きがこない</td><td>クライアント方針</td></tr>
+      <tr><td>2026-06-24</td><td>サイト構成は3ページに簡素化（＋採用ページを6/25に追加）</td><td>クライアント選択</td></tr>
+      <tr><td>2026-06-24</td><td>リニューアルの目的は「問い合わせ（ご相談・お見積もり依頼）件数を増やすこと」</td><td>提案書</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <footer>株式会社 日光溶材 Webサイトリニューアル ／ マスターMTG資料 ／ 現在: 第2版（2026-07-29 定例・2026-07-30 ご依頼事項を追記）<br>
+  取扱注意：契約番号・ID・パスワード・口座等の機密情報は本資料に記載していない。</footer>
+</div>
+</body>
+</html>

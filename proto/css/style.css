@@ -1,8 +1,52 @@
 /* =========================================================
-   株式会社日光溶材 公式サイト  共通スタイル  v3(design_lab)
-   スキン正本: design_lab/4_skins/2026-07-15_日光溶材_サイト.md
-   色の文法: 緑=幹(構造・アイコン)/青=光(行動: CTA・リンク)
+   株式会社日光溶材 公式サイト  共通スタイル  v8(design_lab)
+   スキン正本: design_lab/4_skins/2026-07-27_日光溶材_サイト.md
+   表現視座: 5_works/20260727_日光溶材_v8/表現視座_v1.md
+   実装申し送り: 同 実装申し送り_v1.md（§B が設計値の正本）
+   色の文法: 緑=幹(構造・アイコン)/橙=光(行動: CTA・リンク)
    グラデーションは理念バンドただ一箇所。太字900全廃・階層は級数と余白
+
+   ---------------------------------------------------------
+   §B 全16項目 → 実装値の対応表（P0・これがサイトの設計値の正本）
+   ---------------------------------------------------------
+   01 版面              1440/1280/1024 で 94.0%（--frame-max:1360px ＋ --gutter）
+                        375 で 91.5%（--gutter 下限 20→16px）
+   02 最大級数          112px 和文（index hero h1 のみ）＝ --fs-d4 上限
+                        下層 h1 上限 82px ＝ --fs-d3／理念 .creed-main も 82px
+   03 ジャンプ率        7.00（112 ÷ 16）。products は 5.12
+   04 級数トークン11／空帯1
+                        --fs-logo 10 / --fs-cap 12 / --fs-label 14 / --fs-body 16
+                        --fs-lead 19 / --fs-h3 23 / --fs-d1 40 / --fs-d2 58
+                        --fs-d3 82 / --fs-num 96(欧文数字) / --fs-d4 112
+                        最小隣接比 1.143（14→16）／空帯 1箇所（23→40 = 1.739）
+   05 節の型7種         [data-form="占有面|抜き面|窓面|計器帯|罫組み|階段|片流れ"]
+                        25節に割当（§B 全節表）。同型3連続 0／背景色だけ違う隣接 0
+   06 bleed 4階級       一=色の面が両端(占有面・計器帯) 3節／二=窓が両端(抜き面) 2節
+                        三=片側だけ(片流れ) 5節／四=線だけ(罫組み) 5節／留まる 10節
+                        いずれも margin-inline:calc(50% - 50vw) で作る（100vw は書かない）
+   07 余白4段           --pad-s/m/l ＋ 全画面級の svh。段は節でなく型に束ねる
+                        占有面・hero=0(svh)／抜き面・罫組み=--pad-l
+                        窓面・階段=--pad-m／計器帯・片流れ=--pad-s
+   08 全画面級          色面 1箇所（理念 .creed のみ）／高さ 2箇所（hero と理念）
+                        他は ≤0.84×innerHeight（.v6-svc-sec を min(78svh,700px) へ）
+   09 節の頭／中央揃え  中央揃えの節見出し 0。中央は占有面ただ1節（見出しを持たない）
+   10 箱を作らない型    罫組み・階段・計器帯・片流れの内側に
+                        2辺以上の border／地と異なる background／box-shadow が 0件
+                        3等分グリッドの節 0（.v6-trouble・.v6-cats-sm・.v6-jobs を置換）
+   11 動きの振幅4段     連続値 --sun ／ A 24px 640ms ／ B 14px 500ms ／ C 8px 400ms
+                        最大/最小 3.0倍・全段 400–700ms・移動量上限 24px・ease 1本
+   12 面取り            --chamfer:.425em。当てるのは「面」だけ（塗りが可視の矩形）
+                        文字を直接持つ箱と、輪郭で立つ箱には当てない。--r/--r-lg は 0
+   13 M7 の実装先       3箇所 ①#top-sentinel + IO ②理念の --sun（IO + rAF）
+                        ③窓の開閉（IO + CSS transition の clip-path: inset()）
+                        scroll イベントリスナは 0本
+   14 重ね／形の変化    重ね 2箇所（.v6-since／lead カードの番号・名称）
+                        形の変化 2種（面取り／products .v6-gas .thumb の円形マスク）
+   15 仮の面            水色ソリッド維持（施主指定）。大面から破線と "PHOTO" を外す
+                        窓の開く向きと同じ方向のソリッドの帯を1本（面積 1/3・階調なし）
+                        アスペクト比は型が決める（抜き面 21:9／窓面 4:3／小窓 1:1）
+   16 予算              追加ライブラリ 0本／JS 生サイズ ≤9,000B
+                        外部ドメインへのリクエスト増 0／総リクエスト増 0／LCP ≤1.8秒
    ========================================================= */
 
 :root{
@@ -23,8 +67,9 @@
   --card-sh-hv:0 2px 4px rgba(16,50,38,.05), 0 16px 36px rgba(16,50,38,.10);
 
   --maxw:1140px;          /* 旧・互換用。版面は --frame-max が正 */
-  --r:10px;
-  --r-lg:14px;
+  /* v8 R-4: 角丸を全廃し、角は面取り(--chamfer)で作る。落とすときは角丸へ戻さず直角へ落とす */
+  --r:0;
+  --r-lg:0;
   --ff-jp:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
   --ff-en:"Outfit",var(--ff-jp);
   --ff-mincho:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;
@@ -36,30 +81,34 @@
      ========================================================= */
 
   /* --- 幅の3層：面は px/vw（画面から決まる）／行は em（文字から決まる） --- */
-  --gutter:clamp(20px,3vw,44px);   /* 1440 → 43.2px */
+  /* v8 R-11: clamp の下限に接地する幅を 375 → 320 未満へ下げる。傾きと上限は動かさない */
+  --gutter:clamp(16px,3vw,44px);   /* 1440 → 43.2px ／ 375 → 16px（版面 91.5%） */
   --frame-max:1360px;              /* frame 上限。1440で版面1353.6px = 94.0% */
   --gut:clamp(16px,1.7vw,24px);    /* 12列のガター */
   --measure:32em;                  /* リード・答えの行長 */
   --measure-b:30em;                /* 本文の行長 */
   --read-max:1000px;               /* 「読む」セクションの版面 */
 
-  /* --- 余白3段（固定px → viewport相対） --- */
-  --pad-s:clamp(52px,5.2vw,84px);   /* 1440 → 74.9px */
-  --pad-m:clamp(72px,8.4vw,128px);  /* 1440 → 121.0px */
-  --pad-l:clamp(96px,12.6vw,190px); /* 1440 → 181.4px */
+  /* --- 余白4段（v8 R-14: 段は型に束ねる。§B の clamp 式が正本） ---
+     1440 → 74.9 / 121.0 / 181.4px ／ 375 → 48 / 72 / 104px
+     第4段は全画面級の svh（型「占有面」「窓面の hero」が持つ。段外） */
+  --pad-s:clamp(48px,2.53vw + 38.5px,74.9px);
+  --pad-m:clamp(72px,4.60vw + 54.8px,121px);
+  --pad-l:clamp(104px,7.26vw + 76.8px,181.4px);
 
   /* --- 読む帯（固定px・viewportで縮めない） --- */
+  --fs-logo:10px;   /* ロゴ例外（11トークンの最小）。本文系には使わない */
   --fs-cap:12px; --fs-label:14px; --fs-body:16px; --fs-lead:19px; --fs-h3:23px;
 
-  /* --- 空帯：1440時点で 24〜39px には何も置かない（1.74倍のジャンプ） --- */
+  /* --- 空帯：1440時点で 24〜39px には何も置かない（23→40 = 1.739倍のジャンプ） --- */
 
-  /* --- 見る帯・和文 --- */
-  --fs-d1:clamp(1.5rem,1.50vw + 1.15rem,2.5rem);     /* 24 →  40px */
-  --fs-d2:clamp(1.625rem,3.00vw + 0.92rem,3.625rem); /* 26 →  58px */
-  --fs-d3:clamp(2rem,4.69vw + 0.90rem,5.125rem);     /* 32 →  82px */
-  --fs-d4:clamp(2.5rem,6.76vw + 0.92rem,7rem);       /* 40 → 112px */
-  /* --- 見る帯・欧文（数字専用） --- */
-  --fs-num:clamp(2.5rem,4.50vw + 1.44rem,5.5rem);    /* 40 →  88px */
+  /* --- 見る帯・和文（下限を 320px 未満で接地させる） --- */
+  --fs-d1:clamp(1.4375rem,1.50vw + 1.15rem,2.5rem);   /* 23 →  40px */
+  --fs-d2:clamp(1.5rem,3.00vw + 0.92rem,3.625rem);    /* 24 →  58px */
+  --fs-d3:clamp(1.8125rem,4.69vw + 0.90rem,5.125rem); /* 29 →  82px */
+  --fs-d4:clamp(2.125rem,6.76vw + 0.92rem,7rem);      /* 34 → 112px */
+  /* --- 見る帯・欧文（数字専用）。v8: 88 → 96px（82→96 = 1.171 で AI-2 の 1.10 を満たす） --- */
+  --fs-num:clamp(2.8125rem,4.50vw + 1.95rem,6rem);    /* 45 →  96px */
 
   /* --- 行送り・字間・ウェイト --- */
   --lh-d4:1.14; --lh-d3:1.22; --lh-d2:1.32; --lh-d1:1.42;
@@ -70,11 +119,31 @@
 
   --hd:76px;   /* ヘッダー高。sticky の基準。実数直書きを禁止 */
 
-  /* --- モーション：カーブと方向は1つ、振幅だけ3段 --- */
+  /* --- モーション：型は1つ（連続の系）、振幅だけ4段 ---
+     v8 R-12: 最大段は連続値 --sun（理念のみ）。点の3段は 24/14/8px・640/500/400ms
+     継続時間は全段 400–700ms の内側（E-3 解消: 380→400ms・480→500ms）
+     最大／最小 = 3.0倍。移動量の上限 24px。イージングは1本 */
   --mo-ease:cubic-bezier(.2,.7,.2,1);
   --mo-micro:160ms; --mo-state:240ms; --mo-rule:700ms;
-  --mo-in-a:640ms; --mo-in-b:480ms; --mo-in-c:380ms;
+  --mo-in-a:640ms; --mo-in-b:500ms; --mo-in-c:400ms;
   --mo-d-a:24px;   --mo-d-b:14px;   --mo-d-c:8px;
+  --mo-win:640ms;  /* R-3 窓の開閉。clip-path: inset() の継続時間（固定） */
+
+  /* =========================================================
+     v8 追加トークン（2026-07-27）
+     正本: design_lab 5_works/20260727_日光溶材_v8/実装申し送り_v1.md §B
+     ========================================================= */
+  /* スキンのトークン名で参照できるようにする別名（正本: スキン §実装トークン） */
+  --accent:#b45309; --accent-deep:#92400e;
+  --base:#faf3e8; --paper:#ffffff;
+
+  /* R-4 面取り。0.425em = 本文の行送り 1.85 が文字の上下に空けるアキ (1.85−1)/2。
+     当てる面の器が 14–19px なので computed 5.95〜8.10px。全幅で同一（375 でも 0 にしない） */
+  --chamfer:.425em;
+
+  /* R-2 連続値。既定は 1（＝光が最大＝完成形）。JS 未実行でも reduce でも静止で成立する。
+     参照は必ず var(--sun,1) と書く（未定義で invalid at computed-value time に落とさない） */
+  --sun:1;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -96,9 +165,17 @@ ul{padding:0;list-style:none}
 .hl{color:var(--green)}
 .nowrap{white-space:nowrap}
 
-/* 操作要素の手応え(web職能: focus可視) */
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible{
-  outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+/* 操作要素の手応え(web職能: focus可視／スキン §手応えの思想)
+   v8: アクセント色の実線リングを輪郭から隙間を空けて回す。角丸は全廃したのでリングも直角。
+   実測 #b45309 on #faf3e8 = 4.55:1（要求 3:1 以上・§F 検査9） */
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible,
+details:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--accent,#b45309);outline-offset:3px;border-radius:0}
+/* v8 検証で是正: 深緑の面（フッター・計器帯）の上では #b45309 のリングが実測 2.35:1 で
+   §F 検査9 の 3:1 を割る（フッターの5リンクが全4ページで該当）。面が暗いときだけ白へ替える。
+   白 on #123f30 = 11.80:1。リングは状態の伝達であって面ではないので、一点性（検査13②）は割らない */
+.site-footer :focus-visible,
+[data-form="計器帯"] :focus-visible{outline-color:#fff}
 
 /* 線画アイコン(絵文字の後継) */
 .icn{width:32px;height:32px;stroke:var(--green);stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -130,6 +207,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,t
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;padding:14px 26px;border-radius:var(--r);font-weight:700;font-size:.97rem;line-height:1.2;border:1.5px solid transparent;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease,transform .18s ease,box-shadow .18s ease}
 .btn .arw{transition:transform .2s}
 .btn:hover .arw{transform:translateX(3px)}
+/* v8 E-4 の解消: reduce では移動をやめる。色（明度）の手応えは残す（該当規則の直近に置く） */
+@media(prefers-reduced-motion:reduce){.btn .arw{transition:none}.btn:hover .arw{transform:none}}
 .btn-primary{background:var(--blue);color:#fff}
 .btn-primary:hover{background:var(--blue-deep);transform:translateY(-1px);box-shadow:var(--card-sh-hv)}
 .btn-tel{background:#fff;color:var(--green-ink);border-color:var(--green)}
@@ -160,13 +239,29 @@ h2.title{font-size:clamp(1.6rem,3.4vw,2.3rem);line-height:1.4;color:var(--ink);f
 /* ---------- 写真プレースホルダー(クライアント撮影待ち) ---------- */
 /* 撮影待ちの写真枠。あえてパレット外の水色にして「仮」であることを一目で分かるようにする
    （施主指定 2026-07-27。写真が入ったら .ph ごと差し替える） */
-.ph{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  background:#e6f1f8;border:1px dashed #a4c8de;color:#5b7d95;border-radius:var(--r);
-  font-size:.9rem;font-weight:500;padding:22px;gap:6px;overflow:hidden}
-.ph::after{content:"PHOTO";position:absolute;top:10px;right:12px;font-family:var(--ff-en);font-size:.6rem;font-weight:600;letter-spacing:.18em;color:#8db0c9}
-.ph.ph-note::after{content:"未確定"} /* 写真以外の未確定情報プレースホルダー用 */
+/* v8 E-12 の解消（スキン §禁じ手「大面の仮表示は不可／小面では可」）:
+   4ページの .ph は全件が大面（最小でも 300×225 = 67,500px²）なので、
+   破線と "PHOTO" チップを既定から外し、無地のソリッド面として置く。
+   小面の仮表示は products .v6-gas .thumb（52px 円）に残す＝境界は面積であって語彙ではない */
+.ph{position:relative;isolation:isolate;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:#e6f1f8;border:0;color:#3f6a86;border-radius:0;   /* v8 検証: #5b7d95 は 3.80:1 で検査8 を割る → 5.06:1 */
+  font-size:var(--fs-label,14px);font-weight:500;padding:22px;gap:6px;overflow:hidden}
+/* 仮の面の中に、その節の窓が開く向きと同じ方向のソリッドの帯を1本（面積は窓の 1/3・階調なし）。
+   開き方の差だけが節の性格を担う状態を、向き・帯・比率の3軸で外す（§B 仮の面） */
+.ph::before{content:"";position:absolute;z-index:-1;background:#a9cbe1;pointer-events:none}
+[data-win="x"] .ph::before,[data-win="xr"] .ph::before{left:0;right:0;height:33.34%}
+[data-win="x"] .ph::before{top:0}
+[data-win="xr"] .ph::before{bottom:0}
+[data-win="y"] .ph::before,[data-win="yb"] .ph::before{top:0;bottom:0;width:33.34%}
+[data-win="y"] .ph::before{left:0}
+[data-win="yb"] .ph::before{right:0}
+.ph.ph-note::after{content:"未確定";position:absolute;top:10px;right:12px;font-family:var(--ff-en);
+  font-size:var(--fs-cap,12px);font-weight:600;letter-spacing:.18em;color:#8db0c9} /* 小面専用 */
 .ph .ico{display:none}
-.ph small{display:block;font-weight:400;font-size:.74rem;color:#7b9db4;letter-spacing:.02em;line-height:1.55}
+/* v8 検証: #7b9db4 は #e6f1f8 の上で 2.499:1（実測・index の3件が可視）。§F 検査8 の 4.5:1 を割る。
+   仮の面の色は施主指定なので動かさず、文字側だけ 4.62:1 へ。器の階層（面の見出し 5.06 > 説明 4.62）は保つ */
+.ph small{display:block;font-weight:400;font-size:var(--fs-cap,12px);color:#46708c;letter-spacing:.02em;line-height:1.55}
 .r-3x4{aspect-ratio:3/4}.r-4x3{aspect-ratio:4/3}.r-16x9{aspect-ratio:16/9}.r-1x1{aspect-ratio:1/1}.r-5x4{aspect-ratio:5/4}
 
 /* ---------- ヒーロー ---------- */
@@ -315,6 +410,10 @@ form label{display:block;font-size:.86rem;font-weight:700;margin-bottom:7px;colo
 form label .req{color:#fff;background:var(--green);font-size:.66rem;border-radius:4px;padding:2px 7px;margin-left:8px;font-weight:700}
 form input,form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:13px 15px;font-size:.95rem;font-family:inherit;background:#fff;color:var(--ink)}
 form input:focus,form textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(180,83,9,.16)}
+/* v8 E-7 の解消: outline:none をキーボード操作にまで適用しない。
+   rgba(180,83,9,.16) の影は 3:1 を満たさないので、実線リングを必ず重ねる（§F 検査9） */
+form input:focus-visible,form textarea:focus-visible{
+  outline:2px solid var(--accent,#b45309);outline-offset:3px}
 .form-note{font-size:.8rem;color:var(--ink-soft);margin-top:8px}
 
 /* ---------- フッター ---------- */
@@ -371,7 +470,9 @@ form input:focus,form textarea:focus{outline:none;border-color:var(--blue);box-s
   .hero .cta-row .btn,.cta-band .cta-row .btn{flex:1 1 100%}
 }
 @media(max-width:420px){
-  .wrap{padding:0 18px}
+  /* v8 R-11: ここで 18px を直書きすると --gutter の連続導出が切れ、375 の版面が 90.4% に落ちる。
+     トークンを使って接地させる（375 → 16px → 版面 91.5%） */
+  .wrap{padding-inline:var(--gutter,16px)}
   .brand .name{font-size:1.1rem}
   .stats .wrap{grid-template-columns:1fr;gap:22px}
   .stat::before{display:none!important}
