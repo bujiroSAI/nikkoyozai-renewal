@@ -88,20 +88,22 @@
   gsap.set('#pagehero .lede, #pagehero .crumb', { opacity: 0, y: 14 });
 
   function intro() {
-    var mark = loader.querySelector('.mark');
-    var count = loader.querySelector('.count');
-    var n = { v: 0 };
     var tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
-    tl.to(n, {
-      v: 100, duration: reduced ? 0.2 : 1.1, ease: 'power2.inOut',
-      onUpdate: function () { count.textContent = String(Math.round(n.v)).padStart(2, '0'); }
-    })
-      .to(mark, { scale: 1.18, duration: 1.1, ease: 'none' }, 0)
-      .to(mark, { scale: 22, opacity: 0, duration: 0.8, ease: 'power4.in' })
-      .to('#loader .count, #loader .tag', { opacity: 0, duration: 0.3 }, '<')
-      .to(loader, { yPercent: -100, duration: 0.85, ease: 'power4.inOut' }, '-=0.25')
-      .set(loader, { display: 'none' })
-      .to(titleLines, { yPercent: 0, duration: 1.0, stagger: 0.09, ease: 'power4.out' }, '-=0.45')
+    if (loader) {
+      var mark = loader.querySelector('.mark');
+      var count = loader.querySelector('.count');
+      var n = { v: 0 };
+      tl.to(n, {
+        v: 100, duration: reduced ? 0.2 : 1.1, ease: 'power2.inOut',
+        onUpdate: function () { count.textContent = String(Math.round(n.v)).padStart(2, '0'); }
+      })
+        .to(mark, { scale: 1.18, duration: 1.1, ease: 'none' }, 0)
+        .to(mark, { scale: 22, opacity: 0, duration: 0.8, ease: 'power4.in' })
+        .to('#loader .count, #loader .tag', { opacity: 0, duration: 0.3 }, '<')
+        .to(loader, { yPercent: -100, duration: 0.85, ease: 'power4.inOut' }, '-=0.25')
+        .set(loader, { display: 'none' });
+    }
+    tl.to(titleLines, { yPercent: 0, duration: 1.0, stagger: 0.09, ease: 'power4.out' }, loader ? '-=0.45' : 0)
       .to('.topbar', { opacity: 1, y: 0, duration: 0.8 }, '<')
       .to('#pagehero .lede, #pagehero .crumb', {
         opacity: 1, y: 0, duration: 0.8, stagger: 0.08,
