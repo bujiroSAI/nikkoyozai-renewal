@@ -2,344 +2,443 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>取扱製品・サービス — 日光溶材 motion study</title>
-
+<meta name="robots" content="noindex">
+<title>取扱ガス — 日光溶材 motion study</title>
+<!-- web_gen_lab 実験ページ2 v2（C案: 左=半円ホイール／右=写真パネル縦スライド）
+     写真は過去生成のサンプル画像（site_ppref/img 由来）。ユースケース文面はクライアント原稿R1由来 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Outfit:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/nikko.css">
-<noscript><style>#loader{display:none}#pagehero h1 .line em,.rev i{transform:none!important}</style></noscript>
+<style>
+  :root{
+    --paper:#FAFAF8;
+    --ink:#121417;
+    --acc:#2456E6;
+    --hair:#D9DDE2;
+    --soft:#EFF2F1;
+    --display:"Outfit","Zen Kaku Gothic New",sans-serif;
+    --jp:"Zen Kaku Gothic New",sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
+  html,body{background:var(--paper);color:var(--ink)}
+  body{font-family:var(--jp);overflow-x:hidden;cursor:none}
+  a,button{cursor:none}
+  ::selection{background:var(--acc);color:#fff}
+  #grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.4;mix-blend-mode:multiply}
+
+  /* cursor */
+  #cursor{
+    position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+    width:88px;height:88px;margin:-44px 0 0 -44px;border-radius:50%;
+    border:1.5px solid #fff;mix-blend-mode:difference;
+    transition:width .35s cubic-bezier(.22,1,.36,1),height .35s cubic-bezier(.22,1,.36,1),margin .35s cubic-bezier(.22,1,.36,1);
+  }
+  #cursor.big{width:140px;height:140px;margin:-70px 0 0 -70px}
+  #cursor-dot{position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+    width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:#fff;mix-blend-mode:difference}
+  @media (hover:none){#cursor,#cursor-dot{display:none} body,a,button{cursor:auto}}
+
+  /* header + intro */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;justify-content:space-between;align-items:center;padding:22px 4vw;
+  }
+  .topbar .logo{font-family:var(--jp);font-weight:900;font-size:19px;letter-spacing:.08em;color:var(--ink);text-decoration:none}
+  .topbar .logo i{font-style:normal;color:var(--acc)}
+  .topbar nav{display:flex;gap:26px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.18em}
+  .topbar nav a{color:var(--ink);text-decoration:none}
+  .topbar .cta{background:var(--acc);color:#fff;font-weight:700;font-size:12px;letter-spacing:.12em;padding:10px 22px;border-radius:999px;text-decoration:none}
+
+  #intro{min-height:78svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 4vw 12vh;position:relative}
+  #intro .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.25em;display:flex;align-items:center;gap:14px;margin-bottom:3vh;
+  }
+  #intro .eyebrow::after{content:"";height:1px;flex:0 0 64px;background:currentColor;opacity:.5}
+  #intro h1{font-weight:900;font-size:clamp(34px,5.6vw,86px);line-height:1.35;letter-spacing:.02em}
+  #intro h1 .line{display:block;overflow:hidden}
+  #intro h1 .line em{display:inline-block;font-style:normal;will-change:transform}
+  #intro h1 b{color:var(--acc);font-weight:inherit}
+  #intro p.lede{margin-top:3vh;font-size:14.5px;line-height:2.1;max-width:46ch}
+  #intro .cue{position:absolute;right:4vw;bottom:6vh;font-family:var(--mono);font-size:10px;letter-spacing:.35em;opacity:.6}
+
+  /* ---------- stacking cards (曲面シート) ---------- */
+  #stack{position:relative}
+  .gwrap{height:460vh;margin-bottom:-100vh;position:relative}  /* 360→460: 回し終え後の「一呼吸」100vh */
+  .gwrap.simple{height:200vh}
+  .gwrap:last-child{margin-bottom:0}
+  .gcard{
+    position:sticky;top:0;height:100svh;overflow:hidden;
+    border-radius:50% 50% 0 0 / 7vw 7vw 0 0;
+    box-shadow:0 -28px 70px rgba(10,15,25,.20);
+  }
+  .c-o2 {background:#FFFFFF;color:var(--ink)}
+  .c-ar {background:var(--soft);color:var(--ink)}
+  .c-co2{background:#E7EDF6;color:var(--ink)}
+  .c-h2 {background:var(--ink);color:var(--paper)}
+  .c-tools{background:#FFFFFF;color:var(--ink)}
+
+  /* 右: 半円ホイール（写真に重ねる） */
+  .pwrap{position:relative}
+  .hwheel{
+    position:absolute;right:0;top:50%;transform:translate(50%,-50%);
+    width:min(40vw,560px);aspect-ratio:1;z-index:5;pointer-events:none;
+  }
+  .hwheel .ring{position:absolute;inset:0;border:1px solid rgba(255,255,255,.55);border-radius:50%;
+    filter:drop-shadow(0 2px 10px rgba(10,15,25,.25))}
+  .hwheel .ring::after{ /* 9時方向=現役位置の印 */
+    content:"";position:absolute;left:-4px;top:50%;width:7px;height:7px;margin-top:-3.5px;
+    border-radius:50%;background:var(--acc);
+  }
+  .chip{
+    position:absolute;left:50%;top:50%;z-index:2;
+    white-space:nowrap;padding:9px 18px;border-radius:999px;border:1px solid var(--hair);
+    font-weight:700;font-size:clamp(11px,.95vw,14px);letter-spacing:.08em;background:var(--paper);
+    will-change:transform,opacity;color:var(--ink);
+    box-shadow:0 4px 18px rgba(10,15,25,.18);
+  }
+  .c-h2 .chip{background:#1D2126;color:var(--paper);border-color:rgba(250,250,248,.25)}
+  .chip.on{border-color:var(--acc);color:var(--acc)}
+  .c-h2 .chip.on{border-color:#7FA0FF;color:#7FA0FF}
+
+  /* 中央: メタ */
+  .ginner{
+    height:100svh;display:grid;grid-template-columns:0.85fr 1.3fr;gap:4vw;align-items:center;
+    padding:8vw 6vw 4vw;
+  }
+  .gmeta .sym{font-family:var(--display);font-weight:900;font-size:clamp(52px,6.5vw,104px);line-height:1;letter-spacing:-.02em}
+  .gmeta .sym s{text-decoration:none;color:var(--acc)}
+  .c-h2 .gmeta .sym s{color:#7FA0FF}
+  .gmeta .gname{margin-top:12px;font-weight:900;font-size:clamp(20px,2.2vw,30px);letter-spacing:.06em}
+  .gmeta .gname small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.3em;margin-top:8px;opacity:.6}
+  .gmeta .gdesc{margin-top:2.6vh;font-size:13.5px;line-height:2.05;max-width:34ch}
+  .gmeta .gstep{margin-top:3.4vh;font-family:var(--mono);font-size:13px;letter-spacing:.2em}
+  .gmeta .gstep .cur{font-size:26px;color:var(--acc)}
+  .c-h2 .gmeta .gstep .cur{color:#7FA0FF}
+  .gmeta .gstep small{opacity:.55;font-size:11px;letter-spacing:.25em;margin-left:1em}
+
+  /* 右: 写真パネル（縦スライド） */
+  .pstack{
+    position:relative;height:min(68svh,640px);border-radius:22px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(10,15,25,.28);
+  }
+  .ph{position:absolute;inset:0;will-change:transform}
+  .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .ph::after{content:"";position:absolute;inset:0;background:var(--tint,transparent);mix-blend-mode:color;opacity:var(--tintop,0)}
+  .ph .cap{
+    position:absolute;left:0;right:0;bottom:0;z-index:2;padding:26px 26px 20px;
+    background:linear-gradient(transparent,rgba(8,10,14,.62));color:#fff;
+  }
+  .ph .cap b{display:block;font-family:var(--jp);font-weight:900;font-size:clamp(20px,2.1vw,31px);letter-spacing:.06em}
+  .ph .cap i{font-style:normal;display:block;margin-top:8px;font-size:clamp(13px,1.05vw,16px);line-height:1.95;opacity:.94}
+  .ph .cap small{position:absolute;top:-26px;right:14px;font-family:var(--mono);font-size:9px;letter-spacing:.3em;opacity:.75;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+
+  /* その他の取扱い（シンプルカード） */
+  .tools-inner{height:100svh;display:flex;flex-direction:column;justify-content:center;padding:9vw 6vw 4vw}
+  .tools-inner .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.25em;display:flex;align-items:center;gap:14px}
+  .tools-inner .eyebrow::after{content:"";height:1px;flex:0 0 64px;background:currentColor;opacity:.5}
+  .tools-inner h2{margin-top:3vh;font-weight:900;font-size:clamp(28px,3.8vw,58px);letter-spacing:.03em}
+  .tools-grid{margin-top:7vh;display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vw}
+  .tool{border-top:1px solid var(--ink);padding-top:24px}
+  .tool .tno{font-family:var(--mono);font-size:11px;letter-spacing:.25em;opacity:.5}
+  .tool h3{margin-top:12px;font-weight:900;font-size:clamp(18px,1.8vw,26px);letter-spacing:.05em}
+  .tool p{margin-top:12px;font-size:13.5px;line-height:2}
+  .timg{margin-top:20px;border-radius:14px;overflow:hidden;aspect-ratio:16/10;position:relative;box-shadow:0 14px 34px rgba(10,15,25,.16)}
+  .timg img{width:100%;height:100%;object-fit:cover;display:block}
+  .timg span{position:absolute;right:10px;bottom:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.25em;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.55)}
+
+  /* footer */
+  footer{
+    position:relative;z-index:40;background:var(--acc);color:#fff;
+    border-radius:50% 50% 0 0 / 7vw 7vw 0 0;box-shadow:0 -28px 70px rgba(10,15,25,.25);
+    min-height:72svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+    padding:12vw 6vw 8vh;gap:3vh;
+  }
+  footer h2{font-weight:900;font-size:clamp(26px,3.8vw,54px);letter-spacing:.05em;line-height:1.6}
+  footer p{font-size:13.5px;line-height:2.1;max-width:44ch;opacity:.9}
+  footer .btn{
+    display:inline-block;background:#fff;color:var(--acc);text-decoration:none;
+    font-weight:700;font-size:14px;letter-spacing:.14em;padding:15px 38px;border-radius:999px;will-change:transform;
+  }
+  footer .back{font-family:var(--mono);font-size:12px;letter-spacing:.2em;color:#fff;opacity:.75;text-decoration:none}
+  footer .fine{margin-top:5vh;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;opacity:.6}
+
+  @media (max-width:820px){
+    .hwheel{width:min(84vw,330px)}
+    .chip{font-size:10px;padding:6px 12px;box-shadow:0 3px 12px rgba(10,15,25,.22)}
+    .ginner{grid-template-columns:1fr;gap:3vh;padding:16vw 6vw 6vw;align-content:center;height:auto;min-height:100svh}
+    .pstack{height:50svh}
+    .ph .cap b{font-size:16px}
+    .ph .cap i{font-size:11.5px}
+    .tools-grid{grid-template-columns:1fr;gap:5vw}
+    .topbar nav a:not(.cta){display:none}
+  }
+</style>
 </head>
 <body>
 
-<div id="bg-fill"></div>
-<div id="bg-word" aria-hidden="true"><span>GAS</span></div>
-
-  <div class="count">00</div>
-  <div class="tag">取扱製品・サービス</div>
-</div>
-
-<!-- 固定ヘッダー（全ページ共通の並び） -->
 <header class="topbar">
   <a class="logo" href="index.html" data-hover>日光<i>溶材</i></a>
   <nav>
     <a href="index.html#flavors" data-hover>取扱い</a>
-    <a href="products.html" data-hover aria-current="page">製品</a>
+    <a href="products.html" data-hover>製品</a>
     <a href="company.html" data-hover>会社案内</a>
-    <a href="#contact" class="cta magnet" data-hover>相談する</a>
+    <a href="index.html#contact" class="cta" data-hover>相談する</a>
   </nav>
 </header>
 
-<!-- page hero -->
-<section id="pagehero">
-  <div class="crumb"><a href="index.html" data-hover>日光溶材</a> ／ 取扱製品・サービス</div>
-  <div class="eyebrow">02 — Products &amp; Services</div>
+<section id="intro">
+  <div class="eyebrow">取扱ガス — USE CASES</div>
   <h1>
-    <span class="line"><em>品目ではなく、</em></span>
-    <span class="line"><em><b>使われ方</b>から選ぶ。</em></span>
+    <span class="line"><em>ガスは、<b>使われ方</b>で選ぶ。</em></span>
+    <span class="line"><em>現場の数だけ、答えがある。</em></span>
   </h1>
-  <p class="lede">ガス・溶材・機器を横断して扱っています。一覧に無いものも、母材や工程が分かればお探しできます。まずは現場の話からどうぞ。</p>
+  <p class="lede">同じ酸素でも、切断の現場と水族館では選び方が違います。代表的な4種のガスを、実際の使われ方から紹介します。</p>
+  <div class="cue">SCROLL</div>
 </section>
 
-<!-- gas ticker -->
-<div id="ticker" aria-hidden="true">
-  <div class="inner">
-    <span><b>O₂</b> 酸素</span><span><b>N₂</b> 窒素</span><span><b>Ar</b> アルゴン</span>
-    <span><b>CO₂</b> 炭酸</span><span><b>C₂H₂</b> アセチレン</span><span><b>H₂</b> 水素</span>
-    <span><b>NH₃</b> アンモニア</span><span><b>He</b> ヘリウム</span><span><b>LP</b> LPガス</span>
-    <span><b>O₂</b> 酸素</span><span><b>N₂</b> 窒素</span><span><b>Ar</b> アルゴン</span>
-    <span><b>CO₂</b> 炭酸</span><span><b>C₂H₂</b> アセチレン</span><span><b>H₂</b> 水素</span>
-    <span><b>NH₃</b> アンモニア</span><span><b>He</b> ヘリウム</span><span><b>LP</b> LPガス</span>
+<div id="stack">
+
+  <!-- O2 -->
+  <div class="gwrap">
+    <section class="gcard c-o2" style="z-index:1">
+      <div class="ginner">
+        <div class="gmeta">
+          <div class="sym">O<s>₂</s></div>
+          <div class="gname">酸素<small>OXYGEN</small></div>
+          <p class="gdesc">鉄鋼や金属加工の高温燃焼を支える、産業の基本のガス。医療現場にも欠かせません。</p>
+          <div class="gstep"><span class="cur">01</span> / 04<small>USE CASE</small></div>
+        </div>
+        <div class="pwrap">
+          <div class="pstack">
+            <div class="ph"><img src="img/uc_c2h2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>ガス切断・溶接</b><i>プロパンやアセチレンと組み合わせて高温燃焼をつくり、鉄鋼製造やガス切断・溶接の現場で金属を効率よく加工する。</i></div></div>
+            <div class="ph"><img src="img/uc_o2med.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>医療用酸素</b><i>医療用酸素の製造に使われ、病院や在宅医療など幅広い医療現場を支える。現場に欠かせないガスのひとつ。</i></div></div>
+            <div class="ph"><img src="img/uc_o2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>水族館</b><i>大型水槽の魚や海洋生物が快適に暮らせるよう、水中へ酸素を供給している。生き物の環境を、ガスが下から支えている。</i></div></div>
+            <div class="ph" style="--tint:#1C7A6B;--tintop:.35"><img src="img/uc_o2.jpg" alt="" style="object-position:bottom"><div class="cap"><small>SAMPLE IMAGE</small><b>養殖業</b><i>魚やエビなどの生育を良くするため、酸素を溶かした水を使うことがある。収穫の質を決める、見えない裏方。</i></div></div>
+          </div>
+          <div class="hwheel"><div class="ring"></div>
+            <div class="chip">ガス切断・溶接</div>
+            <div class="chip">医療用酸素</div>
+            <div class="chip">水族館</div>
+            <div class="chip">養殖業</div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <!-- Ar -->
+  <div class="gwrap">
+    <section class="gcard c-ar" style="z-index:2">
+      <div class="ginner">
+        <div class="gmeta">
+          <div class="sym">A<s>r</s></div>
+          <div class="gname">アルゴン<small>ARGON</small></div>
+          <p class="gdesc">溶接部を大気から守る不活性ガス。精密産業から住宅、美術品まで、「守る」仕事の専門家です。</p>
+          <div class="gstep"><span class="cur">01</span> / 04<small>USE CASE</small></div>
+        </div>
+        <div class="pwrap">
+          <div class="pstack">
+            <div class="ph"><img src="img/uc_ar.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>TIG・MIG溶接</b><i>ステンレスやアルミのTIG・MIG溶接で、溶接部を大気中の酸素や窒素から守るシールドガスとして使われる。仕上がりの美しさはこのガスが決める。</i></div></div>
+            <div class="ph"><img src="img/grain.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>半導体製造</b><i>半導体や精密機器の製造では、酸化を防ぐための不活性ガスとして使用されている。ミクロン単位の世界の空気を整える。</i></div></div>
+            <div class="ph"><img src="img/uc_h2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>高性能断熱窓</b><i>住宅の高性能断熱窓（ペアガラス・トリプルガラス）には、ガラスの間にアルゴンが封入され、断熱性能を高めている。</i></div></div>
+            <div class="ph"><img src="img/steel.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>美術品の保存</b><i>展示ケースでは、美術品や文化財の酸化防止を目的としてアルゴンが利用されることもある。百年先へ渡すための封。</i></div></div>
+          </div>
+          <div class="hwheel"><div class="ring"></div>
+            <div class="chip">TIG・MIG溶接</div>
+            <div class="chip">半導体製造</div>
+            <div class="chip">高性能断熱窓</div>
+            <div class="chip">美術品の保存</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- CO2 -->
+  <div class="gwrap">
+    <section class="gcard c-co2" style="z-index:3">
+      <div class="ginner">
+        <div class="gmeta">
+          <div class="sym">CO<s>₂</s></div>
+          <div class="gname">炭酸<small>CARBON DIOXIDE</small></div>
+          <p class="gdesc">溶接の現場から食卓、農業まで。いちばん身近なところで働いている産業ガスです。</p>
+          <div class="gstep"><span class="cur">01</span> / 04<small>USE CASE</small></div>
+        </div>
+        <div class="pwrap">
+          <div class="pstack">
+            <div class="ph"><img src="img/sparks.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>CO₂溶接</b><i>炭酸ガスアーク溶接のシールドガスとして、自動車部品や建築鉄骨などの製造現場で幅広く使われている。</i></div></div>
+            <div class="ph"><img src="img/uc_he.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>ドライアイス</b><i>ドライアイスの原料として、食品や医薬品の低温輸送を支えている。冷たさも、実はガスの仕事。</i></div></div>
+            <div class="ph" style="--tint:#E8A020;--tintop:.45"><img src="img/uc_o2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>炭酸飲料</b><i>炭酸飲料の発泡剤として、あの喉ごしをつくる。人工炭酸泉や炭酸シャンプーなど、美容・健康分野でも活躍している。</i></div></div>
+            <div class="ph"><img src="img/uc_co2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>植物工場</b><i>植物工場やビニールハウスでは濃度を高めて光合成を促進し、野菜やイチゴの収穫量向上に活用されている。</i></div></div>
+          </div>
+          <div class="hwheel"><div class="ring"></div>
+            <div class="chip">CO₂溶接</div>
+            <div class="chip">ドライアイス</div>
+            <div class="chip">炭酸飲料</div>
+            <div class="chip">植物工場</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- H2 -->
+  <div class="gwrap">
+    <section class="gcard c-h2" style="z-index:4">
+      <div class="ginner">
+        <div class="gmeta">
+          <div class="sym">H<s>₂</s></div>
+          <div class="gname">水素<small>HYDROGEN</small></div>
+          <p class="gdesc">次のエネルギーの主役。半導体の製造から宇宙開発まで、需要が広がり続けています。</p>
+          <div class="gstep"><span class="cur">01</span> / 04<small>USE CASE</small></div>
+        </div>
+        <div class="pwrap">
+          <div class="pstack">
+            <div class="ph" style="--tint:#2B3F9E;--tintop:.3"><img src="img/grain.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>半導体製造</b><i>半導体や電子部品の製造では還元ガスとして利用され、品質向上に貢献している。</i></div></div>
+            <div class="ph"><img src="img/flame.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>燃料電池</b><i>水素エネルギー関連設備や燃料電池の開発・実証実験で、需要が高まり続けている。次の産業の燃料庫。</i></div></div>
+            <div class="ph"><img src="img/uc_h2.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>燃料電池車</b><i>燃料電池車（FCV）は水素から電気をつくって走行し、走行時に排出されるのはほぼ水だけ。</i></div></div>
+            <div class="ph" style="--tint:#2B3F9E;--tintop:.45"><img src="img/sparks.jpg" alt=""><div class="cap"><small>SAMPLE IMAGE</small><b>H3ロケット</b><i>宇宙開発ではロケット燃料として液体水素が使われており、日本のH3ロケットなどにも活用されている。</i></div></div>
+          </div>
+          <div class="hwheel"><div class="ring"></div>
+            <div class="chip">半導体製造</div>
+            <div class="chip">燃料電池</div>
+            <div class="chip">燃料電池車</div>
+            <div class="chip">H3ロケット</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- その他の取扱い（シンプル） -->
+  <div class="gwrap simple">
+    <section class="gcard c-tools" style="z-index:5">
+      <div class="tools-inner">
+        <div class="eyebrow">その他の取扱い — PRODUCTS</div>
+        <h2>ガスのまわりも、ぜんぶ。</h2>
+        <div class="tools-grid">
+          <div class="tool"><div class="tno">01</div><h3>溶接材料</h3><p>溶接棒・ワイヤ・フラックス・関連資材。銘柄のご指定にも、母材からの選定相談にも。</p><div class="timg"><img src="img/uc_ar.jpg" alt=""><span>SAMPLE IMAGE</span></div></div>
+          <div class="tool"><div class="tno">02</div><h3>機器</h3><p>溶接機・切断機・調整器。FA機器は取り寄せにも対応します。</p><div class="timg"><img src="img/grain.jpg" alt=""><span>SAMPLE IMAGE</span></div></div>
+          <div class="tool"><div class="tno">03</div><h3>工具・安全用品</h3><p>ホース・保護具・消耗品。道具まわりの困りごとも、窓口ひとつで。</p><div class="timg"><img src="img/sparks.jpg" alt=""><span>SAMPLE IMAGE</span></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
 </div>
 
-<!-- カテゴリ -->
-<section class="sheet" id="lineup">
-  <div class="eyebrow">取扱いカテゴリ</div>
-  <h2>
-    <span class="rev"><i>ガスから工具まで、</i></span>
-    <span class="rev"><i><b>窓口はひとつ</b>で。</i></span>
-  </h2>
-
-  <div class="cats">
-    <article class="cat" data-rise>
-      <div class="no">01 —<small>INDUSTRIAL GAS</small></div>
-      <div>
-        <h3>産業用ガス</h3>
-        <p>各種高圧ガスと容器、供給設備まで。1本の入替から定期供給まで対応します。</p>
-      </div>
-      <div class="chips">
-        <span class="on">酸素</span><span class="on">窒素</span><span class="on">アルゴン</span>
-        <span class="on">炭酸ガス</span><span class="on">溶解アセチレン</span><span class="on">水素</span>
-        <span>ヘリウム</span><span>液化石油ガス</span><span>アンモニア</span>
-        <span>レーザーガス</span><span>混合ガス</span><span>特殊ガス</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">02 —<small>MEDICAL GAS</small></div>
-      <div>
-        <h3>医療用ガス・医療機器</h3>
-        <p>医療ガスの供給から、設備の施工・保守点検まで一貫して受けます。</p>
-      </div>
-      <div class="chips">
-        <span class="on">日本薬局方酸素</span><span>日本薬局方二酸化炭素</span><span>笑気ガス</span>
-        <span>滅菌ガス</span><span>窒素・液体窒素</span><span>在宅用医療機器</span>
-        <span>吸入用流量計</span><span>医療ガス供給設備</span><span>配管の施工・保守</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">03 —<small>LP GAS</small></div>
-      <div>
-        <h3>LPガス・ガス機器</h3>
-        <p>民生用LPガスの供給と、住まいまわりの機器・設備工事まで。</p>
-      </div>
-      <div class="chips">
-        <span class="on">民生用LPガス</span><span>給湯器</span><span>厨房機器</span>
-        <span>暖房機器</span><span>ガス警報器</span><span>供給設備</span><span>配管の施工・保守</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">04 —<small>REFRIGERANT</small></div>
-      <div>
-        <h3>冷媒ガス・空調</h3>
-        <p>第一種フロン類回収業者として、冷媒の回収・破壊処理まで適正に扱います。</p>
-      </div>
-      <div class="chips">
-        <span class="on">フレオンガス</span><span>ブライン</span><span>ドライアイス</span>
-        <span>冷媒回収</span><span>破壊処理</span><span>空調設備</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">05 —<small>WELDING</small></div>
-      <div>
-        <h3>溶接機・溶接材料</h3>
-        <p>主要メーカーの溶接機と溶接材料を取り扱います。機種の選定もご相談ください。</p>
-      </div>
-      <div class="chips">
-        <span class="on">溶接機</span><span class="on">溶接棒</span><span class="on">ワイヤ</span>
-        <span>フラックス</span><span>関連資材</span><span>機種選定の相談</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">06 —<small>POWER TOOLS</small></div>
-      <div>
-        <h3>電動工具・その他</h3>
-        <p>現場で使う電動工具も各種。替え時や不調のご相談もあわせてどうぞ。</p>
-      </div>
-      <div class="chips">
-        <span class="on">電動工具</span><span>切断機</span><span>調整器</span><span>安全用品</span><span>消耗品</span>
-      </div>
-    </article>
-
-    <article class="cat" data-rise>
-      <div class="no">07 —<small>INSPECTION</small></div>
-      <div>
-        <h3>超音波機器・ガス圧接関連</h3>
-        <p>検査機器からガス圧接関連まで、専門品目も取り扱います。</p>
-      </div>
-      <div class="chips">
-        <span class="on">超音波探傷器</span><span>ゲージ類</span><span>圧接器</span><span>試験材料</span>
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- ガスの使用場面 -->
-<section id="uses">
-  <div class="eyebrow">このガスは、こんな場面で</div>
-  <h2>
-    <span class="rev"><i>9種のガスは、</i></span>
-    <span class="rev"><i>それぞれ<b>違う現場</b>にいる。</i></span>
-  </h2>
-
-  <div class="gasgrid">
-    <article class="gas" data-rise>
-      <div class="sym">O<sub>2</sub></div>
-      <div class="jp">酸素</div>
-      <p class="catch">鉄を切り、魚を育てる</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>鉄鋼・金属加工で高温の炎をつくる。ガス切断や溶接では可燃性ガスと組み合わせて使う。</dd>
-        <dt>まめ知識</dt>
-        <dd>養殖や大型水槽では、水に溶かして魚の生育を支える役目もある。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">N<sub>2</sub></div>
-      <div class="jp">窒素</div>
-      <p class="catch">お菓子の鮮度も、無酸化切断も</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>食品の袋詰めで酸化を防ぐ。ステンレスの無酸化切断のアシストガス、半導体の不活性ガスとしても。</dd>
-        <dt>まめ知識</dt>
-        <dd>ポテトチップスの袋がふくらんでいるのは、多くの場合この窒素。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">Ar</div>
-      <div class="jp">アルゴン</div>
-      <p class="catch">溶接の守り役は、窓の断熱役でもある</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>ステンレスやアルミのTIG・MIG溶接で、溶接部を大気から守るシールドガスとして使う。</dd>
-        <dt>まめ知識</dt>
-        <dd>高性能な断熱窓は、ガラスとガラスの間にアルゴンを封じて性能を上げている。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">CO<sub>2</sub></div>
-      <div class="jp">炭酸ガス</div>
-      <p class="catch">溶接から、いちごのハウスまで</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>炭酸ガスアーク溶接のシールドガス。自動車部品や建築鉄骨の製造で幅広く使われる。</dd>
-        <dt>まめ知識</dt>
-        <dd>ビニールハウスでは濃度を上げて光合成を促し、収穫量の向上に使われている。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">C<sub>2</sub>H<sub>2</sub></div>
-      <div class="jp">溶解アセチレン</div>
-      <p class="catch">3,000℃の炎で、鉄を切る</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>酸素と組み合わせたガス溶接・切断で高温の炎をつくる。建設・鉄工・設備工事の定番。</dd>
-        <dt>まめ知識</dt>
-        <dd>安全のため、溶剤に溶かした状態で専用の容器に充填されている。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">H<sub>2</sub></div>
-      <div class="jp">水素</div>
-      <p class="catch">半導体から、燃料電池まで</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>半導体・電子部品の製造で還元ガスとして働く。水素エネルギー関連の実証でも需要が伸びている。</dd>
-        <dt>まめ知識</dt>
-        <dd>燃料電池車は水素から電気をつくって走り、走行中に出るのはほぼ水だけ。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">NH<sub>3</sub></div>
-      <div class="jp">アンモニア</div>
-      <p class="catch">食卓を支え、冷やす力にもなる</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>冷凍・冷蔵設備の自然冷媒として、大型物流施設や食品工場で使われる。</dd>
-        <dt>まめ知識</dt>
-        <dd>毎日食べる野菜や穀物の多くは、アンモニアからつくる肥料で育っている。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">He</div>
-      <div class="jp">ヘリウム</div>
-      <p class="catch">MRIを冷やす、限りある資源</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>MRIの超電導磁石を極低温に保つ液体ヘリウム。半導体製造の気密検査にも使う。</dd>
-        <dt>まめ知識</dt>
-        <dd>およそ −269℃ でも液体でいられる。主に天然ガス田から採れる有限の資源。</dd>
-      </dl>
-    </article>
-
-    <article class="gas" data-rise>
-      <div class="sym">LP</div>
-      <div class="jp">LPガス</div>
-      <p class="catch">厨房の火から、災害時の備えまで</p>
-      <dl>
-        <dt>現場では</dt>
-        <dd>金属の溶解・熱処理の加熱、焼却炉の補助燃料。業務用厨房や食品工場の加熱設備でも。</dd>
-        <dt>まめ知識</dt>
-        <dd>個別に供給できるため、災害時は避難所や仮設住宅のエネルギーとして働く。</dd>
-      </dl>
-    </article>
-  </div>
-</section>
-
-<!-- 次のページへ -->
-<section id="next">
-  <div class="nextlinks">
-    <a href="company.html" data-hover>
-      <div class="label">NEXT — 03</div>
-      <div class="t">会社案内・<span>拠点</span></div>
-    </a>
-    <a href="index.html" data-hover>
-      <div class="label">BACK — 01</div>
-      <div class="t">トップへ<span>戻る</span></div>
-    </a>
-  </div>
-</section>
-
-<!-- footer -->
-<footer id="contact">
-  <div class="marquee" aria-hidden="true">
-    <div class="inner">
-      <span>草木を育む<i>日光</i>のように</span><span>草木を育む<i>日光</i>のように</span>
-      <span>草木を育む<i>日光</i>のように</span><span>草木を育む<i>日光</i>のように</span>
-    </div>
-  </div>
-  <div class="contact">
-    <h3>まずは、現場の話を<br>聞かせてください。</h3>
-    <p>お見積もりの前に、使われ方・数量・頻度をうかがいます。急ぎの供給、銘柄の切替、容器の相談——どこからでも。</p>
-    <a class="cta magnet" href="#" data-hover style="font-size:15px;padding:16px 40px">お問い合わせフォーム（準備中）</a>
-    <a class="tel" href="#" data-hover>048-◯◯◯-◯◯◯◯<small>本社（受付時間 ◯:◯◯—◯:◯◯）</small></a>
-  </div>
-  <div class="cols">
-    <div>
-      <h3>会社情報</h3>
-      <ul>
-        <li>株式会社日光溶材</li>
-        <li>埼玉県川口市</li>
-        <li>創業 昭和46年（1971）／従業員20名</li>
-      </ul>
-    </div>
-    <div>
-      <h3>取扱い</h3>
-      <ul>
-        <li><a href="#lineup" data-hover style="color:inherit;text-decoration:none">高圧ガス・医療ガス</a></li>
-        <li><a href="#lineup" data-hover style="color:inherit;text-decoration:none">溶接材料</a></li>
-        <li><a href="#lineup" data-hover style="color:inherit;text-decoration:none">機器・工具</a></li>
-      </ul>
-    </div>
-    <div>
-      <h3>メニュー</h3>
-      <ul>
-        <li><a href="index.html" data-hover style="color:inherit;text-decoration:none">トップ</a></li>
-        <li><a href="products.html" data-hover style="color:inherit;text-decoration:none">製品</a></li>
-        <li><a href="company.html" data-hover style="color:inherit;text-decoration:none">会社案内・拠点</a></li>
-        <li><a href="#contact" data-hover style="color:inherit;text-decoration:none">お問い合わせ</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="fine">
-    <span>© 株式会社日光溶材 — motion study（web_gen_lab 実験・一部サンプル文面）</span>
-    <span>草木を育む日光のように、新しい価値を創造します</span>
-  </div>
+<footer>
+  <h2>この他にも、9種のガスを<br>取り扱っています。</h2>
+  <p>窒素・アセチレン・アンモニア・ヘリウム・LPガス。用途が決まっていなくても大丈夫です。使われ方から一緒に選びます。</p>
+  <a class="btn magnet" href="index.html#contact" data-hover>相談する</a>
+  <a class="back" href="index.html" data-hover>← トップへ戻る</a>
+  <div class="fine">© 株式会社日光溶材 — motion study（web_gen_lab 実験・写真はサンプル・文面はクライアント原稿R1より）</div>
 </footer>
 
-<svg id="grain" aria-hidden="true"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+<svg id="grain" aria-hidden="true"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.04"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
 
-<div id="cursor"><span class="label"></span></div>
+<div id="cursor"></div>
 <div id="cursor-dot"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="assets/nikko.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* smooth scroll */
+const lenis = new Lenis({ lerp: 0.075, wheelMultiplier: 0.75 });  // 流れすぎ対策: 減速
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add(t => lenis.raf(t * 1000));
+gsap.ticker.lagSmoothing(0);
+
+/* cursor */
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+let mx = innerWidth/2, my = innerHeight/2, cx = mx, cy = my;
+addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY;
+  dot.style.transform = `translate(${mx}px,${my}px)`; });
+gsap.ticker.add(() => {
+  cx += (mx - cx) * 0.14; cy += (my - cy) * 0.14;
+  cursor.style.transform = `translate(${cx}px,${cy}px)`;
+});
+document.querySelectorAll('[data-hover]').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+});
+
+/* intro reveal */
+gsap.from('#intro h1 .line em', { yPercent: 110, duration: 1, stagger: 0.1, ease: 'power4.out', delay: 0.15 });
+gsap.from('#intro .lede, #intro .eyebrow', { opacity: 0, y: 16, duration: 0.8, delay: 0.5 });
+
+/* ============ C案: 半円ホイール × 写真パネル縦スライド ============ */
+const STEP_DEG = 36;   // チップ間の角度
+document.querySelectorAll('.gwrap').forEach(wrap => {
+  const chips = [...wrap.querySelectorAll('.chip')];
+  const phs = [...wrap.querySelectorAll('.ph')];
+  const cur = wrap.querySelector('.cur');
+  const wheel = wrap.querySelector('.hwheel');
+
+  /* 入場の「ぽんっ」（全カード共通） */
+  if (!reduced) {
+    gsap.from(wrap.querySelector('.ginner, .tools-inner'), {
+      y: 70, scale: 0.95, opacity: 0.3, duration: 0.7, ease: 'back.out(1.3)',
+      scrollTrigger: { trigger: wrap, start: 'top 78%' }
+    });
+  }
+  if (!chips.length) return;   // シンプルカードはここまで
+
+  const N = chips.length;
+  const proxy = { p: 0 };
+
+  function render() {
+    const r = wheel.offsetWidth / 2;
+    chips.forEach((ch, i) => {
+      const deg = (i - proxy.p) * STEP_DEG;          // 0°=9時方向が現役。pが進むと時計回り（下→9時→上）
+      const a = deg * Math.PI / 180;
+      const x = -Math.cos(a) * r, y = Math.sin(a) * r;
+      const d = Math.abs(deg);
+      const act = Math.max(0, 1 - d / STEP_DEG);
+      ch.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${0.84 + act * 0.28})`;
+      ch.style.opacity = Math.max(0.15, 0.3 + act * 0.7) * (d > 90 ? 0.4 : 1);
+      ch.classList.toggle('on', d < STEP_DEG / 2);
+    });
+    phs.forEach((el, i) => {
+      el.style.transform = `translateY(${(i - proxy.p) * 102}%)`;
+    });
+    cur.textContent = String(Math.min(Math.round(proxy.p), N - 1) + 1).padStart(2, '0');
+  }
+  render();
+  addEventListener('resize', render);
+
+  gsap.to(proxy, {
+    p: N - 1, ease: 'none', onUpdate: render,
+    scrollTrigger: {
+      trigger: wrap,
+      start: 'top top',
+      end: () => '+=' + (wrap.offsetHeight - innerHeight * 3),  // 末尾100vh=一呼吸+次カード入場
+      scrub: 0.6,
+      snap: reduced ? false : { snapTo: 1 / (N - 1), duration: { min: 0.15, max: 0.4 }, ease: 'power2.out' },
+      invalidateOnRefresh: true
+    }
+  });
+});
+
+/* footer magnet */
+if (!reduced) {
+  document.querySelectorAll('.magnet').forEach(b => {
+    b.addEventListener('mousemove', e => {
+      const r = b.getBoundingClientRect();
+      gsap.to(b, { x: (e.clientX - r.left - r.width/2) * 0.3, y: (e.clientY - r.top - r.height/2) * 0.3, duration: 0.3 });
+    });
+    b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)' }));
+  });
+}
+</script>
 </body>
 </html>
