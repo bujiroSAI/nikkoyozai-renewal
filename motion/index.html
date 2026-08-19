@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>日光溶材 — motion study</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Outfit:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bone:#FAFAF8;      /* クリーン白（v2: 旧B案トーンから離脱） */
+    --bone-deep:#EFF1F0;
+    --ink:#121417;
+    --green:#2456E6;     /* 単一アクセント青（変数名は旧のまま流用） */
+    --green-soft:#E4EAF4;
+    --orange:#2456E6;
+    --orange-deep:#173CA6;
+    --display:"Outfit","Zen Kaku Gothic New",sans-serif;
+    --jp:"Zen Kaku Gothic New",sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
+  html,body{background:var(--bone);color:var(--ink)}
+  body{font-family:var(--jp);overflow-x:hidden;cursor:none}
+  a,button{cursor:none}
+  ::selection{background:var(--green);color:var(--bone)}
+
+  /* ---------- fixed layers ---------- */
+  #bg-fill{position:fixed;inset:0;background:var(--bone);z-index:0}
+  #bg-word{
+    position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;overflow:hidden;
+  }
+  #bg-word span{
+    font-family:var(--display);font-weight:900;letter-spacing:-.02em;
+    font-size:clamp(110px,25vw,25rem);line-height:1;color:var(--ink);
+  }
+  #webgl{position:fixed;inset:0;z-index:2;pointer-events:none}
+  #grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.5;mix-blend-mode:multiply}
+
+  /* ---------- cursor ---------- */
+  #cursor{
+    position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+    width:88px;height:88px;margin:-44px 0 0 -44px;border-radius:50%;
+    border:1.5px solid #fff;mix-blend-mode:difference;
+    display:flex;align-items:center;justify-content:center;
+    transition:width .35s cubic-bezier(.22,1,.36,1),height .35s cubic-bezier(.22,1,.36,1),margin .35s cubic-bezier(.22,1,.36,1);
+  }
+  #cursor .label{font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:#fff;opacity:0;transition:opacity .25s}
+  #cursor.big{width:150px;height:150px;margin:-75px 0 0 -75px}
+  #cursor.big .label{opacity:1}
+  #cursor-dot{
+    position:fixed;top:0;left:0;z-index:200;pointer-events:none;
+    width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;
+    background:#fff;mix-blend-mode:difference;
+  }
+  @media (hover:none){ #cursor,#cursor-dot{display:none} body,a,button{cursor:auto} }
+
+  /* ---------- loader ---------- */
+  #loader{position:fixed;inset:0;z-index:100;background:var(--bone);display:flex;align-items:center;justify-content:center}
+  #loader .mark{font-family:var(--display);font-weight:900;letter-spacing:-.01em;font-size:clamp(26px,3.6vw,50px);line-height:1;will-change:transform}
+  #loader .count{position:absolute;left:4vw;bottom:5vh;font-family:var(--mono);font-size:12px;letter-spacing:.15em}
+  #loader .tag{position:absolute;right:4vw;bottom:5vh;font-family:var(--mono);font-size:12px;letter-spacing:.2em}
+
+  /* ---------- shared ---------- */
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.25em;text-transform:uppercase;
+    display:flex;align-items:center;gap:14px;
+  }
+  .eyebrow::after{content:"";height:1px;flex:0 0 64px;background:currentColor;opacity:.5}
+  section{position:relative}
+  .cta{
+    display:inline-block;background:var(--orange);color:#fff;text-decoration:none;
+    font-weight:700;font-size:13px;letter-spacing:.14em;padding:12px 26px;border-radius:999px;
+    will-change:transform;
+  }
+
+  /* ---------- hero ---------- */
+  #hero{height:100vh;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;padding:0 4vw}
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:60;
+    display:flex;justify-content:space-between;align-items:center;padding:22px 4vw;
+  }
+  .topbar .logo{font-family:var(--jp);font-weight:900;font-size:21px;letter-spacing:.08em;color:var(--ink);text-decoration:none}
+  .topbar .logo i{font-style:normal;color:var(--orange)}
+  .topbar nav{display:flex;gap:30px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.18em}
+  .topbar nav a{color:var(--ink);text-decoration:none}
+  #hero .hero-lines{padding-bottom:7vh;display:flex;justify-content:space-between;align-items:flex-end}
+  #hero h1{font-weight:700;font-size:clamp(17px,2.1vw,29px);line-height:1.8;letter-spacing:.02em}
+  #hero h1 .line{display:block;overflow:hidden;white-space:nowrap}
+  @media (max-width:760px){#hero h1{font-size:15px}}
+  #hero h1 .line em{display:inline-block;font-style:normal;will-change:transform}
+  #hero h1 .line em b{color:var(--orange);font-weight:inherit}
+  #hero .meta{font-family:var(--mono);font-size:12px;letter-spacing:.15em;line-height:2;text-align:right}
+  #scroll-cue{
+    position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);
+    font-family:var(--mono);font-size:10px;letter-spacing:.35em;opacity:.65;
+  }
+
+  /* ---------- gas ticker ---------- */
+  #ticker{background:var(--bone);z-index:5;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);overflow:hidden;white-space:nowrap;padding:14px 0}
+  #ticker .inner{display:inline-block;animation:mq 30s linear infinite}
+  #ticker span{font-family:var(--mono);font-size:14px;letter-spacing:.3em;padding-right:3.2em}
+  #ticker b{color:var(--green);font-weight:500}
+
+  /* ---------- about (数字) ---------- */
+  #formula{background:var(--bone);z-index:5;padding:16vh 4vw 14vh}
+  #formula .head{display:grid;grid-template-columns:1fr 2fr;gap:4vw;margin-bottom:10vh}
+  #formula h2{font-family:var(--jp);font-weight:900;font-size:clamp(34px,5vw,80px);line-height:1.25;letter-spacing:.02em}
+  #formula h2 .rev{display:block;overflow:hidden}
+  #formula h2 .rev i{display:inline-block;font-style:normal;will-change:transform}
+  #formula h2 .rev i b{color:var(--green);font-weight:inherit}
+  #formula .lede{align-self:end;font-size:clamp(14px,1.2vw,17px);line-height:2.1;max-width:42ch;font-weight:400}
+  .ingredients{border-top:1px solid var(--ink)}
+  .ing{
+    display:grid;grid-template-columns:80px 1.2fr 1fr 180px;gap:2vw;align-items:baseline;
+    padding:30px 0;border-bottom:1px solid var(--ink);
+  }
+  .ing .no{font-family:var(--mono);font-size:12px;letter-spacing:.2em}
+  .ing .name{font-family:var(--jp);font-weight:700;font-size:clamp(19px,2.2vw,32px);letter-spacing:.03em}
+  .ing .role{font-family:var(--mono);font-size:12px;letter-spacing:.12em;opacity:.7}
+  .ing .dose{font-family:var(--mono);font-size:clamp(15px,1.5vw,21px);text-align:right}
+  .ing .bar{grid-column:2/-1;height:3px;background:var(--green);transform-origin:left;transform:scaleX(0)}
+  #formula .total{
+    margin-top:8vh;display:flex;justify-content:space-between;align-items:baseline;
+    font-family:var(--mono);font-size:12px;letter-spacing:.2em;
+  }
+  #formula .total b{
+    font-family:var(--display);font-weight:900;font-size:clamp(48px,8vw,128px);letter-spacing:0;line-height:1;
+  }
+  #formula .total b u{text-decoration:none;color:var(--orange)}
+
+  /* ---------- lineup (horizontal) ---------- */
+  #flavors{z-index:5;overflow:hidden;background:var(--ink)}
+  #flavors .track{display:flex;width:300vw;height:100vh}
+  .panel{
+    width:100vw;height:100vh;flex-shrink:0;position:relative;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .panel .num{position:absolute;top:5vh;left:4vw;font-family:var(--mono);font-size:12px;letter-spacing:.25em}
+  .panel .big{
+    position:absolute;font-family:var(--display);font-weight:900;letter-spacing:-.02em;
+    font-size:clamp(80px,15vw,18rem);line-height:1;opacity:.14;user-select:none;
+  }
+  .panel .card{position:relative;text-align:center;max-width:82vw}
+  .panel .flavor-name{font-family:var(--jp);font-weight:900;font-size:clamp(30px,4vw,56px);letter-spacing:.04em;margin-top:36px}
+  .panel .flavor-notes{font-family:var(--mono);font-size:13px;letter-spacing:.22em;margin-top:12px;opacity:.85}
+  .panel .desc{margin-top:18px;font-size:14px;line-height:2;max-width:36ch;margin-left:auto;margin-right:auto}
+  .panel-btn{
+    display:inline-block;margin-top:26px;padding:12px 30px;border:1.5px solid currentColor;border-radius:999px;
+    color:inherit;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:.14em;
+  }
+  .p-gas {background:#EFF2F1;color:var(--ink)}
+  .p-weld{background:var(--ink);color:var(--bone)}
+  .p-tool{background:#DFE6F0;color:var(--ink)}
+  /* パネル内グラフィック */
+  .mini3d{width:220px;height:300px;margin:0 auto;display:block}
+  .g-cyl{
+    width:120px;height:250px;margin:0 auto;position:relative;border-radius:60px 60px 12px 12px;
+    background:linear-gradient(100deg,#3B7D5C 0%,#2F6B4E 45%,#1F4A35 75%,#356F52 100%);
+    box-shadow:0 26px 50px rgba(0,0,0,.35), inset -12px 0 22px rgba(0,0,0,.2), inset 12px 0 22px rgba(255,255,255,.12);
+  }
+  .g-cyl::before{content:"";position:absolute;top:-16px;left:50%;width:22px;height:20px;margin-left:-11px;border-radius:6px 6px 3px 3px;background:#2A5A41}
+  .g-cyl .v{
+    position:absolute;inset:52px 0 40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    writing-mode:vertical-rl;color:#F4F2EC;font-family:var(--jp);font-weight:800;font-size:26px;letter-spacing:.28em;
+  }
+  .g-rods{display:flex;gap:14px;justify-content:center;align-items:flex-end;height:250px}
+  .g-rods i{display:block;width:9px;background:linear-gradient(#E8E2D4,#CFC6B2);border-radius:4px;box-shadow:0 18px 34px rgba(0,0,0,.3)}
+  .g-rods i::before{content:"";display:block;height:34px;border-radius:4px 4px 0 0;background:#8A4A1E}
+  .g-rods i:nth-child(1){height:200px}.g-rods i:nth-child(2){height:240px}
+  .g-rods i:nth-child(3){height:220px}.g-rods i:nth-child(4){height:245px}
+  .g-rods i:nth-child(5){height:205px}
+  .g-gauge{
+    width:190px;height:190px;margin:0 auto;border-radius:50%;position:relative;
+    border:10px solid #EFE7D8;background:#2B2A26;box-shadow:0 26px 50px rgba(0,0,0,.4);
+  }
+  .g-gauge::before{
+    content:"";position:absolute;left:50%;bottom:50%;width:4px;height:72px;margin-left:-2px;
+    background:var(--orange);border-radius:2px;transform-origin:bottom center;
+    animation:needle 3.4s ease-in-out infinite alternate;
+  }
+  .g-gauge::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#EFE7D8}
+  @keyframes needle{from{transform:rotate(-62deg)}to{transform:rotate(58deg)}}
+  @media (prefers-reduced-motion:reduce){.g-gauge::before{animation:none;transform:rotate(20deg)}}
+
+  /* ---------- 理念 ---------- */
+  #rinen{
+    z-index:5;min-height:86svh;display:flex;align-items:center;justify-content:center;overflow:hidden;
+    background:var(--ink);color:var(--bone);
+  }
+  #rinen .rinen-inner{text-align:center;padding:14vh 6vw}
+  #rinen .eyebrow{justify-content:center;opacity:.75}
+  #rinen .eyebrow::after{display:none}
+  #rinen p.big{
+    font-family:var(--jp);font-weight:900;font-size:clamp(30px,4.6vw,68px);line-height:1.7;letter-spacing:.05em;margin-top:4vh;
+  }
+  #rinen p.big .line{display:block;overflow:hidden}
+  #rinen p.big .line em{display:inline-block;font-style:normal;will-change:transform}
+  #rinen p.sub{margin-top:4vh;font-size:14px;letter-spacing:.2em;font-family:var(--mono);opacity:.8}
+
+  /* ---------- story (沿革) ---------- */
+  #story{background:var(--bone);z-index:5;padding:16vh 4vw}
+  #story .head{margin-bottom:9vh;display:flex;justify-content:space-between;align-items:flex-end}
+  #story h2{font-family:var(--jp);font-weight:900;font-size:clamp(30px,4.2vw,64px);letter-spacing:.03em;line-height:1.3}
+  .year{
+    display:grid;grid-template-columns:220px 1fr;gap:3vw;align-items:baseline;
+    padding:34px 0;border-top:1px solid var(--ink);
+  }
+  .year:last-child{border-bottom:1px solid var(--ink)}
+  .year .y{font-family:var(--display);font-weight:900;font-size:clamp(24px,3vw,46px);letter-spacing:.01em}
+  .year .y small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;margin-top:6px;opacity:.6}
+  .year p{font-size:14.5px;line-height:2.1;max-width:56ch}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink);color:var(--bone);z-index:5;position:relative;padding-top:10vh}
+  .marquee{overflow:hidden;white-space:nowrap;border-top:1px solid rgba(247,242,233,.25);border-bottom:1px solid rgba(247,242,233,.25);padding:26px 0}
+  .marquee .inner{display:inline-block;will-change:transform;animation:mq 26s linear infinite}
+  .marquee span{
+    font-family:var(--jp);font-weight:900;font-size:clamp(30px,4.6vw,72px);letter-spacing:.06em;padding-right:1.6em;
+  }
+  .marquee span i{font-style:normal;color:var(--orange)}
+  @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion:reduce){.marquee .inner,#ticker .inner{animation:none}}
+  footer .contact{
+    text-align:center;padding:10vh 6vw 4vh;
+  }
+  footer .contact h3{font-family:var(--jp);font-weight:900;font-size:clamp(24px,3.4vw,48px);letter-spacing:.05em;line-height:1.6}
+  footer .contact p{font-size:13.5px;line-height:2.1;margin:3vh auto 4vh;max-width:44ch;opacity:.85}
+  footer .contact .tel{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,40px);letter-spacing:.04em;display:block;margin-top:3vh;color:var(--bone);text-decoration:none}
+  footer .contact .tel small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.25em;margin-top:8px;opacity:.6}
+  footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:4vw;padding:7vh 4vw}
+  footer .cols h3{font-family:var(--mono);font-size:11px;letter-spacing:.25em;opacity:.6;margin-bottom:18px}
+  footer .cols li{list-style:none;font-size:14px;line-height:2.2}
+  footer .fine{
+    display:flex;justify-content:space-between;gap:2em;padding:0 4vw 5vh;
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;opacity:.55;
+  }
+
+  @media (max-width:760px){
+    .topbar nav a:not(.cta){display:none}
+    #formula .head{grid-template-columns:1fr}
+    .ing{grid-template-columns:48px 1fr 110px}
+    .ing .role{display:none}
+    .year{grid-template-columns:1fr}
+    footer .cols{grid-template-columns:1fr}
+    footer .fine{flex-direction:column;gap:6px}
+  }
+</style>
+</head>
+<body>
+
+<div id="bg-fill"></div>
+<div id="bg-word" aria-hidden="true"><span>NIKKO</span></div>
+<canvas id="webgl"></canvas>
+
+<!-- loader -->
+<div id="loader">
+  <div class="mark">NIKKO YOZAI</div>
+  <div class="count">00</div>
+  <div class="tag">草木を育む日光のように</div>
+</div>
+
+<!-- 固定ヘッダー（全ページ共通の並び） -->
+<header class="topbar">
+  <a class="logo" href="index.html" data-hover>日光<i>溶材</i></a>
+  <nav>
+    <a href="#flavors" data-hover>取扱い</a>
+    <a href="products.html" data-hover>製品</a>
+    <a href="company.html" data-hover>会社案内</a>
+    <a href="#contact" class="cta magnet" data-hover>相談する</a>
+  </nav>
+</header>
+
+<!-- hero -->
+<section id="hero">
+  <div class="hero-lines">
+    <h1>
+      <span class="line"><em>高圧ガス・医療ガス・溶接材料。</em></span>
+      <span class="line"><em>川口の現場のそばで、</em></span>
+      <span class="line"><em><b>昭和46年</b>から変わらない商売を。</em></span>
+    </h1>
+    <div class="meta">
+      創業 昭和46年<br>
+      埼玉県川口市<br>
+      高圧ガス 9種取扱
+    </div>
+  </div>
+  <div id="scroll-cue">SCROLL</div>
+</section>
+
+<!-- gas ticker -->
+<div id="ticker" aria-hidden="true">
+  <div class="inner">
+    <span><b>O₂</b> 酸素</span><span><b>N₂</b> 窒素</span><span><b>Ar</b> アルゴン</span>
+    <span><b>CO₂</b> 炭酸</span><span><b>C₂H₂</b> アセチレン</span><span><b>H₂</b> 水素</span>
+    <span><b>NH₃</b> アンモニア</span><span><b>He</b> ヘリウム</span><span><b>LP</b> LPガス</span>
+    <span><b>O₂</b> 酸素</span><span><b>N₂</b> 窒素</span><span><b>Ar</b> アルゴン</span>
+    <span><b>CO₂</b> 炭酸</span><span><b>C₂H₂</b> アセチレン</span><span><b>H₂</b> 水素</span>
+    <span><b>NH₃</b> アンモニア</span><span><b>He</b> ヘリウム</span><span><b>LP</b> LPガス</span>
+  </div>
+</div>
+
+<!-- about (数字) -->
+<section id="formula">
+  <div class="head">
+    <div class="eyebrow">01 — 日光溶材について</div>
+    <div>
+      <h2>
+        <span class="rev"><i>川口で、55年。</i></span>
+        <span class="rev"><i><b>現場のそば</b>にいる商社です。</i></span>
+      </h2>
+      <p class="lede" style="margin-top:5vh">ガスも溶材も、使われ方を知らないと正しく選べません。だから私たちは、価格の前にまず現場の話を聞きます。御用聞きと呼ばれても構わない——それがいちばん確実だからです。</p>
+    </div>
+  </div>
+  <div class="ingredients">
+    <div class="ing"><span class="no">A—</span><span class="name">高圧ガス</span><span class="role">O₂ / N₂ / Ar / CO₂ ほか</span><span class="dose">9 種</span><span class="bar" style="--w:.9"></span></div>
+    <div class="ing"><span class="no">B—</span><span class="name">医療ガス</span><span class="role">医療機関・在宅医療</span><span class="dose">対応</span><span class="bar" style="--w:.6"></span></div>
+    <div class="ing"><span class="no">C—</span><span class="name">溶接材料</span><span class="role">溶接棒・ワイヤ・関連資材</span><span class="dose">常備</span><span class="bar" style="--w:.75"></span></div>
+    <div class="ing"><span class="no">D—</span><span class="name">機器・工具</span><span class="role">FA機器・切断・安全用品</span><span class="dose">取寄含</span><span class="bar" style="--w:.5"></span></div>
+  </div>
+  <div class="total"><span>創業からの年数</span><b><u><span data-count="55">0</span></u>年</b><span>昭和46年 — 現在</span></div>
+</section>
+
+<!-- lineup: horizontal -->
+<section id="flavors">
+  <div class="track">
+    <div class="panel p-gas" data-hover-drag>
+      <div class="num">02 — 取扱い　1/3</div>
+      <div class="big">GAS</div>
+      <div class="card">
+        <canvas class="mini3d" width="440" height="600"></canvas>
+        <div class="flavor-name">高圧ガス</div>
+        <div class="flavor-notes">O₂ / N₂ / Ar / CO₂ / C₂H₂ / H₂ / NH₃ / He / LP</div>
+        <p class="desc">工場の溶断から医療、食品まで。用途に合うガスと容器を、現場の使い方から一緒に選びます。</p>
+        <a class="panel-btn" href="products.html" data-hover>製品ページへ →</a>
+      </div>
+    </div>
+    <div class="panel p-weld" data-hover-drag>
+      <div class="num">02 — 取扱い　2/3</div>
+      <div class="big">WELD</div>
+      <div class="card">
+        <canvas class="mini3d" width="440" height="600"></canvas>
+        <div class="flavor-name">溶接材料</div>
+        <div class="flavor-notes">溶接棒 / ワイヤ / フラックス / 関連資材</div>
+        <p class="desc">母材と姿勢が分かれば、棒は決まります。銘柄のご指定にも、選定のご相談にも。</p>
+        <a class="panel-btn" href="products.html" data-hover>製品ページへ →</a>
+      </div>
+    </div>
+    <div class="panel p-tool" data-hover-drag>
+      <div class="num">02 — 取扱い　3/3</div>
+      <div class="big">TOOL</div>
+      <div class="card">
+        <canvas class="mini3d" width="440" height="600"></canvas>
+        <div class="flavor-name">機器・工具</div>
+        <div class="flavor-notes">FA機器 / 切断機 / 調整器 / 安全用品</div>
+        <p class="desc">調整器の不調、ホースの劣化、替え時の相談。道具まわりの困りごとも窓口ひとつで。</p>
+        <a class="panel-btn" href="products.html" data-hover>製品ページへ →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 理念 -->
+<section id="rinen">
+  <div class="rinen-inner">
+    <div class="eyebrow">理念</div>
+    <p class="big">
+      <span class="line"><em>草木を育む日光のように、</em></span>
+      <span class="line"><em>新しい価値を創造します。</em></span>
+    </p>
+    <p class="sub">NIKKO YOZAI CO., LTD. — SINCE 1971</p>
+  </div>
+</section>
+
+<!-- footer -->
+<footer id="contact">
+  <div class="contact">
+    <h3>まずは、現場の話を<br>聞かせてください。</h3>
+    <p>お見積もりの前に、使われ方・数量・頻度をうかがいます。急ぎの供給、銘柄の切替、容器の相談——どこからでも。</p>
+    <a class="cta magnet" href="#" data-hover style="font-size:15px;padding:16px 40px">お問い合わせフォーム（準備中）</a>
+    <a class="tel" href="#" data-hover>048-◯◯◯-◯◯◯◯<small>本社（受付時間 ◯:◯◯—◯:◯◯）</small></a>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>会社情報</h3>
+      <ul>
+        <li>株式会社日光溶材</li>
+        <li>埼玉県川口市</li>
+        <li>創業 昭和46年（1971）／従業員20名</li>
+      </ul>
+    </div>
+    <div>
+      <h3>取扱い</h3>
+      <ul>
+        <li><a href="#flavors" data-hover style="color:inherit;text-decoration:none">高圧ガス・医療ガス</a></li>
+        <li><a href="#flavors" data-hover style="color:inherit;text-decoration:none">溶接材料</a></li>
+        <li><a href="#flavors" data-hover style="color:inherit;text-decoration:none">機器・工具</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>メニュー</h3>
+      <ul>
+        <li><a href="products.html" data-hover style="color:inherit;text-decoration:none">製品</a></li>
+        <li><a href="company.html" data-hover style="color:inherit;text-decoration:none">会社案内・拠点</a></li>
+        <li><a href="#contact" data-hover style="color:inherit;text-decoration:none">お問い合わせ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fine">
+    <span>© 株式会社日光溶材 — motion study（web_gen_lab 実験・一部サンプル文面）</span>
+    <span>草木を育む日光のように、新しい価値を創造します</span>
+  </div>
+</footer>
+
+<svg id="grain" aria-hidden="true"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.05"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+
+<div id="cursor"><span class="label">DRAG</span></div>
+<div id="cursor-dot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+gsap.registerPlugin(ScrollTrigger);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ================= smooth scroll ================= */
+const lenis = new Lenis({ lerp: 0.075, wheelMultiplier: 0.75 });  // 流れすぎ対策: 減速
+lenis.stop();
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add(t => lenis.raf(t * 1000));
+gsap.ticker.lagSmoothing(0);
+
+/* ================= cursor ================= */
+const cursor = document.getElementById('cursor');
+const dot = document.getElementById('cursor-dot');
+let mx = innerWidth/2, my = innerHeight/2, cx = mx, cy = my;
+addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY;
+  dot.style.transform = `translate(${mx}px,${my}px)`; });
+gsap.ticker.add(() => {
+  cx += (mx - cx) * 0.14; cy += (my - cy) * 0.14;
+  cursor.style.transform = `translate(${cx}px,${cy}px)`;
+});
+document.querySelectorAll('[data-hover]').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('big'); cursor.querySelector('.label').textContent = ''; });
+  el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+});
+document.querySelectorAll('[data-hover-drag]').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('big'); cursor.querySelector('.label').textContent = 'DRAG'; });
+  el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+});
+
+/* ================= three.js ボンベ（ウェザリング） ================= */
+const canvas = document.getElementById('webgl');
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer)
+  .fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(35, innerWidth/innerHeight, 0.1, 100);
+camera.position.set(0, 0, 7);
+
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(4, 6, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0xfff4e0, 1.0); rim.position.set(-5, 2, -4); scene.add(rim);
+scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+const PAINT = '#2F6B4E';
+const TAU = Math.PI * 2;
+function makeTextures(withText) {
+  const W = 2048, Hh = 1024;
+  const c = document.createElement('canvas'); c.width = W; c.height = Hh;
+  const x = c.getContext('2d');
+  const rc = document.createElement('canvas'); rc.width = W; rc.height = Hh;
+  const q = rc.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, Hh);
+  g.addColorStop(0, '#37795A'); g.addColorStop(0.55, PAINT); g.addColorStop(1, '#27573F');
+  x.fillStyle = g; x.fillRect(0, 0, W, Hh);
+  q.fillStyle = '#8f8f8f'; q.fillRect(0, 0, W, Hh);
+  for (let i = 0; i < 1200; i++) {
+    const px = Math.random() * W, py = Math.random() * Hh, rad = 8 + Math.random() * 60;
+    x.globalAlpha = 0.025 + Math.random() * 0.05;
+    x.fillStyle = Math.random() < 0.5 ? '#1E4632' : '#4E8A68';
+    x.beginPath(); x.ellipse(px, py, rad, rad * (0.4 + Math.random() * 0.8), Math.random() * Math.PI, 0, TAU); x.fill();
+    q.globalAlpha = 0.04; q.fillStyle = Math.random() < 0.5 ? '#a8a8a8' : '#7a7a7a';
+    q.beginPath(); q.ellipse(px, py, rad, rad * 0.6, 0, 0, TAU); q.fill();
+  }
+  x.globalAlpha = 1; q.globalAlpha = 1;
+  for (let i = 0; i < 160; i++) {
+    const px = Math.random() * W, py = Math.random() * Hh * 0.7,
+          len = 80 + Math.random() * 420, w = 1.5 + Math.random() * 7;
+    const grad = x.createLinearGradient(0, py, 0, py + len);
+    grad.addColorStop(0, 'rgba(20,40,30,0)');
+    grad.addColorStop(0.3, 'rgba(20,40,30,' + (0.05 + Math.random() * 0.09) + ')');
+    grad.addColorStop(1, 'rgba(20,40,30,0)');
+    x.fillStyle = grad; x.fillRect(px, py, w, len);
+    q.fillStyle = 'rgba(190,190,190,0.10)'; q.fillRect(px, py, w, len);
+  }
+  const bg = x.createLinearGradient(0, Hh * 0.72, 0, Hh);
+  bg.addColorStop(0, 'rgba(30,25,15,0)'); bg.addColorStop(1, 'rgba(30,25,15,0.34)');
+  x.fillStyle = bg; x.fillRect(0, Hh * 0.72, W, Hh * 0.28);
+  const bq = q.createLinearGradient(0, Hh * 0.72, 0, Hh);
+  bq.addColorStop(0, 'rgba(200,200,200,0)'); bq.addColorStop(1, 'rgba(210,210,210,0.5)');
+  q.fillStyle = bq; q.fillRect(0, Hh * 0.72, W, Hh * 0.28);
+  for (let i = 0; i < 170; i++) {
+    const py = Hh * (0.75 + Math.random() * 0.25), px = Math.random() * W, rad = 1 + Math.random() * 6;
+    x.globalAlpha = 0.15 + Math.random() * 0.3;
+    x.fillStyle = Math.random() < 0.6 ? '#6E3F20' : '#8A5426';
+    x.beginPath(); x.arc(px, py, rad, 0, TAU); x.fill();
+    q.globalAlpha = 0.5; q.fillStyle = '#cfcfcf';
+    q.beginPath(); q.arc(px, py, rad, 0, TAU); q.fill();
+  }
+  x.globalAlpha = 1; q.globalAlpha = 1;
+  for (let i = 0; i < 230; i++) {
+    const px = Math.random() * W, py = Math.random() * Hh, rad = 0.8 + Math.random() * 3.2;
+    if (py < Hh * 0.6 && Math.random() < 0.6) continue;
+    x.globalAlpha = 0.5 + Math.random() * 0.4; x.fillStyle = '#B9BFB9';
+    x.beginPath(); x.arc(px, py, rad, 0, TAU); x.fill();
+    q.globalAlpha = 0.8; q.fillStyle = '#4a4a4a';
+    q.beginPath(); q.arc(px, py, rad, 0, TAU); q.fill();
+  }
+  x.globalAlpha = 1; q.globalAlpha = 1;
+  x.fillStyle = 'rgba(15,30,22,0.18)'; x.fillRect(0, Hh * 0.30, W, 6);
+  q.fillStyle = 'rgba(120,120,120,0.6)'; q.fillRect(0, Hh * 0.30, W, 6);
+  if (withText) {
+    const kanji = ['日', '光', '溶', '材'];
+    for (const ox of [512, 1536]) {
+      x.fillStyle = 'rgba(244,242,236,0.93)'; x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.font = '800 175px "Zen Kaku Gothic New", "Hiragino Sans", sans-serif';
+      kanji.forEach((k, i) => x.fillText(k, ox, 205 + i * 185));
+      x.font = '500 30px "IBM Plex Mono", monospace';
+      x.fillText('NIKKO YOZAI CO., LTD.', ox, 930);
+      x.fillRect(ox - 190, 880, 380, 3);
+      for (let i = 0; i < 420; i++) {
+        const px = ox - 160 + Math.random() * 320, py = 120 + Math.random() * 860, rad = 0.6 + Math.random() * 2.6;
+        x.globalAlpha = 0.25 + Math.random() * 0.45; x.fillStyle = PAINT;
+        x.beginPath(); x.arc(px, py, rad, 0, TAU); x.fill();
+      }
+      x.globalAlpha = 1;
+    }
+  }
+  const mk = cv => { const t = new THREE.CanvasTexture(cv); t.anisotropy = 8; return t; };
+  const map = mk(c); map.colorSpace = THREE.SRGBColorSpace;
+  return { map, rough: mk(rc) };
+}
+const bodyTex = makeTextures(true), plainTex = makeTextures(false);
+const metal = new THREE.MeshStandardMaterial({ color: 0xC8C6C1, metalness: 0.95, roughness: 0.28 });
+const paint = new THREE.MeshStandardMaterial({
+  map: plainTex.map, roughnessMap: plainTex.rough,
+  bumpMap: plainTex.rough, bumpScale: 0.012, metalness: 0.25, roughness: 1
+});
+const labelMat = new THREE.MeshStandardMaterial({
+  map: bodyTex.map, roughnessMap: bodyTex.rough,
+  bumpMap: bodyTex.rough, bumpScale: 0.012, metalness: 0.25, roughness: 1
+});
+
+const scrollGroup = new THREE.Group();
+const spinGroup = new THREE.Group();
+scrollGroup.add(spinGroup); scene.add(scrollGroup);
+
+/* ボンベ組み立て（ヒーロー・パネルミニ共用） */
+function buildBottle() {
+  const g = new THREE.Group();
+  const R = 0.78, H = 3.0;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true), labelMat);
+  g.add(body);
+  const shoulder = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 48, 0, TAU, 0, Math.PI/2), paint);
+  shoulder.scale.y = 0.8; shoulder.position.y = H/2 - 0.005; g.add(shoulder);
+  const neckBase = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.20, 0.16, 48), paint);
+  neckBase.position.y = H/2 + R*0.8 - 0.02; g.add(neckBase);
+  const valve = new THREE.Mesh(new THREE.CylinderGeometry(0.125, 0.145, 0.24, 48), paint);
+  valve.position.y = H/2 + R*0.8 + 0.16; g.add(valve);
+  const valveTop = new THREE.Mesh(new THREE.SphereGeometry(0.125, 48, 24, 0, TAU, 0, Math.PI/2), paint);
+  valveTop.position.y = H/2 + R*0.8 + 0.28; g.add(valveTop);
+  const valveRing = new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.012, 16, 48), metal);
+  valveRing.rotation.x = Math.PI/2; valveRing.position.y = H/2 + R*0.8 + 0.06; g.add(valveRing);
+  const skirt = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.005, R + 0.045, 0.42, 96, 1, true), paint);
+  skirt.position.y = -H/2 - 0.21; g.add(skirt);
+  const skirtCap = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.045, R + 0.045, 0.02, 96), paint);
+  skirtCap.position.y = -H/2 - 0.42; g.add(skirtCap);
+  return g;
+}
+spinGroup.add(buildBottle());
+
+scrollGroup.rotation.z = -0.10;
+scrollGroup.rotation.x = 0.06;
+scrollGroup.scale.setScalar(0.82);
+scrollGroup.position.y = -0.15;
+
+let px2 = 0, py2 = 0;
+addEventListener('mousemove', e => {
+  px2 = (e.clientX / innerWidth - 0.5);
+  py2 = (e.clientY / innerHeight - 0.5);
+});
+const clock = new THREE.Clock();
+let canvasLive = true;
+const minis = [];        // パネル内ミニ3D（実体は後段で構築）
+let minisLive = false;
+function render() {
+  const t = clock.getElapsedTime();
+  if (!reduced) {
+    spinGroup.rotation.y = t * 0.35;
+    spinGroup.position.y = Math.sin(t * 0.9) * 0.06;
+  }
+  camera.position.x += ((px2 * 0.5) - camera.position.x) * 0.05;
+  camera.position.y += ((-py2 * 0.35) - camera.position.y) * 0.05;
+  camera.lookAt(0, 0, 0);
+  if (canvasLive) renderer.render(scene, camera);
+  if (minisLive) minis.forEach(m => {
+    if (!reduced) m.b.rotation.y = t * 0.55 + m.phase;
+    m.r.render(m.sc, m.cam);
+  });
+  requestAnimationFrame(render);
+}
+render();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* パネル内ミニ3Dボンベ（自動回転・#flavors 表示中のみ描画） */
+document.querySelectorAll('.mini3d').forEach((cv, idx) => {
+  const r = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
+  r.setPixelRatio(Math.min(devicePixelRatio, 2));
+  r.setSize(220, 300, false);
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.outputColorSpace = THREE.SRGBColorSpace;
+  const sc = new THREE.Scene();
+  sc.environment = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), 0.04).texture;
+  const cam = new THREE.PerspectiveCamera(32, 220/300, 0.1, 50);
+  cam.position.set(0, 0, 8.4); cam.lookAt(0, 0, 0);
+  const k = new THREE.DirectionalLight(0xffffff, 1.4); k.position.set(4, 6, 5); sc.add(k);
+  sc.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const b = buildBottle(); b.rotation.z = -0.06; sc.add(b);
+  minis.push({ r, sc, cam, b, phase: idx * 1.1 });
+});
+
+/* ================= loader ================= */
+const loader = document.getElementById('loader');
+const mark = loader.querySelector('.mark');
+const count = loader.querySelector('.count');
+const heroLines = gsap.utils.toArray('#hero h1 .line em');
+gsap.set(heroLines, { yPercent: 110 });
+gsap.set('.topbar', { opacity: 0, y: -12 });
+gsap.set('#scroll-cue', { opacity: 0 });
+gsap.set(scrollGroup.scale, { x: 0.5, y: 0.5, z: 0.5 });
+gsap.set(canvas, { opacity: 0 });
+
+function intro() {
+  const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } });
+  const n = { v: 0 };
+  tl.to(n, {
+    v: 100, duration: reduced ? 0.2 : 1.7, ease: 'power2.inOut',
+    onUpdate: () => count.textContent = String(Math.round(n.v)).padStart(2, '0')
+  })
+  .to(mark, { scale: 1.25, duration: 1.7, ease: 'none' }, 0)
+  .to(mark, { scale: 30, opacity: 0, duration: 0.9, ease: 'power4.in' })
+  .to('#loader .count, #loader .tag', { opacity: 0, duration: 0.3 }, '<')
+  .to(loader, { yPercent: -100, duration: 0.9, ease: 'power4.inOut' }, '-=0.25')
+  .set(loader, { display: 'none' })
+  .to(canvas, { opacity: 1, duration: 1.2, ease: 'power2.out' }, '-=0.8')
+  .to(scrollGroup.scale, { x: 0.82, y: 0.82, z: 0.82, duration: 1.4, ease: 'power3.out' }, '<')
+  .to(heroLines, { yPercent: 0, duration: 1.0, stagger: 0.09, ease: 'power4.out' }, '<+0.15')
+  .to('.topbar', { opacity: 1, y: 0, duration: 0.8 }, '<')
+  .to('#scroll-cue', { opacity: 0.65, duration: 0.8, onComplete: () => lenis.start() }, '<+0.3');
+  if (reduced) tl.timeScale(3);
+}
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    const t = makeTextures(true);
+    labelMat.map = t.map; labelMat.roughnessMap = t.rough; labelMat.bumpMap = t.rough;
+    labelMat.needsUpdate = true;
+    setTimeout(intro, 120);
+  });
+} else intro();
+
+/* ================= hero scroll: ボンベズーム ================= */
+const heroTl = gsap.timeline({
+  scrollTrigger: {
+    trigger: '#hero',
+    start: 'top top',
+    end: '+=220%',
+    pin: true,
+    scrub: 1,
+    onLeave: () => { canvasLive = false; canvas.style.visibility = 'hidden'; },
+    onEnterBack: () => { canvasLive = true; canvas.style.visibility = 'visible'; }
+  }
+});
+heroTl
+  .fromTo(heroLines, { yPercent: 0 }, { yPercent: -110, duration: 0.18, stagger: 0.02, ease: 'power2.in', immediateRender: false }, 0)
+  .to('#scroll-cue', { opacity: 0, duration: 0.08 }, 0)
+  .to(scrollGroup.rotation, { y: Math.PI * 1.6, x: 0.02, z: 0, duration: 0.95, ease: 'none' }, 0)
+  .to(scrollGroup.position, { y: 0, duration: 0.5 }, 0)
+  .to(camera.position, { z: 2.2, duration: 0.85, ease: 'power1.in' }, 0.1)
+  .to('#bg-word span', { opacity: 0, scale: 1.2, duration: 0.4 }, 0.15)
+  .to('#bg-fill', { backgroundColor: '#E4E8EC', duration: 0.45 }, 0.3)
+  .to('#hero .meta', { opacity: 0, duration: 0.15 }, 0.5)
+  .to(canvas, { opacity: 0, duration: 0.1 }, 0.9);
+
+/* ================= 見出し・行リビール ================= */
+gsap.utils.toArray('#formula h2 .rev i').forEach((el, i) => {
+  gsap.from(el, {
+    yPercent: 110, duration: 1, ease: 'power4.out', delay: i * 0.08,
+    scrollTrigger: { trigger: '#formula', start: 'top 70%' }
+  });
+});
+gsap.utils.toArray('.ing').forEach(row => {
+  const bar = row.querySelector('.bar');
+  const w = parseFloat(bar.style.getPropertyValue('--w'));
+  gsap.from(row, {
+    opacity: 0, y: 30, duration: 0.8, ease: 'power3.out',
+    scrollTrigger: { trigger: row, start: 'top 85%' }
+  });
+  gsap.to(bar, {
+    scaleX: w, duration: 1.1, ease: 'power4.inOut',
+    scrollTrigger: { trigger: row, start: 'top 80%' }
+  });
+});
+gsap.from('#formula .total b', {
+  yPercent: 40, opacity: 0, duration: 1, ease: 'power3.out',
+  scrollTrigger: { trigger: '#formula .total', start: 'top 85%' }
+});
+
+/* ================= カウントアップ ================= */
+gsap.utils.toArray('[data-count]').forEach(el => {
+  const target = parseFloat(el.dataset.count);
+  const obj = { v: 0 };
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(obj, {
+      v: target, duration: reduced ? 0 : 1.6, ease: 'power2.out',
+      onUpdate: () => el.textContent = Math.round(obj.v)
+    })
+  });
+});
+
+/* ================= 取扱い: 横スクロール ================= */
+const track = document.querySelector('#flavors .track');
+const panels = gsap.utils.toArray('.panel');
+const trackTween = gsap.to(track, {
+  xPercent: -100 * (panels.length - 1) / panels.length,
+  ease: 'none',
+  scrollTrigger: {
+    trigger: '#flavors',
+    start: 'top top',
+    end: () => '+=' + (track.offsetWidth - innerWidth),
+    pin: true,
+    scrub: 1,
+    snap: reduced ? false : { snapTo: 1 / (panels.length - 1), duration: { min: 0.2, max: 0.6 }, ease: 'power2.inOut' },
+    invalidateOnRefresh: true
+  }
+});
+panels.forEach(p => {
+  gsap.from(p.querySelector('.card'), {
+    y: 60, opacity: 0, duration: 0.8,
+    scrollTrigger: { trigger: p, containerAnimation: trackTween, start: 'left 60%' }
+  });
+});
+ScrollTrigger.create({
+  trigger: '#flavors', start: 'top bottom', end: 'bottom top',
+  onToggle: s => { minisLive = s.isActive; }
+});
+
+/* ================= 理念: 行リビール＋パララックス ================= */
+gsap.utils.toArray('#rinen .line em').forEach((el, i) => {
+  gsap.from(el, {
+    yPercent: 110, duration: 1.1, ease: 'power4.out', delay: i * 0.12,
+    scrollTrigger: { trigger: '#rinen', start: 'top 65%' }
+  });
+});
+if (!reduced) {
+  gsap.fromTo('#rinen .rinen-inner', { yPercent: 8 }, {
+    yPercent: -8, ease: 'none',
+    scrollTrigger: { trigger: '#rinen', start: 'top bottom', end: 'bottom top', scrub: true }
+  });
+}
+
+/* ================= マグネティックCTA ================= */
+if (!reduced) {
+  document.querySelectorAll('.magnet').forEach(b => {
+    b.addEventListener('mousemove', e => {
+      const r = b.getBoundingClientRect();
+      gsap.to(b, { x: (e.clientX - r.left - r.width/2) * 0.3, y: (e.clientY - r.top - r.height/2) * 0.3, duration: 0.3 });
+    });
+    b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)' }));
+  });
+}
+
+/* anchor links via lenis */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return e.preventDefault();
+    e.preventDefault();
+    lenis.scrollTo(href, { duration: 1.6 });
+  });
+});
+</script>
+</body>
+</html>
