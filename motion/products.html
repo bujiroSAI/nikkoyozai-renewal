@@ -176,6 +176,53 @@
     .tools-grid{grid-template-columns:1fr;gap:5vw}
     .topbar nav a:not(.cta){display:none}
   }
+
+  /* ---------- モバイルメニュー（PCのナビが760px以下で消えるため） ---------- */
+  /* ページごとにトークン名が違う（index=--bone/--orange, 下層=--paper/--acc）ため
+     すべて fallback 付きで書く */
+  .menu-btn{
+    display:none;background:none;border:0;padding:6px 0;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink);cursor:pointer;
+  }
+  .menu-btn i{display:block;width:22px;height:9px;position:relative;font-style:normal}
+  .menu-btn i::before,.menu-btn i::after{content:"";position:absolute;left:0;right:0;height:1.5px;background:currentColor}
+  .menu-btn i::before{top:0}
+  .menu-btn i::after{bottom:0}
+  #mmenu{
+    position:fixed;inset:0;z-index:220;color:var(--ink);
+    background:var(--bone,#FAFAF8);background:var(--paper,var(--bone,#FAFAF8));
+    display:flex;flex-direction:column;justify-content:center;padding:0 8vw;
+    opacity:0;visibility:hidden;transform:translateY(-10px);
+    transition:opacity .3s ease,transform .3s ease,visibility .3s;
+  }
+  #mmenu.open{opacity:1;visibility:visible;transform:none}
+  #mmenu .close{
+    position:absolute;top:24px;right:4vw;background:none;border:0;cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--ink);
+  }
+  #mmenu .brand{
+    position:absolute;top:20px;left:4vw;font-family:var(--jp);font-weight:900;font-size:21px;letter-spacing:.08em;
+  }
+  #mmenu .brand i{font-style:normal;color:#2456E6;color:var(--acc,var(--orange,#2456E6))}
+  #mmenu a.item{
+    display:flex;align-items:baseline;gap:16px;padding:20px 0;text-decoration:none;color:inherit;
+    border-bottom:1px solid rgba(18,20,23,.14);
+    font-family:var(--jp);font-weight:900;font-size:clamp(25px,7.6vw,33px);letter-spacing:.05em;
+  }
+  #mmenu a.item span{
+    font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.2em;
+    color:#2456E6;color:var(--acc,var(--orange,#2456E6));
+  }
+  #mmenu a.item[aria-current]{opacity:.4}
+  #mmenu .foot{margin-top:7vh;text-align:center}
+  #mmenu .foot .cta{
+    display:inline-block;text-decoration:none;color:#fff;font-weight:700;
+    background:#2456E6;background:var(--acc,var(--orange,#2456E6));
+    font-size:14px;letter-spacing:.14em;padding:15px 34px;border-radius:999px;
+  }
+  #mmenu .foot p{margin-top:26px;font-family:var(--mono);font-size:10px;letter-spacing:.25em;opacity:.5}
+  @media (max-width:760px){ .menu-btn{display:inline-flex} }
+  @media (min-width:761px){ #mmenu{display:none} }
 </style>
 </head>
 <body>
@@ -186,9 +233,25 @@
     <a href="index.html#flavors" data-hover>取扱い</a>
     <a href="products.html" data-hover>製品</a>
     <a href="company.html" data-hover>会社案内</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu"><i></i>MENU</button>
     <a href="index.html#contact" class="cta" data-hover>相談する</a>
   </nav>
 </header>
+
+<!-- モバイルメニュー -->
+<div id="mmenu">
+  <button class="close" type="button">CLOSE</button>
+  <div class="brand">日光<i>溶材</i></div>
+  <nav>
+    <a class="item" href="index.html#flavors"><span>01</span>取扱い</a>
+    <a class="item" href="products.html" aria-current="page"><span>02</span>取扱ガス</a>
+    <a class="item" href="company.html"><span>03</span>会社案内・沿革</a>
+  </nav>
+  <div class="foot">
+    <a class="cta" href="index.html#contact">相談する</a>
+    <p>NIKKO YOZAI CO., LTD. — SINCE 1971</p>
+  </div>
+</div>
 
 <section id="intro">
   <div class="eyebrow">取扱ガス — USE CASES</div>
@@ -439,6 +502,23 @@ if (!reduced) {
     b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1,0.4)' }));
   });
 }
+</script>
+
+<script>
+/* モバイルメニュー（外部依存なし——CDNが落ちても開閉する） */
+(function () {
+  var btn = document.querySelector('.menu-btn'), menu = document.getElementById('mmenu');
+  if (!btn || !menu) return;
+  function set(open) {
+    menu.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  btn.addEventListener('click', function () { set(true); });
+  menu.querySelector('.close').addEventListener('click', function () { set(false); });
+  menu.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  addEventListener('resize', function () { if (innerWidth > 760) set(false); });
+})();
 </script>
 </body>
 </html>
